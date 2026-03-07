@@ -44,7 +44,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yabbal/tiime-cli.git"
+    "url": "git+https://github.com/yabbal/tiime-cli.git"
+  },
+  "publishConfig": {
+    "provenance": true,
+    "access": "public"
   },
   "homepage": "https://github.com/yabbal/tiime-cli#readme",
   "bugs": {
