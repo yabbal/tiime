@@ -1,0 +1,26 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+## [1.0.0] - 2026-03-07
+
+### Added
+- **CLI commands**: auth, company, invoices, clients, bank, quotations, expenses, documents, labels, status, open, version, completion
+- **Invoice management**: list, get, create (single & multi-line), duplicate, update, send, pdf, delete
+- **Quotation management**: list, get, create, pdf, send
+- **Client management**: list, get, create, search
+- **Bank features**: accounts, balance, transactions (with date/search filters), unimputed
+- **Expense reports**: list, get, create
+- **Document management**: list, categories, upload, download
+- **Labels & Tags**: custom labels, standard labels, tags
+- **Output formats**: JSON (default), table, CSV via `--format`
+- **Bilingual help**: French (default) and English via `TIIME_LANG` env var or system language detection
+- **Shell completion**: zsh, bash, fish with descriptions
+- **Colored status summary**: bank balances, invoices, quotations, clients, unmatched transactions
+- **SDK**: TypeScript SDK with all resources exported for programmatic use
+- **Auth**: Auth0 login with macOS Keychain storage, auto-refresh
+- **Retry**: Automatic retry with backoff on 429/5xx errors
+- **Dry-run**: Preview invoice payload before creating
+- **Interactive login**: Beautiful terminal UI with @clack/prompts
+- **Tests**: 47 unit tests covering SDK resources and CLI output
+- **CI**: GitHub Actions for lint, build, test on Node 20 & 22
