@@ -3,6 +3,14 @@ import { consola } from "consola";
 
 export type OutputFormat = "json" | "table" | "csv";
 
+export const formatArg = {
+	format: {
+		type: "string" as const,
+		description: "Format de sortie (json, table, csv)",
+		default: "json",
+	},
+};
+
 interface OutputOptions {
 	format?: OutputFormat;
 }

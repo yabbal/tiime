@@ -1,7 +1,7 @@
 import { defineCommand } from "citty";
 import { TiimeClient } from "../../sdk/client";
 import { getCompanyId } from "../config";
-import { output, outputError } from "../output";
+import { formatArg, type OutputFormat, output, outputError } from "../output";
 
 export const expensesCommand = defineCommand({
 	meta: { name: "expenses", description: "Gestion des notes de frais" },
@@ -9,6 +9,7 @@ export const expensesCommand = defineCommand({
 		list: defineCommand({
 			meta: { name: "list", description: "Lister les notes de frais" },
 			args: {
+				...formatArg,
 				sort: {
 					type: "string",
 					description: "Tri champ:direction",
@@ -19,7 +20,7 @@ export const expensesCommand = defineCommand({
 				try {
 					const client = new TiimeClient({ companyId: getCompanyId() });
 					const expenses = await client.expenseReports.list(args.sort);
-					output(expenses);
+					output(expenses, { format: args.format as OutputFormat });
 				} catch (e) {
 					outputError(e);
 				}

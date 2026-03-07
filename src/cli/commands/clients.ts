@@ -1,7 +1,7 @@
 import { defineCommand } from "citty";
 import { TiimeClient } from "../../sdk/client";
 import { getCompanyId } from "../config";
-import { output, outputError } from "../output";
+import { formatArg, type OutputFormat, output, outputError } from "../output";
 
 export const clientsCommand = defineCommand({
 	meta: { name: "clients", description: "Gestion des clients" },
@@ -9,6 +9,7 @@ export const clientsCommand = defineCommand({
 		list: defineCommand({
 			meta: { name: "list", description: "Lister les clients" },
 			args: {
+				...formatArg,
 				archived: {
 					type: "boolean",
 					description: "Inclure les clients archivés",
@@ -21,7 +22,7 @@ export const clientsCommand = defineCommand({
 					const clients = await client.clients.list({
 						archived: args.archived,
 					});
-					output(clients);
+					output(clients, { format: args.format as OutputFormat });
 				} catch (e) {
 					outputError(e);
 				}
@@ -105,6 +106,7 @@ export const clientsCommand = defineCommand({
 		search: defineCommand({
 			meta: { name: "search", description: "Rechercher un client" },
 			args: {
+				...formatArg,
 				query: {
 					type: "string",
 					description: "Terme de recherche",
@@ -115,7 +117,7 @@ export const clientsCommand = defineCommand({
 				try {
 					const client = new TiimeClient({ companyId: getCompanyId() });
 					const results = await client.clients.search(args.query);
-					output(results);
+					output(results, { format: args.format as OutputFormat });
 				} catch (e) {
 					outputError(e);
 				}

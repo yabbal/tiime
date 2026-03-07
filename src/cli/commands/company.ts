@@ -1,14 +1,15 @@
 import { defineCommand } from "citty";
 import { TiimeClient } from "../../sdk/client";
 import { getCompanyId, loadConfig, saveConfig } from "../config";
-import { output, outputError } from "../output";
+import { formatArg, type OutputFormat, output, outputError } from "../output";
 
 export const companyCommand = defineCommand({
 	meta: { name: "company", description: "Gestion de l'entreprise" },
 	subCommands: {
 		list: defineCommand({
 			meta: { name: "list", description: "Lister toutes les entreprises" },
-			async run() {
+			args: { ...formatArg },
+			async run({ args }) {
 				try {
 					const client = new TiimeClient({ companyId: 0 });
 					const companies = await client.listCompanies();
@@ -20,6 +21,7 @@ export const companyCommand = defineCommand({
 							siret: c.siret,
 							city: c.city,
 						})),
+						{ format: args.format as OutputFormat },
 					);
 				} catch (e) {
 					outputError(e);

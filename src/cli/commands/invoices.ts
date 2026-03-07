@@ -3,7 +3,7 @@ import { defineCommand } from "citty";
 import { TiimeClient } from "../../sdk/client";
 import type { InvoiceCreateParams, InvoiceLine } from "../../sdk/types";
 import { getCompanyId } from "../config";
-import { output, outputError } from "../output";
+import { formatArg, type OutputFormat, output, outputError } from "../output";
 
 export const invoicesCommand = defineCommand({
 	meta: { name: "invoices", description: "Gestion des factures" },
@@ -11,6 +11,7 @@ export const invoicesCommand = defineCommand({
 		list: defineCommand({
 			meta: { name: "list", description: "Lister les factures" },
 			args: {
+				...formatArg,
 				sort: {
 					type: "string",
 					description: "Tri champ:direction (ex: invoice_number:desc)",
@@ -34,13 +35,14 @@ export const invoicesCommand = defineCommand({
 			},
 			async run({ args }) {
 				try {
+					const fmt = { format: args.format as OutputFormat };
 					const client = new TiimeClient({ companyId: getCompanyId() });
 					if (args.all) {
 						const invoices = await client.invoices.listAll({
 							sorts: args.sort,
 							status: args.status,
 						});
-						output(invoices);
+						output(invoices, fmt);
 					} else {
 						const invoices = await client.invoices.list({
 							sorts: args.sort,
@@ -48,7 +50,7 @@ export const invoicesCommand = defineCommand({
 							page: Number(args.page),
 							pageSize: Number(args["page-size"]),
 						});
-						output(invoices);
+						output(invoices, fmt);
 					}
 				} catch (e) {
 					outputError(e);
