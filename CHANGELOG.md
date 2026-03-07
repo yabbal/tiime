@@ -1,10 +1,31 @@
 # Changelog
 
+## 1.1.0
+
+### Minor Changes
+
+- [`0a1571e`](https://github.com/yabbal/tiime-cli/commit/0a1571efbdba92a55dd33a66f06295edfb24c0d9) Thanks [@yabbal](https://github.com/yabbal)! - Initial public release of tiime-cli
+
+  - Authentication with Auth0 + macOS Keychain storage
+  - Invoices: list, create, duplicate, update, send, download PDF, delete
+  - Quotations: list, create, send, download PDF
+  - Clients: list, get, create, search
+  - Bank: accounts, balance, transactions, unimputed
+  - Expense reports: list, get, create
+  - Documents: list, upload, download, categories
+  - Labels & Tags management
+  - Multi-format output: JSON (default), table, CSV
+  - Bilingual help: French/English with system language auto-detection
+  - Shell completion: zsh, bash, fish
+  - Automatic retry with backoff on 429/5xx errors
+  - SDK exportable as TypeScript library
+
 All notable changes to this project will be documented in this file.
 
 ## [1.0.0] - 2026-03-07
 
 ### Added
+
 - **CLI commands**: auth, company, invoices, clients, bank, quotations, expenses, documents, labels, status, open, version, completion
 - **Invoice management**: list, get, create (single & multi-line), duplicate, update, send, pdf, delete
 - **Quotation management**: list, get, create, pdf, send
