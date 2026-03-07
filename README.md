@@ -9,7 +9,6 @@ Sortie JSON par defaut, ideal pour les agents IA et l'automatisation.
 - **Factures** — lister, creer, dupliquer, modifier, envoyer, telecharger le PDF, supprimer
 - **Devis** — lister, creer, envoyer, telecharger le PDF
 - **Clients** — consulter, creer, rechercher
-- **Fournisseurs** — consulter, rechercher
 - **Banque** — soldes, comptes, transactions (filtres date/recherche), operations non imputees
 - **Notes de frais** — lister, creer, consulter
 - **Documents** — parcourir, uploader, telecharger, categories
@@ -200,14 +199,6 @@ tiime clients create --name "ACME" --email contact@acme.com
 tiime clients search --query "acme"
 ```
 
-### Fournisseurs
-
-```bash
-tiime suppliers list               # Lister les fournisseurs
-tiime suppliers get --id 50        # Details d'un fournisseur
-tiime suppliers search --query "amazon"
-```
-
 ### Banque
 
 ```bash
@@ -380,8 +371,6 @@ const transactions = await client.bankTransactions.listAll({
 
 // Clients & Fournisseurs
 const clients = await client.clients.list({ archived: false });
-const suppliers = await client.suppliers.list();
-
 // Devis
 const quotations = await client.quotations.list();
 

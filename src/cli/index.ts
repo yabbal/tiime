@@ -11,7 +11,6 @@ import { labelsCommand } from "./commands/labels";
 import { openCommand } from "./commands/open";
 import { quotationsCommand } from "./commands/quotations";
 import { statusCommand } from "./commands/status";
-import { suppliersCommand } from "./commands/suppliers";
 import { versionCommand } from "./commands/version";
 import { translateHelp } from "./i18n";
 
@@ -26,7 +25,6 @@ const main = defineCommand({
 		company: companyCommand,
 		invoices: invoicesCommand,
 		clients: clientsCommand,
-		suppliers: suppliersCommand,
 		bank: bankCommand,
 		quotations: quotationsCommand,
 		expenses: expensesCommand,

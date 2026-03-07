@@ -10,7 +10,6 @@ import { ExpenseReportsResource } from "./resources/expense-reports";
 import { InvoicesResource } from "./resources/invoices";
 import { LabelsResource } from "./resources/labels";
 import { QuotationsResource } from "./resources/quotations";
-import { SuppliersResource } from "./resources/suppliers";
 import { UsersResource } from "./resources/users";
 import type { Company, TiimeClientOptions } from "./types";
 
@@ -69,10 +68,6 @@ export class TiimeClient {
 
 	get clients() {
 		return new ClientsResource(this.fetch, this.companyId);
-	}
-
-	get suppliers() {
-		return new SuppliersResource(this.fetch, this.companyId);
 	}
 
 	get invoices() {

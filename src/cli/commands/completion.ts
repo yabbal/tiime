@@ -43,14 +43,6 @@ const commands: Record<
 			search: "Rechercher un client",
 		},
 	},
-	suppliers: {
-		description: "Gestion des fournisseurs",
-		subs: {
-			list: "Lister les fournisseurs",
-			get: "Détails d'un fournisseur",
-			search: "Rechercher un fournisseur",
-		},
-	},
 	bank: {
 		description: "Comptes et transactions",
 		subs: {
