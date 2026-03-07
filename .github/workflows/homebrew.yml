@@ -1,0 +1,43 @@
+name: Update Homebrew
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  homebrew:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get version and SHA
+        id: info
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+          # Wait for npm publish to be available
+          sleep 30
+
+          # Get SHA256 of the npm tarball
+          URL="https://registry.npmjs.org/tiime-cli/-/tiime-cli-${VERSION}.tgz"
+          SHA=$(curl -sL "$URL" | shasum -a 256 | cut -d' ' -f1)
+          echo "sha256=$SHA" >> $GITHUB_OUTPUT
+          echo "url=$URL" >> $GITHUB_OUTPUT
+
+      - name: Update formula with version and SHA
+        run: |
+          sed -i "s|url \".*\"|url \"${{ steps.info.outputs.url }}\"|" homebrew/tiime.rb
+          sed -i "s|sha256 \".*\"|sha256 \"${{ steps.info.outputs.sha256 }}\"|" homebrew/tiime.rb
+
+      - name: Push formula to tap
+        uses: dmnemec/copy_file_to_another_repo_action@main
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+        with:
+          source_file: 'homebrew/tiime.rb'
+          destination_repo: 'yabbal/homebrew-tap'
+          destination_folder: 'Formula'
+          user_email: 'abbal.youness@gmail.com'
+          user_name: 'yabbal'
+          commit_message: 'chore: update tiime to ${{ steps.info.outputs.version }}'

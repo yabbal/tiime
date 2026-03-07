@@ -14,21 +14,45 @@
       "types": "./dist/index.d.ts"
     }
   },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
     "lint": "biome check src/",
     "format": "biome format --write src/",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "prepublishOnly": "pnpm build",
+    "release": "changeset publish"
   },
   "keywords": [
     "tiime",
     "accounting",
-    "cli"
+    "cli",
+    "sdk",
+    "typescript",
+    "france",
+    "comptabilite",
+    "factures",
+    "invoices"
   ],
   "author": "yabbal",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yabbal/tiime.git"
+  },
+  "homepage": "https://github.com/yabbal/tiime#readme",
+  "bugs": {
+    "url": "https://github.com/yabbal/tiime/issues"
+  },
+  "engines": {
+    "node": ">=20"
+  },
   "packageManager": "pnpm@10.30.2",
   "dependencies": {
     "@clack/prompts": "^1.1.0",

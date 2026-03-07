@@ -1,0 +1,14 @@
+src/
+tests/
+docs/
+api-responses/
+skill/
+.github/
+.claude/
+biome.json
+tsconfig.json
+tsup.config.ts
+vitest.config.ts
+.gitignore
+.DS_Store
+*.test.ts
