@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.1
+
+### Patch Changes
+
+- [`75933c0`](https://github.com/yabbal/tiime-cli/commit/75933c0b28a909c9dc5329be4b532b91d71482cd) Thanks [@yabbal](https://github.com/yabbal)! - Fix CI workflow for npm publish with granular access token
+
 ## 1.1.0
 
 ### Minor Changes

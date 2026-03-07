@@ -1,6 +1,6 @@
 {
   "name": "tiime-cli",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "CLI & SDK for Tiime accounting",
   "type": "module",
   "main": "./dist/index.js",
