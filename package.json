@@ -44,11 +44,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yabbal/tiime.git"
+    "url": "https://github.com/yabbal/tiime-cli.git"
   },
-  "homepage": "https://github.com/yabbal/tiime#readme",
+  "homepage": "https://github.com/yabbal/tiime-cli#readme",
   "bugs": {
-    "url": "https://github.com/yabbal/tiime/issues"
+    "url": "https://github.com/yabbal/tiime-cli/issues"
   },
   "engines": {
     "node": ">=20"
@@ -64,6 +64,8 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.6",
+    "@changesets/changelog-github": "^0.6.0",
+    "@changesets/cli": "^2.30.0",
     "@types/node": "^25.3.5",
     "tsup": "^8.5.1",
     "typescript": "^5.9.3",

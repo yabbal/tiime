@@ -20,9 +20,24 @@ Sortie JSON par defaut, ideal pour les agents IA et l'automatisation.
 
 ## Installation
 
+### Via npm
+
 ```bash
-git clone https://github.com/yabbal/tiime.git
-cd tiime
+npm install -g tiime-cli
+```
+
+### Via Homebrew
+
+```bash
+brew tap yabbal/tap
+brew install tiime
+```
+
+### Depuis les sources
+
+```bash
+git clone https://github.com/yabbal/tiime-cli.git
+cd tiime-cli
 pnpm install
 pnpm build
 pnpm link --global

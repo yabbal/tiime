@@ -22,7 +22,7 @@ Le workflow de release met à jour automatiquement la formule Homebrew
 après chaque publication npm. Il faut :
 
 1. Créer un Personal Access Token (PAT) GitHub avec scope `repo`
-2. L'ajouter comme secret `HOMEBREW_TAP_TOKEN` dans le repo `yabbal/tiime`
+2. L'ajouter comme secret `HOMEBREW_TAP_TOKEN` dans le repo `yabbal/tiime-cli`
 
 ## Installation pour les utilisateurs
 
