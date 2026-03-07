@@ -1,18 +1,19 @@
 import { defineCommand } from "citty";
 import { TiimeClient } from "../../sdk/client";
 import { getCompanyId } from "../config";
-import { output, outputError } from "../output";
+import { formatArg, type OutputFormat, output, outputError } from "../output";
 
 export const labelsCommand = defineCommand({
 	meta: { name: "labels", description: "Gestion des labels et tags" },
 	subCommands: {
 		list: defineCommand({
 			meta: { name: "list", description: "Lister les labels personnalisés" },
-			async run() {
+			args: { ...formatArg },
+			async run({ args }) {
 				try {
 					const client = new TiimeClient({ companyId: getCompanyId() });
 					const labels = await client.labels.list();
-					output(labels);
+					output(labels, { format: args.format as OutputFormat });
 				} catch (e) {
 					outputError(e);
 				}
@@ -21,11 +22,12 @@ export const labelsCommand = defineCommand({
 
 		standard: defineCommand({
 			meta: { name: "standard", description: "Lister les labels standards" },
-			async run() {
+			args: { ...formatArg },
+			async run({ args }) {
 				try {
 					const client = new TiimeClient({ companyId: getCompanyId() });
 					const labels = await client.labels.standard();
-					output(labels);
+					output(labels, { format: args.format as OutputFormat });
 				} catch (e) {
 					outputError(e);
 				}
@@ -34,11 +36,12 @@ export const labelsCommand = defineCommand({
 
 		tags: defineCommand({
 			meta: { name: "tags", description: "Lister les tags" },
-			async run() {
+			args: { ...formatArg },
+			async run({ args }) {
 				try {
 					const client = new TiimeClient({ companyId: getCompanyId() });
 					const tags = await client.labels.tags();
-					output(tags);
+					output(tags, { format: args.format as OutputFormat });
 				} catch (e) {
 					outputError(e);
 				}

@@ -3,7 +3,7 @@ import { basename } from "node:path";
 import { defineCommand } from "citty";
 import { TiimeClient } from "../../sdk/client";
 import { getCompanyId } from "../config";
-import { output, outputError } from "../output";
+import { formatArg, type OutputFormat, output, outputError } from "../output";
 
 export const documentsCommand = defineCommand({
 	meta: { name: "documents", description: "Gestion des documents" },
@@ -11,6 +11,7 @@ export const documentsCommand = defineCommand({
 		list: defineCommand({
 			meta: { name: "list", description: "Lister les documents" },
 			args: {
+				...formatArg,
 				type: {
 					type: "string",
 					description: "Type de document (ex: receipt)",
@@ -29,7 +30,7 @@ export const documentsCommand = defineCommand({
 						source: args.source,
 						page: Number(args.page),
 					});
-					output(docs);
+					output(docs, { format: args.format as OutputFormat });
 				} catch (e) {
 					outputError(e);
 				}
@@ -98,11 +99,12 @@ export const documentsCommand = defineCommand({
 				name: "categories",
 				description: "Lister les catégories de documents",
 			},
-			async run() {
+			args: { ...formatArg },
+			async run({ args }) {
 				try {
 					const client = new TiimeClient({ companyId: getCompanyId() });
 					const categories = await client.documents.categories();
-					output(categories);
+					output(categories, { format: args.format as OutputFormat });
 				} catch (e) {
 					outputError(e);
 				}

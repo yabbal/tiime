@@ -1,7 +1,7 @@
 import { defineCommand } from "citty";
 import { TiimeClient } from "../../sdk/client";
 import { getCompanyId } from "../config";
-import { output, outputError } from "../output";
+import { formatArg, type OutputFormat, output, outputError } from "../output";
 
 export const bankCommand = defineCommand({
 	meta: { name: "bank", description: "Comptes bancaires et transactions" },
@@ -11,11 +11,12 @@ export const bankCommand = defineCommand({
 				name: "balance",
 				description: "Afficher les soldes des comptes",
 			},
-			async run() {
+			args: { ...formatArg },
+			async run({ args }) {
 				try {
 					const client = new TiimeClient({ companyId: getCompanyId() });
 					const balances = await client.bankAccounts.balance();
-					output(balances);
+					output(balances, { format: args.format as OutputFormat });
 				} catch (e) {
 					outputError(e);
 				}
@@ -25,6 +26,7 @@ export const bankCommand = defineCommand({
 		accounts: defineCommand({
 			meta: { name: "accounts", description: "Lister les comptes bancaires" },
 			args: {
+				...formatArg,
 				enabled: {
 					type: "boolean",
 					description: "Uniquement les comptes actifs",
@@ -35,7 +37,7 @@ export const bankCommand = defineCommand({
 				try {
 					const client = new TiimeClient({ companyId: getCompanyId() });
 					const accounts = await client.bankAccounts.list(args.enabled);
-					output(accounts);
+					output(accounts, { format: args.format as OutputFormat });
 				} catch (e) {
 					outputError(e);
 				}
@@ -84,9 +86,11 @@ export const bankCommand = defineCommand({
 					description: "Récupérer toutes les pages",
 					default: false,
 				},
+				...formatArg,
 			},
 			async run({ args }) {
 				try {
+					const fmt = { format: args.format as OutputFormat };
 					const client = new TiimeClient({ companyId: getCompanyId() });
 					const params = {
 						bank_account: args["bank-account"]
@@ -101,14 +105,14 @@ export const bankCommand = defineCommand({
 
 					if (args.all) {
 						const transactions = await client.bankTransactions.listAll(params);
-						output(transactions);
+						output(transactions, fmt);
 					} else {
 						const transactions = await client.bankTransactions.list({
 							...params,
 							page: Number(args.page),
 							pageSize: Number(args["page-size"]),
 						});
-						output(transactions);
+						output(transactions, fmt);
 					}
 				} catch (e) {
 					outputError(e);
@@ -121,11 +125,12 @@ export const bankCommand = defineCommand({
 				name: "unimputed",
 				description: "Transactions non imputées",
 			},
-			async run() {
+			args: { ...formatArg },
+			async run({ args }) {
 				try {
 					const client = new TiimeClient({ companyId: getCompanyId() });
 					const transactions = await client.bankTransactions.unimputed();
-					output(transactions);
+					output(transactions, { format: args.format as OutputFormat });
 				} catch (e) {
 					outputError(e);
 				}
