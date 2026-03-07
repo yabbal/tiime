@@ -114,6 +114,28 @@ export interface Client {
 	invoicing_use_email: boolean;
 }
 
+export interface Supplier {
+	id: number;
+	name: string;
+	slug: string;
+	address: string;
+	address_complement: string | null;
+	postal_code: string;
+	city: string;
+	country: Country;
+	country_code: string;
+	email: string | null;
+	phone: string | null;
+	siren_or_siret: string;
+	siret: string | null;
+	siren: string | null;
+	intracom_vat_number: string | null;
+	archived: boolean;
+	professional: boolean;
+	color: string;
+	acronym: string;
+}
+
 export interface Bank {
 	id: number;
 	name: string;
@@ -284,6 +306,26 @@ export interface ExpenseReport {
 	status: string;
 	total_amount: number | null;
 	metadata: { date: string | null };
+}
+
+export interface QuotationCreateParams {
+	client?: { id: number } | null;
+	client_name?: string;
+	date: string;
+	title?: string | null;
+	lines: InvoiceLine[];
+	status?: "draft" | "saved";
+}
+
+export interface QuotationSendParams {
+	recipients: { email: string }[];
+	message?: string;
+	subject?: string;
+}
+
+export interface ExpenseReportCreateParams {
+	name: string;
+	metadata?: { date?: string };
 }
 
 export interface Label {

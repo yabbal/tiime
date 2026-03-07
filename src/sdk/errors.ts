@@ -8,4 +8,14 @@ export class TiimeError extends Error {
 		super(message);
 		this.name = "TiimeError";
 	}
+
+	toJSON() {
+		return {
+			error: this.name,
+			message: this.message,
+			status: this.status,
+			endpoint: this.endpoint,
+			details: this.details,
+		};
+	}
 }

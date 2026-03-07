@@ -10,6 +10,7 @@ import { ExpenseReportsResource } from "./resources/expense-reports";
 import { InvoicesResource } from "./resources/invoices";
 import { LabelsResource } from "./resources/labels";
 import { QuotationsResource } from "./resources/quotations";
+import { SuppliersResource } from "./resources/suppliers";
 import { UsersResource } from "./resources/users";
 import type { Company, TiimeClientOptions } from "./types";
 
@@ -26,6 +27,9 @@ export class TiimeClient {
 
 		this.fetch = ofetch.create({
 			baseURL: BASE_URL,
+			retry: 2,
+			retryDelay: 500,
+			retryStatusCodes: [408, 429, 500, 502, 503, 504],
 			headers: {
 				"tiime-app": "tiime",
 				"tiime-app-version": "4.30.3",
@@ -65,6 +69,10 @@ export class TiimeClient {
 
 	get clients() {
 		return new ClientsResource(this.fetch, this.companyId);
+	}
+
+	get suppliers() {
+		return new SuppliersResource(this.fetch, this.companyId);
 	}
 
 	get invoices() {

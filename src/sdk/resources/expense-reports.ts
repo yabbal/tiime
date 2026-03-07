@@ -1,5 +1,5 @@
 import type { $Fetch } from "ofetch";
-import type { ExpenseReport } from "../types";
+import type { ExpenseReport, ExpenseReportCreateParams } from "../types";
 
 export class ExpenseReportsResource {
 	constructor(
@@ -13,6 +13,22 @@ export class ExpenseReportsResource {
 			{
 				query: { expand: "total_amount", sorts },
 				headers: { Range: "items=0-25" },
+			},
+		);
+	}
+
+	get(expenseReportId: number) {
+		return this.fetch<ExpenseReport>(
+			`/companies/${this.companyId}/expense_reports/${expenseReportId}`,
+		);
+	}
+
+	create(params: ExpenseReportCreateParams) {
+		return this.fetch<ExpenseReport>(
+			`/companies/${this.companyId}/expense_reports`,
+			{
+				method: "POST",
+				body: params,
 			},
 		);
 	}

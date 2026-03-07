@@ -8,8 +8,11 @@ import { documentsCommand } from "./commands/documents";
 import { expensesCommand } from "./commands/expenses";
 import { invoicesCommand } from "./commands/invoices";
 import { labelsCommand } from "./commands/labels";
+import { openCommand } from "./commands/open";
 import { quotationsCommand } from "./commands/quotations";
 import { statusCommand } from "./commands/status";
+import { suppliersCommand } from "./commands/suppliers";
+import { versionCommand } from "./commands/version";
 
 const main = defineCommand({
 	meta: {
@@ -22,12 +25,15 @@ const main = defineCommand({
 		company: companyCommand,
 		invoices: invoicesCommand,
 		clients: clientsCommand,
+		suppliers: suppliersCommand,
 		bank: bankCommand,
 		quotations: quotationsCommand,
 		expenses: expensesCommand,
 		documents: documentsCommand,
 		labels: labelsCommand,
 		status: statusCommand,
+		open: openCommand,
+		version: versionCommand,
 		completion: completionCommand,
 	},
 });

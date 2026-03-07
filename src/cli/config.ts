@@ -31,7 +31,7 @@ export const getCompanyId = (): number => {
 	const config = loadConfig();
 	if (!config.companyId) {
 		throw new Error(
-			"No company configured. Run `tiime company use <id>` first.",
+			"Aucune entreprise configurée. Exécutez `tiime company use <id>` d'abord.",
 		);
 	}
 	return config.companyId;

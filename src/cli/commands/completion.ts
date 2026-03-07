@@ -43,6 +43,14 @@ const commands: Record<
 			search: "Rechercher un client",
 		},
 	},
+	suppliers: {
+		description: "Gestion des fournisseurs",
+		subs: {
+			list: "Lister les fournisseurs",
+			get: "Détails d'un fournisseur",
+			search: "Rechercher un fournisseur",
+		},
+	},
 	bank: {
 		description: "Comptes et transactions",
 		subs: {
@@ -57,12 +65,17 @@ const commands: Record<
 		subs: {
 			list: "Lister les devis",
 			get: "Détails d'un devis",
+			create: "Créer un devis",
+			pdf: "Télécharger le PDF",
+			send: "Envoyer par email",
 		},
 	},
 	expenses: {
 		description: "Notes de frais",
 		subs: {
 			list: "Lister les notes de frais",
+			get: "Détails d'une note de frais",
+			create: "Créer une note de frais",
 		},
 	},
 	documents: {
@@ -84,6 +97,14 @@ const commands: Record<
 	},
 	status: {
 		description: "Résumé rapide de la situation",
+		subs: {},
+	},
+	open: {
+		description: "Ouvrir Tiime dans le navigateur",
+		subs: {},
+	},
+	version: {
+		description: "Afficher la version",
 		subs: {},
 	},
 	completion: {

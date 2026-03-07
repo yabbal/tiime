@@ -1,5 +1,6 @@
 import Table from "cli-table3";
 import { consola } from "consola";
+import { TiimeError } from "../sdk/errors";
 
 export type OutputFormat = "json" | "table" | "csv";
 
@@ -99,6 +100,13 @@ const outputCsv = (data: unknown): void => {
 export const output = (data: unknown, options?: OutputOptions): void => {
 	const format = options?.format ?? "json";
 
+	if (!["json", "table", "csv"].includes(format)) {
+		process.stderr.write(
+			`${JSON.stringify({ error: `Format invalide : "${format}". Utilisez json, table ou csv.` })}\n`,
+		);
+		process.exit(1);
+	}
+
 	switch (format) {
 		case "table":
 			outputTable(data);
@@ -116,8 +124,52 @@ export const outputSummary = (text: string): void => {
 	consola.info(text);
 };
 
+export const outputColoredStatus = (data: {
+	company_id: number;
+	bank_accounts: { name: string; balance: number; currency: string }[];
+	invoices: { drafts: number; unpaid: number };
+	pending_quotations: number;
+	total_clients: number;
+	unimputed_transactions: number;
+}): void => {
+	const {
+		company_id,
+		bank_accounts,
+		invoices,
+		pending_quotations,
+		total_clients,
+		unimputed_transactions,
+	} = data;
+
+	console.error("");
+	console.error(`  📊 Résumé — Entreprise #${company_id}`);
+
+	for (const a of bank_accounts) {
+		console.error(
+			`  💰 Soldes : ${a.name} ${a.balance.toFixed(2)}${a.currency === "EUR" ? "€" : a.currency}`,
+		);
+	}
+
+	console.error(
+		`  📄 Factures : ${invoices.drafts} brouillon(s), ${invoices.unpaid} impayée(s)`,
+	);
+	console.error(`  📋 Devis en cours : ${pending_quotations}`);
+	console.error(`  👥 Clients : ${total_clients}`);
+
+	if (unimputed_transactions > 0) {
+		console.error(`  ⚠️  Transactions non imputées : ${unimputed_transactions}`);
+	} else {
+		console.error(`  ✅ Toutes les transactions sont imputées`);
+	}
+	console.error("");
+};
+
 export const outputError = (error: unknown): void => {
-	const message = error instanceof Error ? error.message : String(error);
-	process.stderr.write(`${JSON.stringify({ error: message })}\n`);
+	if (error instanceof TiimeError) {
+		process.stderr.write(`${JSON.stringify(error.toJSON())}\n`);
+	} else {
+		const message = error instanceof Error ? error.message : String(error);
+		process.stderr.write(`${JSON.stringify({ error: message })}\n`);
+	}
 	process.exit(1);
 };

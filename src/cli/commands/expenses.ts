@@ -26,5 +26,52 @@ export const expensesCommand = defineCommand({
 				}
 			},
 		}),
+
+		get: defineCommand({
+			meta: { name: "get", description: "Détails d'une note de frais" },
+			args: {
+				id: {
+					type: "string",
+					description: "ID de la note de frais",
+					required: true,
+				},
+			},
+			async run({ args }) {
+				try {
+					const client = new TiimeClient({ companyId: getCompanyId() });
+					const expense = await client.expenseReports.get(Number(args.id));
+					output(expense);
+				} catch (e) {
+					outputError(e);
+				}
+			},
+		}),
+
+		create: defineCommand({
+			meta: { name: "create", description: "Créer une note de frais" },
+			args: {
+				name: {
+					type: "string",
+					description: "Nom de la note de frais",
+					required: true,
+				},
+				date: {
+					type: "string",
+					description: "Date (YYYY-MM-DD)",
+				},
+			},
+			async run({ args }) {
+				try {
+					const client = new TiimeClient({ companyId: getCompanyId() });
+					const expense = await client.expenseReports.create({
+						name: args.name,
+						metadata: args.date ? { date: args.date } : undefined,
+					});
+					output(expense);
+				} catch (e) {
+					outputError(e);
+				}
+			},
+		}),
 	},
 });
