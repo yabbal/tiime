@@ -1,0 +1,77 @@
+{
+  "name": "tiime-cli",
+  "version": "1.2.0",
+  "description": "CLI & SDK for Tiime accounting",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "tiime": "./dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "lint": "biome check src/",
+    "format": "biome format --write src/",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepublishOnly": "pnpm build",
+    "release": "changeset publish"
+  },
+  "keywords": [
+    "tiime",
+    "accounting",
+    "cli",
+    "sdk",
+    "typescript",
+    "france",
+    "comptabilite",
+    "factures",
+    "invoices"
+  ],
+  "author": "Youness Abbal",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yabbal/tiime-cli.git"
+  },
+  "publishConfig": {
+    "provenance": true,
+    "access": "public"
+  },
+  "homepage": "https://github.com/yabbal/tiime-cli#readme",
+  "bugs": {
+    "url": "https://github.com/yabbal/tiime-cli/issues"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@clack/prompts": "^1.1.0",
+    "citty": "^0.2.1",
+    "cli-table3": "^0.6.5",
+    "consola": "^3.4.2",
+    "ofetch": "^1.5.1",
+    "pathe": "^2.0.3"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.6",
+    "@changesets/changelog-github": "^0.6.0",
+    "@changesets/cli": "^2.30.0",
+    "@types/node": "^25.3.5",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
+  }
+}

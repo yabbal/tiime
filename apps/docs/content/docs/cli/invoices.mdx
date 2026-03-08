@@ -1,0 +1,111 @@
+---
+title: Factures
+description: Créer, lister, modifier, dupliquer et envoyer des factures
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+import { Tabs, Tab } from "fumadocs-ui/components/tabs";
+
+## Lister les factures
+
+```bash title="Terminal"
+tiime invoices list
+tiime invoices list --status paid
+tiime invoices list --sort invoice_number:asc
+tiime invoices list --all           # Toutes les pages
+tiime invoices list --format table  # Affichage tableau
+```
+
+## Consulter une facture
+
+```bash title="Terminal"
+tiime invoices get --id 42
+```
+
+## Créer
+
+<Tabs items={["Simple", "Multi-lignes", "Dry run"]}>
+  <Tab value="Simple">
+    ```bash title="Terminal"
+    tiime invoices create \
+      --client-id 100 \
+      --description "Prestation de conseil" \
+      --unit-price 800 \
+      --quantity 5 \
+      --unit day \
+      --vat normal
+    ```
+  </Tab>
+  <Tab value="Multi-lignes">
+    ```bash title="Terminal"
+    tiime invoices create \
+      --client-id 100 \
+      --lines '[
+        {"description":"Dev","quantity":20,"unit_price":540,"unit":"day"},
+        {"description":"Design","quantity":5,"unit_price":450,"unit":"day"}
+      ]'
+    ```
+  </Tab>
+  <Tab value="Dry run">
+    ```bash title="Terminal"
+    tiime invoices create \
+      --client-id 100 \
+      --description "Test" \
+      --unit-price 500 \
+      --dry-run
+    ```
+
+    <Callout type="info">
+      Le flag `--dry-run` prévisualise la facture sans la créer.
+    </Callout>
+  </Tab>
+</Tabs>
+
+## Modifier
+
+```bash title="Terminal"
+tiime invoices update --id 42 --title "Nouveau titre"
+```
+
+## Dupliquer
+
+```bash title="Terminal"
+tiime invoices duplicate --id 42
+tiime invoices duplicate --id 42 --date 2026-03-01 --quantity 18
+```
+
+## Envoyer par email
+
+```bash title="Terminal"
+tiime invoices send --id 42 --email client@example.com
+```
+
+## Télécharger le PDF
+
+```bash title="Terminal"
+tiime invoices pdf --id 42
+tiime invoices pdf --id 42 --output ma-facture.pdf
+```
+
+## Supprimer
+
+```bash title="Terminal"
+tiime invoices delete --id 42
+```
+
+<Callout type="warning">
+  Seuls les brouillons peuvent être supprimés. Les factures envoyées ou payées ne sont pas supprimables.
+</Callout>
+
+## Workflow : facture mensuelle récurrente
+
+```bash title="Terminal"
+# Premier mois : créer la facture de référence
+tiime invoices create \
+  --client-id 100 \
+  --description "Prestation mensuelle - Janvier 2026" \
+  --unit-price 540 --quantity 20 --unit day
+
+# Mois suivants : dupliquer en ajustant
+tiime invoices duplicate --id 42 --date 2026-02-01 --quantity 18
+```

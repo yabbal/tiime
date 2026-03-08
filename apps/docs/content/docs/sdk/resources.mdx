@@ -1,0 +1,96 @@
+---
+title: Ressources API
+description: Référence complète des 10 ressources du SDK
+---
+
+import { Accordions, Accordion } from "fumadocs-ui/components/accordion";
+
+Chaque ressource est accessible via `client.<resource>`.
+
+<Accordions>
+  <Accordion title="Invoices — client.invoices">
+    | Méthode | Description |
+    |---------|-------------|
+    | `list(options?)` | Lister les factures (filtres: status, sort) |
+    | `get(id)` | Détails d'une facture |
+    | `create(data)` | Créer une facture |
+    | `update(id, data)` | Modifier une facture |
+    | `duplicate(id, options?)` | Dupliquer (avec date/quantité) |
+    | `send(id, data)` | Envoyer par email |
+    | `downloadPdf(id)` | Télécharger le PDF |
+    | `delete(id)` | Supprimer un brouillon |
+  </Accordion>
+
+  <Accordion title="Quotations — client.quotations">
+    | Méthode | Description |
+    |---------|-------------|
+    | `list(options?)` | Lister les devis |
+    | `get(id)` | Détails d'un devis |
+    | `create(data)` | Créer un devis |
+    | `send(id, data)` | Envoyer par email |
+    | `downloadPdf(id)` | Télécharger le PDF |
+  </Accordion>
+
+  <Accordion title="Clients — client.clients">
+    | Méthode | Description |
+    |---------|-------------|
+    | `list(options?)` | Lister les clients |
+    | `get(id)` | Détails d'un client |
+    | `create(data)` | Créer un client |
+    | `search(query)` | Rechercher par nom |
+  </Accordion>
+
+  <Accordion title="BankAccounts — client.bankAccounts">
+    | Méthode | Description |
+    |---------|-------------|
+    | `list()` | Lister les comptes |
+    | `balance()` | Soldes de tous les comptes |
+  </Accordion>
+
+  <Accordion title="BankTransactions — client.bankTransactions">
+    | Méthode | Description |
+    |---------|-------------|
+    | `list(options?)` | Lister les transactions (paginé) |
+    | `listAll(options?)` | Toutes les transactions (pagination auto) |
+    | `get(id)` | Détails d'une transaction |
+    | `unimputed()` | Transactions non imputées |
+  </Accordion>
+
+  <Accordion title="ExpenseReports — client.expenseReports">
+    | Méthode | Description |
+    |---------|-------------|
+    | `list(options?)` | Lister les notes de frais |
+    | `get(id)` | Détails d'une note |
+    | `create(data)` | Créer une note |
+  </Accordion>
+
+  <Accordion title="Documents — client.documents">
+    | Méthode | Description |
+    |---------|-------------|
+    | `list(options?)` | Lister les documents |
+    | `categories()` | Catégories disponibles |
+    | `upload(file)` | Uploader un document |
+    | `download(id)` | Télécharger |
+  </Accordion>
+
+  <Accordion title="Labels — client.labels">
+    | Méthode | Description |
+    |---------|-------------|
+    | `list()` | Labels personnalisés |
+    | `standard()` | Labels standards (plan comptable) |
+    | `tags()` | Tags |
+  </Accordion>
+
+  <Accordion title="Users — client.users">
+    | Méthode | Description |
+    |---------|-------------|
+    | `me()` | Info utilisateur courant |
+  </Accordion>
+
+  <Accordion title="Companies — client.companies">
+    | Méthode | Description |
+    |---------|-------------|
+    | `list()` | Lister les entreprises |
+    | `get(id)` | Détails d'une entreprise |
+  </Accordion>
+</Accordions>

@@ -1,0 +1,31 @@
+---
+title: Authentification
+description: Gestion des tokens et configuration du SDK
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+## Fonctionnement
+
+Le SDK utilise automatiquement le token généré par `tiime auth login`. Les tokens sont rafraîchis automatiquement à expiration via Auth0.
+
+<Callout type="info">
+  Pas besoin de gérer l'authentification manuellement — connectez-vous une fois via le CLI, le SDK fait le reste.
+</Callout>
+
+## Fichiers de configuration
+
+| Fichier | Contenu |
+|---------|---------|
+| `~/.config/tiime/auth.json` | Token d'authentification (access + refresh) |
+| `~/.config/tiime/config.json` | Configuration locale (companyId actif) |
+
+## Retry et résilience
+
+Le SDK inclut un mécanisme de retry avec backoff exponentiel :
+
+| Code HTTP | Comportement |
+|-----------|-------------|
+| **429** | Too Many Requests — retry après délai |
+| **5xx** | Erreurs serveur — retry avec backoff |
+| **4xx** (autres) | Erreur immédiate, pas de retry |

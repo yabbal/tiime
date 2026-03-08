@@ -1,0 +1,4 @@
+{
+  "title": "Documentation",
+  "pages": ["index", "installation", "---Référence---", "cli", "sdk"]
+}

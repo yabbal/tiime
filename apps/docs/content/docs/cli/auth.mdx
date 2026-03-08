@@ -1,0 +1,49 @@
+---
+title: Authentification
+description: Login, logout, statut et gestion de l'entreprise
+---
+
+import { Tabs, Tab } from "fumadocs-ui/components/tabs";
+import { Callout } from "fumadocs-ui/components/callout";
+
+## Login
+
+<Tabs items={["Interactif", "Script / CI"]}>
+  <Tab value="Interactif">
+    ```bash title="Terminal"
+    tiime auth login
+    ```
+  </Tab>
+  <Tab value="Script / CI">
+    ```bash title="Terminal"
+    tiime auth login --email vous@example.com --password votre-mot-de-passe
+    ```
+  </Tab>
+</Tabs>
+
+## Logout
+
+```bash title="Terminal"
+tiime auth logout
+```
+
+## Statut
+
+```bash title="Terminal"
+tiime auth status
+```
+
+<Callout type="info" title="Stockage du token">
+  Le token est stocké dans `~/.config/tiime/auth.json` et rafraîchi automatiquement à expiration.
+</Callout>
+
+## Gestion de l'entreprise
+
+```bash title="Terminal"
+tiime company list             # Lister les entreprises
+tiime company get              # Détails de l'entreprise active
+tiime company use --id 12345   # Changer d'entreprise
+tiime company me               # Info utilisateur courant
+```
+
+La configuration de l'entreprise active est stockée dans `~/.config/tiime/config.json`.

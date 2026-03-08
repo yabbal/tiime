@@ -28,7 +28,7 @@ jobs:
       - run: pnpm build
       - run: pnpm test
       - name: Test CLI binary
-        run: node dist/cli.js version
+        run: node packages/tiime-cli/dist/cli.js version
 
   release:
     if: github.ref == 'refs/heads/main'
