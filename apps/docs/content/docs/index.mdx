@@ -1,0 +1,103 @@
+---
+title: Premiers pas
+description: Démarrez avec Tiime CLI en quelques minutes
+---
+
+import { Cards, Card } from "fumadocs-ui/components/card";
+import { Steps, Step } from "fumadocs-ui/components/steps";
+import { Tabs, Tab } from "fumadocs-ui/components/tabs";
+import { Callout } from "fumadocs-ui/components/callout";
+import { Terminal, Code, Receipt, Landmark } from "lucide-react";
+
+Tiime CLI est un outil en ligne de commande et un SDK TypeScript pour piloter votre comptabilité [Tiime](https://www.tiime.fr) depuis le terminal.
+
+<Callout type="info" title="Sortie JSON native">
+  Toutes les commandes retournent du JSON par défaut, idéal pour les scripts, `jq` et les agents IA.
+</Callout>
+
+## Démarrage rapide
+
+<Steps>
+  <Step>
+    ### Installer
+
+    <Tabs items={["npm", "Homebrew"]}>
+      <Tab value="npm">
+        ```bash title="Terminal"
+        npm install -g tiime-cli
+        ```
+      </Tab>
+      <Tab value="Homebrew">
+        ```bash title="Terminal"
+        brew tap yabbal/tap
+        brew install tiime
+        ```
+      </Tab>
+    </Tabs>
+  </Step>
+
+  <Step>
+    ### Se connecter
+
+    ```bash title="Terminal"
+    tiime auth login
+    ```
+  </Step>
+
+  <Step>
+    ### Sélectionner l'entreprise
+
+    ```bash title="Terminal"
+    tiime company list
+    tiime company use --id 12345
+    ```
+  </Step>
+
+  <Step>
+    ### C'est prêt !
+
+    ```bash title="Terminal"
+    tiime status
+    ```
+  </Step>
+</Steps>
+
+## Que voulez-vous faire ?
+
+<Cards>
+  <Card icon={<Receipt />} title="Gérer les factures" href="/docs/cli/invoices">
+    Créer, dupliquer, envoyer et télécharger vos factures.
+  </Card>
+  <Card icon={<Landmark />} title="Consulter la banque" href="/docs/cli/bank">
+    Soldes, transactions et opérations non imputées.
+  </Card>
+  <Card icon={<Terminal />} title="Explorer le CLI" href="/docs/cli">
+    Toutes les commandes disponibles.
+  </Card>
+  <Card icon={<Code />} title="Utiliser le SDK" href="/docs/sdk">
+    Intégrer Tiime dans vos projets TypeScript.
+  </Card>
+</Cards>
+
+## Formats de sortie
+
+Toutes les commandes supportent `--format` :
+
+```bash title="Terminal"
+tiime invoices list --format json    # JSON (défaut)
+tiime invoices list --format table   # Tableau ASCII
+tiime invoices list --format csv     # CSV
+```
+
+## Combiner avec jq
+
+```bash title="Terminal"
+# Noms des clients
+tiime clients list | jq '.[].name'
+
+# Total des factures payées
+tiime invoices list --status paid --all | jq '[.[].total_including_taxes] | add'
+
+# Transactions > 1000 €
+tiime bank transactions --all | jq '[.[] | select(.amount > 1000)]'
+```

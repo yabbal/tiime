@@ -1,0 +1,35 @@
+---
+title: Documents
+description: Upload, téléchargement et gestion des documents comptables
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+## Lister
+
+```bash title="Terminal"
+tiime documents list               # Tous les documents
+tiime documents list --type receipt # Filtrer par type
+```
+
+## Catégories
+
+```bash title="Terminal"
+tiime documents categories
+```
+
+## Uploader
+
+```bash title="Terminal"
+tiime documents upload --file facture.pdf
+```
+
+## Télécharger
+
+```bash title="Terminal"
+tiime documents download --id 123 --output doc.pdf
+```
+
+<Callout type="info">
+  Les documents sont automatiquement analysés par Tiime pour extraire les informations comptables (montant, date, fournisseur).
+</Callout>

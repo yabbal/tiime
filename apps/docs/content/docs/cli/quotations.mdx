@@ -1,0 +1,40 @@
+---
+title: Devis
+description: Créer, lister, envoyer et télécharger des devis
+---
+
+## Lister
+
+```bash title="Terminal"
+tiime quotations list
+tiime quotations list --format table
+```
+
+## Consulter
+
+```bash title="Terminal"
+tiime quotations get --id 10
+```
+
+## Créer
+
+```bash title="Terminal"
+tiime quotations create \
+  --client-id 100 \
+  --description "Mission conseil" \
+  --unit-price 600 \
+  --quantity 10
+```
+
+## Télécharger le PDF
+
+```bash title="Terminal"
+tiime quotations pdf --id 10
+tiime quotations pdf --id 10 --output devis.pdf
+```
+
+## Envoyer par email
+
+```bash title="Terminal"
+tiime quotations send --id 10 --email client@example.com
+```

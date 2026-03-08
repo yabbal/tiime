@@ -1,0 +1,45 @@
+---
+title: Clients
+description: Lister, consulter, créer et rechercher des clients
+---
+
+## Lister
+
+```bash title="Terminal"
+tiime clients list                 # Clients actifs
+tiime clients list --archived      # Inclure les archivés
+tiime clients list --format table  # Affichage tableau
+```
+
+## Consulter
+
+```bash title="Terminal"
+tiime clients get --id 100
+```
+
+## Créer
+
+```bash title="Terminal"
+tiime clients create --name "ACME" --email contact@acme.com
+```
+
+## Rechercher
+
+```bash title="Terminal"
+tiime clients search --query "acme"
+```
+
+## Exemples
+
+```bash title="Terminal"
+# Export CSV
+tiime clients list --format csv > clients.csv
+
+# Noms des clients avec jq
+tiime clients list | jq '.[].name'
+
+# CSV personnalisé avec jq
+tiime clients list \
+  | jq -r '["id","nom","ville"], (.[] | [.id, .name, .city]) | @csv' \
+  > clients.csv
+```

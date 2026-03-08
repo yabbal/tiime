@@ -1,0 +1,63 @@
+---
+title: Vue d'ensemble
+description: Toutes les commandes CLI disponibles
+---
+
+import { Cards, Card } from "fumadocs-ui/components/card";
+import { Callout } from "fumadocs-ui/components/callout";
+import { KeyRound, Receipt, FileSignature, Users, Landmark, FileText, FolderOpen, Tags } from "lucide-react";
+
+Le CLI Tiime offre un ensemble complet de commandes pour gérer votre comptabilité.
+
+## Résumé rapide
+
+```bash
+tiime status    # Résumé : soldes, factures en attente, transactions récentes
+```
+
+## Commandes
+
+<Cards>
+  <Card icon={<KeyRound />} title="Authentification" href="/docs/cli/auth">
+    Login, logout, statut et gestion de l'entreprise.
+  </Card>
+  <Card icon={<Receipt />} title="Factures" href="/docs/cli/invoices">
+    Créer, dupliquer, modifier, envoyer et supprimer.
+  </Card>
+  <Card icon={<FileSignature />} title="Devis" href="/docs/cli/quotations">
+    Créer, lister, envoyer et télécharger en PDF.
+  </Card>
+  <Card icon={<Users />} title="Clients" href="/docs/cli/clients">
+    Lister, créer et rechercher vos clients.
+  </Card>
+  <Card icon={<Landmark />} title="Banque" href="/docs/cli/bank">
+    Comptes, soldes, transactions et non-imputées.
+  </Card>
+  <Card icon={<FileText />} title="Notes de frais" href="/docs/cli/expenses">
+    Lister, consulter et créer des notes.
+  </Card>
+  <Card icon={<FolderOpen />} title="Documents" href="/docs/cli/documents">
+    Upload, téléchargement et catégories.
+  </Card>
+  <Card icon={<Tags />} title="Labels & Tags" href="/docs/cli/labels">
+    Labels personnalisés, standards et tags.
+  </Card>
+</Cards>
+
+## Formats de sortie
+
+Toutes les commandes de listing supportent `--format` :
+
+| Format | Description | Usage |
+|--------|-------------|-------|
+| `json` | JSON structuré (défaut) | Scripts, jq, agents IA |
+| `table` | Tableau ASCII | Lecture humaine |
+| `csv` | Valeurs séparées par des virgules | Export tableur |
+
+## Outils
+
+```bash
+tiime open                  # Ouvrir Tiime dans le navigateur
+tiime open invoices         # Ouvrir la section factures
+tiime version               # Afficher la version
+```

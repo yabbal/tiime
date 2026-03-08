@@ -1,0 +1,79 @@
+---
+title: TiimeClient
+description: Client principal — initialisation et exemples d'utilisation
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+## Initialisation
+
+```ts title="app.ts"
+import { TiimeClient } from "tiime-cli";
+
+const client = new TiimeClient({ companyId: 12345 });
+```
+
+## Factures
+
+```ts title="invoices.ts"
+// Lister les factures payées
+const invoices = await client.invoices.list({ status: "paid" });
+
+// Détails d'une facture
+const invoice = await client.invoices.get(42);
+
+// Créer une facture
+const created = await client.invoices.create({
+  emission_date: "2026-03-01",
+  client: { id: 100 },
+  lines: [
+    {
+      description: "Prestation de conseil",
+      quantity: 5,
+      unit_amount: 800,
+      vat_type: { code: "normal" },
+      invoicing_unit: { id: 3, code: "day" },
+    },
+  ],
+  status: "draft",
+});
+
+// Envoyer par email
+await client.invoices.send(42, {
+  recipients: [{ email: "client@example.com" }],
+});
+
+// Télécharger le PDF
+const pdf = await client.invoices.downloadPdf(42);
+```
+
+## Banque
+
+```ts title="bank.ts"
+// Soldes de tous les comptes
+const balances = await client.bankAccounts.balance();
+
+// Transactions avec filtres et pagination automatique
+const transactions = await client.bankTransactions.listAll({
+  from: "2026-01-01",
+  to: "2026-01-31",
+  search: "loyer",
+});
+```
+
+## Clients et devis
+
+```ts title="clients.ts"
+const clients = await client.clients.list({ archived: false });
+const quotations = await client.quotations.list();
+```
+
+## Utilisateur
+
+```ts title="user.ts"
+const me = await client.users.me();
+```
+
+<Callout type="info" title="Retry automatique">
+  Le client intègre un mécanisme de retry avec backoff exponentiel sur les erreurs 429 (rate limit) et 5xx (erreurs serveur).
+</Callout>

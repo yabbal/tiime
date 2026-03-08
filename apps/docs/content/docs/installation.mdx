@@ -1,0 +1,110 @@
+---
+title: Installation
+description: Installer Tiime CLI via npm, Homebrew ou depuis les sources
+---
+
+import { Tabs, Tab } from "fumadocs-ui/components/tabs";
+import { Steps, Step } from "fumadocs-ui/components/steps";
+import { Callout } from "fumadocs-ui/components/callout";
+
+## Installer
+
+<Tabs items={["npm", "Homebrew", "Sources"]}>
+  <Tab value="npm">
+    ```bash title="Terminal"
+    npm install -g tiime-cli
+    ```
+  </Tab>
+  <Tab value="Homebrew">
+    ```bash title="Terminal"
+    brew tap yabbal/tap
+    brew install tiime
+    ```
+  </Tab>
+  <Tab value="Sources">
+    ```bash title="Terminal"
+    git clone https://github.com/yabbal/tiime-cli.git
+    cd tiime-cli
+    pnpm install && pnpm build
+    pnpm link --global
+    ```
+  </Tab>
+</Tabs>
+
+Vérifiez l'installation :
+
+```bash title="Terminal"
+tiime --help
+```
+
+## Configurer
+
+<Steps>
+  <Step>
+    ### Authentification
+
+    Mode interactif :
+
+    ```bash title="Terminal"
+    tiime auth login
+    ```
+
+    Mode script / CI :
+
+    ```bash title="Terminal"
+    tiime auth login --email vous@example.com --password votre-mot-de-passe
+    ```
+  </Step>
+
+  <Step>
+    ### Sélection de l'entreprise
+
+    ```bash title="Terminal"
+    tiime company list
+    tiime company use --id 12345
+    ```
+
+    Vérifiez l'entreprise active :
+
+    ```bash title="Terminal"
+    tiime company get
+    ```
+  </Step>
+</Steps>
+
+## Autocomplétion shell
+
+<Tabs items={["zsh", "bash", "fish"]}>
+  <Tab value="zsh">
+    Ajoutez à `~/.zshrc` :
+    ```bash title="~/.zshrc"
+    eval "$(tiime completion --shell zsh)"
+    ```
+  </Tab>
+  <Tab value="bash">
+    Ajoutez à `~/.bashrc` :
+    ```bash title="~/.bashrc"
+    eval "$(tiime completion --shell bash)"
+    ```
+  </Tab>
+  <Tab value="fish">
+    ```bash title="Terminal"
+    tiime completion --shell fish | source
+    ```
+  </Tab>
+</Tabs>
+
+## Langue
+
+L'aide s'affiche dans la langue de votre système (français ou anglais).
+
+Pour forcer une langue :
+
+```bash title="Terminal"
+TIIME_LANG=fr tiime --help   # Français
+TIIME_LANG=en tiime --help   # English
+```
+
+<Callout type="info" title="Variable d'environnement">
+  Vous pouvez aussi exporter `TIIME_LANG` dans votre profil shell pour un changement permanent.
+</Callout>

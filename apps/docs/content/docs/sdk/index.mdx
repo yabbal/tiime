@@ -1,0 +1,69 @@
+---
+title: Vue d'ensemble
+description: SDK TypeScript pour intégrer Tiime dans vos projets
+---
+
+import { Cards, Card } from "fumadocs-ui/components/card";
+import { Callout } from "fumadocs-ui/components/callout";
+import { Tabs, Tab } from "fumadocs-ui/components/tabs";
+import { Settings, KeyRound, Database } from "lucide-react";
+
+Le SDK TypeScript permet d'intégrer Tiime directement dans vos applications Node.js.
+
+<Tabs items={["npm", "pnpm"]}>
+  <Tab value="npm">
+    ```bash title="Terminal"
+    npm install tiime-cli
+    ```
+  </Tab>
+  <Tab value="pnpm">
+    ```bash title="Terminal"
+    pnpm add tiime-cli
+    ```
+  </Tab>
+</Tabs>
+
+## Exemple rapide
+
+```ts title="app.ts"
+import { TiimeClient } from "tiime-cli";
+
+const client = new TiimeClient({ companyId: 12345 });
+
+const invoices = await client.invoices.list({ status: "paid" });
+const balances = await client.bankAccounts.balance();
+const me = await client.users.me();
+```
+
+<Callout type="info" title="Authentification automatique">
+  Le SDK utilise le token stocké par `tiime auth login`. Pas besoin de gérer l'auth manuellement.
+</Callout>
+
+## Ressources disponibles
+
+| Ressource | Accès | Description |
+|-----------|-------|-------------|
+| Factures | `client.invoices` | CRUD complet + envoi + PDF |
+| Devis | `client.quotations` | CRUD + envoi + PDF |
+| Clients | `client.clients` | CRUD + recherche |
+| Comptes bancaires | `client.bankAccounts` | Liste + soldes |
+| Transactions | `client.bankTransactions` | Liste + pagination auto |
+| Notes de frais | `client.expenseReports` | CRUD |
+| Documents | `client.documents` | Upload + téléchargement |
+| Labels | `client.labels` | Personnalisés + standards + tags |
+| Utilisateurs | `client.users` | Info utilisateur courant |
+| Entreprises | `client.companies` | Liste + détails |
+
+## En savoir plus
+
+<Cards>
+  <Card icon={<Settings />} title="TiimeClient" href="/docs/sdk/client">
+    Initialisation et exemples d'utilisation détaillés.
+  </Card>
+  <Card icon={<KeyRound />} title="Authentification" href="/docs/sdk/auth">
+    Gestion des tokens et configuration.
+  </Card>
+  <Card icon={<Database />} title="Ressources API" href="/docs/sdk/resources">
+    Référence complète de chaque ressource.
+  </Card>
+</Cards>

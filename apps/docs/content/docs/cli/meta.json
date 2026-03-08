@@ -1,0 +1,4 @@
+{
+  "title": "CLI",
+  "pages": ["index", "auth", "invoices", "quotations", "clients", "bank", "expenses", "documents", "labels"]
+}

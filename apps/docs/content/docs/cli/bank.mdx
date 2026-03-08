@@ -1,0 +1,52 @@
+---
+title: Banque
+description: Comptes bancaires, soldes et transactions
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+## Comptes et soldes
+
+```bash title="Terminal"
+tiime bank accounts                # Lister les comptes bancaires
+tiime bank balance                 # Soldes de tous les comptes
+tiime bank balance --format table  # Affichage tableau
+```
+
+## Transactions
+
+```bash title="Terminal"
+tiime bank transactions                                    # Dernières transactions
+tiime bank transactions --from 2026-01-01 --to 2026-01-31 # Par période
+tiime bank transactions --search "loyer" --all             # Recherche
+```
+
+## Transactions non imputées
+
+```bash title="Terminal"
+tiime bank unimputed
+```
+
+<Callout type="info">
+  Les transactions non imputées sont celles qui n'ont pas encore été catégorisées comptablement.
+</Callout>
+
+## Exemples avec jq
+
+```bash title="Terminal"
+# Solde du premier compte
+tiime bank balance | jq '.[0].balance_amount'
+
+# Transactions > 1000 €
+tiime bank transactions --all | jq '[.[] | select(.amount > 1000)]'
+
+# Résumé dépenses/revenus du mois
+tiime bank transactions --from 2026-01-01 --to 2026-01-31 --all \
+  | jq 'group_by(.amount > 0) | {
+    depenses: .[0] | length,
+    revenus: .[1] | length
+  }'
+
+# Export CSV des transactions
+tiime bank transactions --all --format csv > transactions.csv
+```
