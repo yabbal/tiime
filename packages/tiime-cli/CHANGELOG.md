@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.2.1
+
+### Patch Changes
+
+- [`e6f061a`](https://github.com/yabbal/tiime-cli/commit/e6f061ab9be360d95347198a0fdcbf9f5fef173c) Thanks [@yabbal](https://github.com/yabbal)! - fix(audit): use transaction-level document counts instead of imputation-level
+
+  The audit was checking `count_documents` and `count_invoices` on imputations, where the API always returns 0. The correct counts are on the transaction root object, which properly reflects linked invoices and documents. This eliminates false positives in the missing documents report.
+
 ## 1.2.0
 
 ### Minor Changes
