@@ -8,7 +8,7 @@ description: CLI pour interagir avec l'application de comptabilite Tiime (factur
 CLI pour interagir avec l'application de comptabilite Tiime (apps.tiime.fr).
 Toutes les commandes retournent du JSON sur stdout (defaut), avec support table et CSV via `--format`.
 
-Use when the user asks about Tiime, accounting data, invoices (factures), clients, bank accounts, bank transactions, documents, labels, expense reports, quotations, or any task related to their Tiime accounting software. Triggers on: "tiime", "factures", "facture", "invoices", "comptabilite", "banque", "transactions bancaires", "clients tiime", "documents comptables", "notes de frais", "devis", "solde", "balance".
+Use when the user asks about Tiime, accounting data, invoices (factures), clients, bank accounts, bank transactions, documents, labels, expense reports, quotations, or any task related to their Tiime accounting software. Triggers on: "tiime", "factures", "facture", "invoices", "comptabilite", "banque", "transactions bancaires", "clients tiime", "documents comptables", "notes de frais", "devis", "solde", "balance", "categorise", "impute", "categorisation", "classe mes transactions".
 
 ## Pre-requis
 
@@ -194,3 +194,60 @@ Workflow pour diagnostiquer et corriger la comptabilite sur toutes les entrepris
 5. **Priorisation** : traiter les plus gros montants en premier.
 
 Le skill peut etre invoque quand l'utilisateur dit "fais un audit", "qu'est-ce que je dois faire sur ma compta", "audit comptable", etc.
+
+### Categorisation intelligente par lot (IA)
+Workflow pour categoriser toutes les transactions non imputees en combinant les suggestions API et le raisonnement IA.
+Invoque quand l'utilisateur dit "categorise mes transactions", "impute mes transactions", "classe mes transactions", "categorisation par lot", "aide-moi a imputer", etc.
+
+**Etape 1 — Recuperer les propositions API :**
+```bash
+tiime bank auto-impute --format json
+```
+Ce mode dry-run retourne pour chaque transaction non imputee :
+- `status: "proposed"` → l'API Tiime a une suggestion de label
+- `status: "skipped"` → aucune suggestion API, l'IA doit raisonner
+
+**Etape 2 — Pour les transactions "skipped", raisonner avec les labels disponibles :**
+```bash
+tiime labels list --format json
+tiime labels standard --format json
+```
+Pour chaque transaction sans suggestion, analyser :
+- Le `wording` (ex: "OVH" → hebergement, "UBER EATS" → restaurant, "URSSAF" → charges sociales)
+- Le `amount` (positif = recette, negatif = depense)
+- Le contexte metier de l'entreprise
+
+Proposer un label depuis la liste des labels disponibles. Si aucun label ne correspond avec confiance, marquer comme "incertain — verification manuelle recommandee".
+
+**Etape 3 — Presenter toutes les propositions au user :**
+Afficher un tableau clair avec :
+- Transaction (wording + montant)
+- Label propose (API ou IA)
+- Source de la suggestion (API / IA)
+- Niveau de confiance pour les suggestions IA (eleve / moyen / faible)
+
+Exemple de presentation :
+```
+| # | Transaction          | Montant  | Label propose       | Source | Confiance |
+|---|----------------------|----------|---------------------|--------|-----------|
+| 1 | OVH SAS              | -29.99€  | Hebergement         | API    | —         |
+| 2 | UBER EATS            | -18.50€  | Restaurant          | IA     | Eleve     |
+| 3 | VIREMENT RECU DUPONT | +3000€   | Honoraires          | API    | —         |
+| 4 | PRLV MYSTERY CORP    | -150€    | ???                 | IA     | Faible    |
+```
+
+Demander au user de valider, corriger ou exclure des lignes avant application.
+
+**Etape 4 — Appliquer apres validation :**
+Pour chaque ligne validee :
+```bash
+tiime bank impute --id TRANSACTION_ID --label-id LABEL_ID
+```
+Utiliser `--dry-run` d'abord si le user veut un dernier apercu.
+Rapporter le resultat : X imputees, Y erreurs, Z exclues.
+
+**Notes importantes :**
+- Ne JAMAIS appliquer sans validation explicite du user
+- Les suggestions IA sont des propositions — le user a le dernier mot
+- Si le user corrige une suggestion IA, en tirer des lecons pour les transactions similaires restantes dans le meme lot
+- Traiter les transactions par ordre de confiance decroissante (API d'abord, puis IA elevee, puis IA moyen)
