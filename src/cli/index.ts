@@ -1,4 +1,5 @@
 import { defineCommand, renderUsage, runMain } from "citty";
+import { auditCommand } from "./commands/audit";
 import { authCommand } from "./commands/auth";
 import { bankCommand } from "./commands/bank";
 import { clientsCommand } from "./commands/clients";
@@ -21,6 +22,7 @@ const main = defineCommand({
 		description: "CLI pour la comptabilité Tiime — sortie JSON pour agents IA",
 	},
 	subCommands: {
+		audit: auditCommand,
 		auth: authCommand,
 		company: companyCommand,
 		invoices: invoicesCommand,

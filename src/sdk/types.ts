@@ -158,7 +158,7 @@ export interface BankTransaction {
 	beneficiary: unknown | null;
 	merchant: unknown | null;
 	transfer_label: string | null;
-	imputations: unknown[];
+	imputations: Imputation[];
 }
 
 export interface BankTransactionsResponse {
@@ -332,6 +332,29 @@ export interface LabelSuggestion {
 
 export interface ImputationLabel extends LabelSuggestion {
 	disabled: boolean;
+	invoice_client?: boolean;
+	type?: string;
+	predictable?: boolean;
+	is_standard?: boolean;
+	vat_exoneration_type?: string | null;
+	sales?: boolean;
+	disabled_by?: string | null;
+	registry_type?: string | null;
+	vat_exigibility?: string | null;
+	vat_area?: string | null;
+	sale_type?: string | null;
+	configuration_source?: string;
+}
+
+export interface Imputation {
+	id: number;
+	count_documents: number;
+	count_invoices: number;
+	accountant_detail_requests: { id: number }[];
+	amount: number;
+	label: ImputationLabel;
+	updated_by: string;
+	comment: string | null;
 }
 
 export interface ImputationParams {

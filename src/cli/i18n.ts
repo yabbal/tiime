@@ -14,6 +14,7 @@ const descriptionTranslations: Record<string, string> = {
 	"Gestion des notes de frais": "Expense report management",
 	"Gestion des documents": "Document management",
 	"Gestion des labels et tags": "Label and tag management",
+	"Audit comptable multi-entreprises": "Multi-company accounting audit",
 	"Résumé rapide de la situation": "Quick status summary",
 	"Ouvrir Tiime dans le navigateur": "Open Tiime in browser",
 	"Afficher la version": "Show version",
@@ -144,6 +145,11 @@ const descriptionTranslations: Record<string, string> = {
 	"Nom de la note de frais": "Expense report name",
 	"Date (YYYY-MM-DD)": "Date (YYYY-MM-DD)",
 	"Titre du devis": "Quotation title",
+	"Traiter toutes les entreprises": "Process all companies",
+	"Entreprise(s) cible(s) (ID ou nom, séparés par des virgules)":
+		"Target company(ies) (ID or name, comma-separated)",
+	"Appliquer les corrections automatiques (imputation auto)":
+		"Apply automatic fixes (auto-imputation)",
 };
 
 const frameworkTranslations: Record<string, Record<string, string>> = {

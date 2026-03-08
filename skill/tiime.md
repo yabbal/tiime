@@ -114,6 +114,15 @@ tiime labels standard                        # Labels standards
 tiime labels tags                            # Tags
 ```
 
+### Audit comptable
+```bash
+tiime audit                                      # Audit entreprise active
+tiime audit --all-companies                      # Audit toutes les entreprises
+tiime audit --company "Abbal Consulting,Allial Group"  # Entreprises specifiques
+tiime audit --apply                              # Appliquer les auto-imputations
+tiime audit --all-companies --format json        # JSON pour agent IA
+```
+
 ### Outils
 ```bash
 tiime open                                   # Ouvrir Tiime dans le navigateur
@@ -158,3 +167,25 @@ tiime status
 tiime bank balance
 tiime invoices list --status sent --all | jq 'length'
 ```
+
+### Audit comptable complet
+Workflow pour diagnostiquer et corriger la comptabilite sur toutes les entreprises :
+
+1. **Lancer l'audit** :
+   ```bash
+   tiime audit --all-companies --format json
+   ```
+2. **Analyser le rapport JSON** : le rapport contient par entreprise :
+   - `unimputed_transactions` : transactions non imputees (avec suggestions si dispo)
+   - `missing_documents` : transactions imputees sans document justificatif
+   - `summary` : compteurs et montants totaux
+3. **Auto-imputer les transactions avec suggestions** :
+   ```bash
+   tiime audit --all-companies --apply --format json
+   ```
+   Les imputations appliquees sont dans `applied_imputations` de chaque entreprise.
+4. **Documents manquants** : lister par fournisseur/merchant, prioriser par montant (plus gros d'abord).
+   Pour chaque document manquant, indiquer ou recuperer la facture (fournisseur, date, montant).
+5. **Priorisation** : traiter les plus gros montants en premier.
+
+Le skill peut etre invoque quand l'utilisateur dit "fais un audit", "qu'est-ce que je dois faire sur ma compta", "audit comptable", etc.
