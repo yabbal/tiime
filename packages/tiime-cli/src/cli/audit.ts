@@ -178,10 +178,8 @@ export async function auditForCompany(
 	for (const tx of allTransactions) {
 		if (tx.imputations.length === 0) continue;
 		if (appliedIds.has(tx.id)) continue;
-		const allEmpty = tx.imputations.every(
-			(imp) => imp.count_documents === 0 && imp.count_invoices === 0,
-		);
-		if (allEmpty) {
+		const hasNoDocuments = tx.count_documents === 0 && tx.count_invoices === 0;
+		if (hasNoDocuments) {
 			missingDocuments.push({
 				transaction_id: tx.id,
 				wording: tx.wording,

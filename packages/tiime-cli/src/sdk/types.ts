@@ -159,6 +159,8 @@ export interface BankTransaction {
 	merchant: unknown | null;
 	transfer_label: string | null;
 	imputations: Imputation[];
+	count_documents: number;
+	count_invoices: number;
 }
 
 export interface BankTransactionsResponse {
