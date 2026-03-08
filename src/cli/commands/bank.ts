@@ -1,5 +1,11 @@
 import { defineCommand } from "citty";
 import { TiimeClient } from "../../sdk/client";
+import type {
+	ImputationLabel,
+	ImputationParams,
+	LabelSuggestion,
+} from "../../sdk/types";
+import { autoImputeForCompany, resolveCompanyIds } from "../auto-impute";
 import { getCompanyId } from "../config";
 import { formatArg, type OutputFormat, output, outputError } from "../output";
 
@@ -131,6 +137,200 @@ export const bankCommand = defineCommand({
 					const client = new TiimeClient({ companyId: getCompanyId() });
 					const transactions = await client.bankTransactions.unimputed();
 					output(transactions, { format: args.format as OutputFormat });
+				} catch (e) {
+					outputError(e);
+				}
+			},
+		}),
+
+		impute: defineCommand({
+			meta: {
+				name: "impute",
+				description: "Imputer manuellement une transaction",
+			},
+			args: {
+				id: {
+					type: "string",
+					description: "ID de la transaction (requis)",
+					required: true,
+				},
+				"label-id": {
+					type: "string",
+					description: "ID du label à assigner (requis)",
+					required: true,
+				},
+				"label-name": {
+					type: "string",
+					description: "Nom du label (optionnel, pour affichage)",
+				},
+				"dry-run": {
+					type: "boolean",
+					description: "Prévisualiser sans appliquer",
+					default: false,
+				},
+				...formatArg,
+			},
+			async run({ args }) {
+				try {
+					const client = new TiimeClient({ companyId: getCompanyId() });
+					const transactionId = Number(args.id);
+					const labelId = Number(args["label-id"]);
+
+					const [transaction, suggestions] = await Promise.all([
+						client.bankTransactions.get(transactionId),
+						client.bankTransactions.labelSuggestions(transactionId),
+					]);
+
+					let matchedLabel: LabelSuggestion | undefined = suggestions.find(
+						(s) => s.id === labelId,
+					);
+
+					if (!matchedLabel) {
+						const [labels, standardLabels] = await Promise.all([
+							client.labels.list(),
+							client.labels.standard(),
+						]);
+						const allLabels = [...labels, ...standardLabels];
+						const found = allLabels.find((l) => l.id === labelId);
+						if (found) {
+							matchedLabel = {
+								id: found.id,
+								label: found.name,
+								name: found.name,
+								acronym: "",
+								color: found.color,
+								client: null,
+							};
+						}
+					}
+
+					if (!matchedLabel) {
+						outputError(
+							new Error(
+								`Label #${labelId} introuvable dans les suggestions ni dans les labels disponibles`,
+							),
+						);
+						return;
+					}
+
+					const imputationLabel: ImputationLabel = {
+						...matchedLabel,
+						disabled: false,
+					};
+
+					const imputationParams: ImputationParams[] = [
+						{
+							label: imputationLabel,
+							amount: transaction.amount,
+							documents: [],
+							accountant_detail_requests: [],
+						},
+					];
+
+					const displayName =
+						args["label-name"] ?? matchedLabel.name ?? matchedLabel.label;
+
+					if (args["dry-run"]) {
+						output(
+							{
+								dry_run: true,
+								transaction_id: transactionId,
+								wording: transaction.wording,
+								amount: transaction.amount,
+								currency: transaction.currency,
+								label_id: labelId,
+								label_name: displayName,
+							},
+							{ format: args.format as OutputFormat },
+						);
+						return;
+					}
+
+					const result = await client.bankTransactions.impute(
+						transactionId,
+						imputationParams,
+					);
+					output(result, { format: args.format as OutputFormat });
+				} catch (e) {
+					outputError(e);
+				}
+			},
+		}),
+
+		"auto-impute": defineCommand({
+			meta: {
+				name: "auto-impute",
+				description:
+					"Auto-imputer les transactions non imputées via les suggestions",
+			},
+			args: {
+				"dry-run": {
+					type: "boolean",
+					description: "Mode prévisualisation (par défaut)",
+					default: true,
+				},
+				apply: {
+					type: "boolean",
+					description: "Appliquer les imputations (désactive dry-run)",
+					default: false,
+				},
+				"all-companies": {
+					type: "boolean",
+					description:
+						"Traiter toutes les entreprises du compte (sinon entreprise active)",
+					default: false,
+				},
+				company: {
+					type: "string",
+					description:
+						"ID ou nom de l'entreprise cible (peut être répété avec virgule : 50824,117954)",
+				},
+				...formatArg,
+			},
+			async run({ args }) {
+				try {
+					let companyIds: number[];
+
+					if (args["all-companies"]) {
+						const rootClient = new TiimeClient({ companyId: 0 });
+						const companies = await rootClient.listCompanies();
+						companyIds = companies.map((c) => c.id);
+					} else if (args.company) {
+						const parts = args.company.split(",").map((s) => s.trim());
+						const allNumeric = parts.every((p) => /^\d+$/.test(p));
+						if (allNumeric) {
+							companyIds = parts.map(Number);
+						} else {
+							const rootClient = new TiimeClient({ companyId: 0 });
+							const companies = await rootClient.listCompanies();
+							companyIds = resolveCompanyIds(parts, companies);
+						}
+					} else {
+						companyIds = [getCompanyId()];
+					}
+
+					const allProposals = [];
+
+					for (const companyId of companyIds) {
+						const client = new TiimeClient({ companyId });
+						let companyName = String(companyId);
+						try {
+							const info = await client.company.get();
+							companyName = info.name ?? String(companyId);
+						} catch {
+							/* use id as fallback */
+						}
+
+						const proposals = await autoImputeForCompany(
+							client,
+							companyId,
+							companyName,
+							{ apply: args.apply },
+						);
+						allProposals.push(...proposals);
+					}
+
+					output(allProposals, { format: args.format as OutputFormat });
 				} catch (e) {
 					outputError(e);
 				}

@@ -1,5 +1,10 @@
 import type { $Fetch } from "ofetch";
-import type { BankTransaction, BankTransactionsResponse } from "../types";
+import type {
+	BankTransaction,
+	BankTransactionsResponse,
+	ImputationParams,
+	LabelSuggestion,
+} from "../types";
 
 export interface BankTransactionsListParams {
 	hide_refused?: boolean;
@@ -63,6 +68,34 @@ export class BankTransactionsResource {
 	unimputed() {
 		return this.fetch<BankTransaction[]>(
 			`/companies/${this.companyId}/bank_transactions/unimputed`,
+		);
+	}
+
+	get(transactionId: number) {
+		return this.fetch<BankTransaction>(
+			`/companies/${this.companyId}/bank_transactions/${transactionId}`,
+		);
+	}
+
+	labelSuggestions(transactionId: number) {
+		return this.fetch<LabelSuggestion[]>(
+			`/companies/${this.companyId}/bank_transactions/${transactionId}/label_suggestions`,
+			{
+				headers: {
+					Accept:
+						"application/vnd.tiime.bank_transactions.label_suggestions.v2+json",
+				},
+			},
+		);
+	}
+
+	impute(transactionId: number, imputations: ImputationParams[]) {
+		return this.fetch<BankTransaction>(
+			`/companies/${this.companyId}/bank_transactions/${transactionId}`,
+			{
+				method: "PATCH",
+				body: { imputations },
+			},
 		);
 	}
 }

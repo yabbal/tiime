@@ -321,6 +321,26 @@ export interface Tag {
 	};
 }
 
+export interface LabelSuggestion {
+	id: number;
+	label: string;
+	name: string;
+	acronym: string;
+	color: string;
+	client: { id: number; name: string } | null;
+}
+
+export interface ImputationLabel extends LabelSuggestion {
+	disabled: boolean;
+}
+
+export interface ImputationParams {
+	label: ImputationLabel;
+	amount: number;
+	documents: { id: number }[];
+	accountant_detail_requests: { id: number }[];
+}
+
 export interface PaginatedResponse<T> {
 	items: T[];
 	total: number | null;

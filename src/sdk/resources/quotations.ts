@@ -25,6 +25,15 @@ export class QuotationsResource {
 	}
 
 	create(params: QuotationCreateParams) {
+		for (const line of params.lines ?? []) {
+			line.line_amount = line.quantity * line.unit_amount;
+			line.sequence ??= 1;
+			line.invoicing_category_type ??= "benefit";
+			line.discount_description ??= "";
+			line.discount_amount ??= null;
+			line.discount_percentage ??= null;
+		}
+
 		return this.fetch<Quotation>(`/companies/${this.companyId}/quotations`, {
 			method: "POST",
 			body: params,

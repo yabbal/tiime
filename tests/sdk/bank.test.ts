@@ -125,4 +125,55 @@ describe("BankTransactionsResource", () => {
 		expect(result).toHaveLength(201);
 		expect(mockFetch).toHaveBeenCalledTimes(2);
 	});
+
+	it("get() calls correct endpoint", async () => {
+		mockFetch.mockResolvedValue({ id: 555 });
+		await resource.get(555);
+		expect(mockFetch).toHaveBeenCalledWith(
+			"/companies/123/bank_transactions/555",
+		);
+	});
+
+	it("labelSuggestions() calls correct endpoint with custom Accept header", async () => {
+		mockFetch.mockResolvedValue([]);
+		await resource.labelSuggestions(555);
+		expect(mockFetch).toHaveBeenCalledWith(
+			"/companies/123/bank_transactions/555/label_suggestions",
+			{
+				headers: {
+					Accept:
+						"application/vnd.tiime.bank_transactions.label_suggestions.v2+json",
+				},
+			},
+		);
+	});
+
+	it("impute() sends PATCH with imputations body", async () => {
+		const imputations = [
+			{
+				label: {
+					id: 100,
+					label: "restaurant",
+					name: "restaurant",
+					acronym: "RE",
+					color: "#ff0000",
+					client: null,
+					disabled: false,
+				},
+				amount: -15.5,
+				documents: [],
+				accountant_detail_requests: [],
+			},
+		];
+
+		mockFetch.mockResolvedValue({ id: 555 });
+		await resource.impute(555, imputations);
+		expect(mockFetch).toHaveBeenCalledWith(
+			"/companies/123/bank_transactions/555",
+			{
+				method: "PATCH",
+				body: { imputations },
+			},
+		);
+	});
 });
