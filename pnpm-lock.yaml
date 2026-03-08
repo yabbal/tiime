@@ -8,6 +8,12 @@ importers:
 
   .:
     devDependencies:
+      '@changesets/changelog-github':
+        specifier: ^0.6.0
+        version: 0.6.0
+      '@changesets/cli':
+        specifier: ^2.30.0
+        version: 2.30.0(@types/node@25.3.5)
       turbo:
         specifier: ^2
         version: 2.8.14
@@ -82,12 +88,6 @@ importers:
       '@biomejs/biome':
         specifier: ^2.4.6
         version: 2.4.6
-      '@changesets/changelog-github':
-        specifier: ^0.6.0
-        version: 0.6.0
-      '@changesets/cli':
-        specifier: ^2.30.0
-        version: 2.30.0(@types/node@25.3.5)
       '@types/node':
         specifier: ^25.3.5
         version: 25.3.5
