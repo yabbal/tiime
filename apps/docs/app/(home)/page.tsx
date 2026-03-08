@@ -70,6 +70,9 @@ export default function HomePage() {
 					<Terminal className="size-3.5" />
 					<span>v1.2.0 — Open Source</span>
 				</div>
+				<p className="text-xs text-fd-muted-foreground/70 mb-4">
+					Projet personnel et expérimental — non affilié à Tiime
+				</p>
 				<h1 className="text-5xl md:text-6xl font-extrabold tracking-tight mb-6 bg-gradient-to-b from-fd-foreground to-fd-muted-foreground bg-clip-text text-transparent">
 					Tiime CLI
 				</h1>

@@ -1,5 +1,7 @@
 # Tiime CLI
 
+> **Projet personnel et expérimental** — Ce projet n'est pas affilié à, ni approuvé par [Tiime](https://www.tiime.fr). Il s'agit d'un outil non officiel développé à titre personnel pour un usage expérimental.
+
 CLI et SDK TypeScript pour la comptabilité [Tiime](https://www.tiime.fr) — pilotez votre compta depuis le terminal.
 
 [![CI](https://github.com/yabbal/tiime-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/yabbal/tiime-cli/actions/workflows/ci.yml)
