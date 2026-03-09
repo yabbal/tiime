@@ -1,8 +1,7 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { basename } from "node:path";
 import { defineCommand } from "citty";
-import { TiimeClient } from "tiime-sdk";
-import { getCompanyId } from "../config";
+import { createClient, getCompanyId } from "../config";
 import { formatArg, type OutputFormat, output, outputError } from "../output";
 
 export const documentsCommand = defineCommand({
@@ -24,7 +23,7 @@ export const documentsCommand = defineCommand({
 			},
 			async run({ args }) {
 				try {
-					const client = new TiimeClient({ companyId: getCompanyId() });
+					const client = createClient(getCompanyId());
 					const docs = await client.documents.list({
 						types: args.type,
 						source: args.source,
@@ -52,7 +51,7 @@ export const documentsCommand = defineCommand({
 			},
 			async run({ args }) {
 				try {
-					const client = new TiimeClient({ companyId: getCompanyId() });
+					const client = createClient(getCompanyId());
 					const fileBuffer = readFileSync(args.file);
 					const filename = basename(args.file);
 					const result = await client.documents.upload(
@@ -82,7 +81,7 @@ export const documentsCommand = defineCommand({
 			},
 			async run({ args }) {
 				try {
-					const client = new TiimeClient({ companyId: getCompanyId() });
+					const client = createClient(getCompanyId());
 					const documentId = Number(args.id);
 					const data = await client.documents.download(documentId);
 					const outputPath = args.output ?? `document-${documentId}`;
@@ -102,7 +101,7 @@ export const documentsCommand = defineCommand({
 			args: { ...formatArg },
 			async run({ args }) {
 				try {
-					const client = new TiimeClient({ companyId: getCompanyId() });
+					const client = createClient(getCompanyId());
 					const categories = await client.documents.categories();
 					output(categories, { format: args.format as OutputFormat });
 				} catch (e) {

@@ -1,8 +1,7 @@
 import { writeFileSync } from "node:fs";
 import { defineCommand } from "citty";
 import type { InvoiceLine, QuotationCreateParams } from "tiime-sdk";
-import { TiimeClient } from "tiime-sdk";
-import { getCompanyId } from "../config";
+import { createClient, getCompanyId } from "../config";
 import { formatArg, type OutputFormat, output, outputError } from "../output";
 
 export const quotationsCommand = defineCommand({
@@ -13,7 +12,7 @@ export const quotationsCommand = defineCommand({
 			args: { ...formatArg },
 			async run({ args }) {
 				try {
-					const client = new TiimeClient({ companyId: getCompanyId() });
+					const client = createClient(getCompanyId());
 					const quotations = await client.quotations.list();
 					output(quotations, { format: args.format as OutputFormat });
 				} catch (e) {
@@ -29,7 +28,7 @@ export const quotationsCommand = defineCommand({
 			},
 			async run({ args }) {
 				try {
-					const client = new TiimeClient({ companyId: getCompanyId() });
+					const client = createClient(getCompanyId());
 					const quotation = await client.quotations.get(Number(args.id));
 					output(quotation);
 				} catch (e) {
@@ -112,7 +111,7 @@ export const quotationsCommand = defineCommand({
 						params.client = { id: Number(args["client-id"]) };
 					}
 
-					const client = new TiimeClient({ companyId: getCompanyId() });
+					const client = createClient(getCompanyId());
 					const quotation = await client.quotations.create(params);
 					output(quotation);
 				} catch (e) {
@@ -139,7 +138,7 @@ export const quotationsCommand = defineCommand({
 			},
 			async run({ args }) {
 				try {
-					const client = new TiimeClient({ companyId: getCompanyId() });
+					const client = createClient(getCompanyId());
 					const buffer = await client.quotations.downloadPdf(Number(args.id));
 					const filePath = args.output ?? `devis-${args.id}.pdf`;
 					writeFileSync(filePath, Buffer.from(buffer));
@@ -174,7 +173,7 @@ export const quotationsCommand = defineCommand({
 			},
 			async run({ args }) {
 				try {
-					const client = new TiimeClient({ companyId: getCompanyId() });
+					const client = createClient(getCompanyId());
 					await client.quotations.send(Number(args.id), {
 						recipients: [{ email: args.email }],
 						subject: args.subject,

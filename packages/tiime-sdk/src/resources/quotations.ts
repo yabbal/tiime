@@ -1,27 +1,20 @@
-import type { FetchFn } from "../fetch";
+import { Resource } from "../resource";
 import type {
 	Quotation,
 	QuotationCreateParams,
 	QuotationSendParams,
 } from "../types";
 
-export class QuotationsResource {
-	constructor(
-		private fetch: FetchFn,
-		private companyId: number,
-	) {}
-
+export class QuotationsResource extends Resource {
 	list(expand = "invoices") {
-		return this.fetch<Quotation[]>(`/companies/${this.companyId}/quotations`, {
+		return this.fetch<Quotation[]>(this.url("/quotations"), {
 			query: { expand },
 			headers: { Range: "items=0-25" },
 		});
 	}
 
 	get(quotationId: number) {
-		return this.fetch<Quotation>(
-			`/companies/${this.companyId}/quotations/${quotationId}`,
-		);
+		return this.fetch<Quotation>(this.url(`/quotations/${quotationId}`));
 	}
 
 	create(params: QuotationCreateParams) {
@@ -39,28 +32,22 @@ export class QuotationsResource {
 			line.discount_percentage ??= null;
 		}
 
-		return this.fetch<Quotation>(`/companies/${this.companyId}/quotations`, {
+		return this.fetch<Quotation>(this.url("/quotations"), {
 			method: "POST",
 			body,
 		});
 	}
 
 	async downloadPdf(quotationId: number): Promise<ArrayBuffer> {
-		return this.fetch(
-			`/companies/${this.companyId}/quotations/${quotationId}/pdf`,
-			{
-				headers: { Accept: "application/pdf" },
-			},
-		) as Promise<ArrayBuffer>;
+		return this.fetch(this.url(`/quotations/${quotationId}/pdf`), {
+			headers: { Accept: "application/pdf" },
+		}) as Promise<ArrayBuffer>;
 	}
 
 	send(quotationId: number, params: QuotationSendParams) {
-		return this.fetch<void>(
-			`/companies/${this.companyId}/quotations/${quotationId}/send`,
-			{
-				method: "POST",
-				body: params,
-			},
-		);
+		return this.fetch<void>(this.url(`/quotations/${quotationId}/send`), {
+			method: "POST",
+			body: params,
+		});
 	}
 }

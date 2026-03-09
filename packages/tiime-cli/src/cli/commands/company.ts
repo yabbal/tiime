@@ -1,6 +1,5 @@
 import { defineCommand } from "citty";
-import { TiimeClient } from "tiime-sdk";
-import { getCompanyId, loadConfig, saveConfig } from "../config";
+import { createClient, getCompanyId, loadConfig, saveConfig } from "../config";
 import { formatArg, type OutputFormat, output, outputError } from "../output";
 
 export const companyCommand = defineCommand({
@@ -11,7 +10,7 @@ export const companyCommand = defineCommand({
 			args: { ...formatArg },
 			async run({ args }) {
 				try {
-					const client = new TiimeClient({ companyId: 0 });
+					const client = createClient(0);
 					const companies = await client.listCompanies();
 					output(
 						companies.map((c) => ({
@@ -33,9 +32,7 @@ export const companyCommand = defineCommand({
 			meta: { name: "get", description: "Détails de l'entreprise active" },
 			async run() {
 				try {
-					const client = new TiimeClient({
-						companyId: getCompanyId(),
-					});
+					const client = createClient(getCompanyId());
 					const company = await client.company.get();
 					output(company);
 				} catch (e) {
@@ -68,7 +65,7 @@ export const companyCommand = defineCommand({
 			},
 			async run() {
 				try {
-					const client = new TiimeClient({ companyId: 0 });
+					const client = createClient(0);
 					const user = await client.users.me();
 					output(user);
 				} catch (e) {

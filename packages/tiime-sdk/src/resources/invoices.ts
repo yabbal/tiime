@@ -1,4 +1,4 @@
-import type { FetchFn } from "../fetch";
+import { Resource } from "../resource";
 import type { Invoice, InvoiceCreateParams, InvoiceSendParams } from "../types";
 
 export interface InvoicesListParams {
@@ -8,27 +8,7 @@ export interface InvoicesListParams {
 	pageSize?: number;
 }
 
-const DEFAULT_INVOICE_TEMPLATE: Partial<InvoiceCreateParams> = {
-	template: "advanced",
-	status: "draft",
-	due_date_mode: "thirty_days",
-	title_enabled: true,
-	free_field_enabled: false,
-	free_field: "",
-	discount_enabled: false,
-	bank_detail_enabled: true,
-	payment_condition_enabled: true,
-	payment_condition:
-		"En cas de retard de paiement, une pénalité de 3 fois le taux d'intérêt légal sera appliquée, à laquelle s'ajoutera une indemnité forfaitaire pour frais de recouvrement de 40€.",
-	text_lines: [],
-};
-
-export class InvoicesResource {
-	constructor(
-		private fetch: FetchFn,
-		private companyId: number,
-	) {}
-
+export class InvoicesResource extends Resource {
 	list(params?: InvoicesListParams) {
 		const start = ((params?.page ?? 1) - 1) * (params?.pageSize ?? 25);
 		const end = start + (params?.pageSize ?? 25);
@@ -37,7 +17,7 @@ export class InvoicesResource {
 		};
 		if (params?.status) query.status = params.status;
 
-		return this.fetch<Invoice[]>(`/companies/${this.companyId}/invoices`, {
+		return this.fetch<Invoice[]>(this.url("/invoices"), {
 			query,
 			headers: { Range: `items=${start}-${end}` },
 		});
@@ -69,19 +49,15 @@ export class InvoicesResource {
 	}
 
 	get(invoiceId: number) {
-		return this.fetch<Invoice>(
-			`/companies/${this.companyId}/invoices/${invoiceId}`,
-		);
+		return this.fetch<Invoice>(this.url(`/invoices/${invoiceId}`));
 	}
 
 	create(params: InvoiceCreateParams) {
 		const body = {
-			...DEFAULT_INVOICE_TEMPLATE,
 			...params,
 			lines: params.lines?.map((line) => ({ ...line })),
 		};
 
-		// Compute line amounts and totals
 		for (const line of body.lines ?? []) {
 			line.line_amount = line.quantity * line.unit_amount;
 			line.sequence ??= 1;
@@ -91,46 +67,36 @@ export class InvoicesResource {
 			line.discount_percentage ??= null;
 		}
 
-		return this.fetch<Invoice>(`/companies/${this.companyId}/invoices`, {
+		return this.fetch<Invoice>(this.url("/invoices"), {
 			method: "POST",
 			body,
 		});
 	}
 
 	update(invoiceId: number, params: Partial<InvoiceCreateParams>) {
-		return this.fetch<Invoice>(
-			`/companies/${this.companyId}/invoices/${invoiceId}`,
-			{
-				method: "PUT",
-				body: params,
-			},
-		);
+		return this.fetch<Invoice>(this.url(`/invoices/${invoiceId}`), {
+			method: "PUT",
+			body: params,
+		});
 	}
 
 	send(invoiceId: number, params: InvoiceSendParams) {
-		return this.fetch<void>(
-			`/companies/${this.companyId}/invoices/${invoiceId}/send`,
-			{
-				method: "POST",
-				body: params,
-			},
-		);
+		return this.fetch<void>(this.url(`/invoices/${invoiceId}/send`), {
+			method: "POST",
+			body: params,
+		});
 	}
 
 	async downloadPdf(invoiceId: number): Promise<ArrayBuffer> {
-		return this.fetch(
-			`/companies/${this.companyId}/invoices/${invoiceId}/pdf`,
-			{
-				headers: { Accept: "application/pdf" },
-			},
-		) as Promise<ArrayBuffer>;
+		return this.fetch(this.url(`/invoices/${invoiceId}/pdf`), {
+			headers: { Accept: "application/pdf" },
+		}) as Promise<ArrayBuffer>;
 	}
 
 	delete(invoiceId: number) {
-		return this.fetch<void>(
-			`/companies/${this.companyId}/invoices/${invoiceId}`,
-			{ method: "DELETE" },
-		);
+		return this.fetch<void>(this.url(`/invoices/${invoiceId}`), {
+			method: "DELETE",
+		});
 	}
 
 	async duplicate(

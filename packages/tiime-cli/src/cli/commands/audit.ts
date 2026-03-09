@@ -1,6 +1,5 @@
 import { defineCommand } from "citty";
 import { consola } from "consola";
-import { TiimeClient } from "tiime-sdk";
 import {
 	type AuditReport,
 	auditForCompany,
@@ -8,7 +7,7 @@ import {
 	emptyReport,
 } from "../audit";
 import { resolveCompanyIds } from "../auto-impute";
-import { getCompanyId } from "../config";
+import { createClient, getCompanyId } from "../config";
 import { formatArg, type OutputFormat, output, outputError } from "../output";
 
 export const auditCommand = defineCommand({
@@ -39,7 +38,7 @@ export const auditCommand = defineCommand({
 			let companyIds: number[];
 
 			if (args["all-companies"]) {
-				const rootClient = new TiimeClient({ companyId: 0 });
+				const rootClient = createClient(0);
 				const companies = await rootClient.listCompanies();
 				companyIds = companies.map((c) => c.id);
 			} else if (args.company) {
@@ -48,7 +47,7 @@ export const auditCommand = defineCommand({
 				if (allNumeric) {
 					companyIds = parts.map(Number);
 				} else {
-					const rootClient = new TiimeClient({ companyId: 0 });
+					const rootClient = createClient(0);
 					const companies = await rootClient.listCompanies();
 					companyIds = resolveCompanyIds(parts, companies);
 				}
@@ -59,7 +58,7 @@ export const auditCommand = defineCommand({
 			const companyReports: CompanyAuditReport[] = [];
 
 			for (const companyId of companyIds) {
-				const client = new TiimeClient({ companyId });
+				const client = createClient(companyId);
 				let companyName = String(companyId);
 				try {
 					const info = await client.company.get();

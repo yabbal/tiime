@@ -1,6 +1,5 @@
 import { defineCommand } from "citty";
-import { TiimeClient } from "tiime-sdk";
-import { getCompanyId } from "../config";
+import { createClient, getCompanyId } from "../config";
 import { formatArg, type OutputFormat, output, outputError } from "../output";
 
 export const labelsCommand = defineCommand({
@@ -11,7 +10,7 @@ export const labelsCommand = defineCommand({
 			args: { ...formatArg },
 			async run({ args }) {
 				try {
-					const client = new TiimeClient({ companyId: getCompanyId() });
+					const client = createClient(getCompanyId());
 					const labels = await client.labels.list();
 					output(labels, { format: args.format as OutputFormat });
 				} catch (e) {
@@ -25,7 +24,7 @@ export const labelsCommand = defineCommand({
 			args: { ...formatArg },
 			async run({ args }) {
 				try {
-					const client = new TiimeClient({ companyId: getCompanyId() });
+					const client = createClient(getCompanyId());
 					const labels = await client.labels.standard();
 					output(labels, { format: args.format as OutputFormat });
 				} catch (e) {
@@ -39,7 +38,7 @@ export const labelsCommand = defineCommand({
 			args: { ...formatArg },
 			async run({ args }) {
 				try {
-					const client = new TiimeClient({ companyId: getCompanyId() });
+					const client = createClient(getCompanyId());
 					const tags = await client.labels.tags();
 					output(tags, { format: args.format as OutputFormat });
 				} catch (e) {

@@ -92,7 +92,7 @@ describe("InvoicesResource", () => {
 	});
 
 	describe("create()", () => {
-		it("should merge DEFAULT_INVOICE_TEMPLATE with params", async () => {
+		it("should pass params as-is without template defaults", async () => {
 			mockFetch.mockResolvedValueOnce(makeFakeInvoice());
 
 			const params: InvoiceCreateParams = {
@@ -111,12 +111,9 @@ describe("InvoicesResource", () => {
 
 			const calledBody = mockFetch.mock.calls[0][1].body;
 
-			// Template defaults should be present
-			expect(calledBody.template).toBe("advanced");
-			expect(calledBody.status).toBe("draft");
-			expect(calledBody.due_date_mode).toBe("thirty_days");
-			expect(calledBody.bank_detail_enabled).toBe(true);
-			expect(calledBody.payment_condition_enabled).toBe(true);
+			// SDK no longer merges template defaults (moved to CLI)
+			expect(calledBody.emission_date).toBe("2026-03-01");
+			expect(calledBody.lines).toHaveLength(1);
 		});
 
 		it("should compute line_amount for each line", async () => {

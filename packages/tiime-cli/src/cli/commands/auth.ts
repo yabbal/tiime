@@ -1,6 +1,6 @@
 import * as p from "@clack/prompts";
 import { defineCommand } from "citty";
-import { TokenManager } from "tiime-sdk";
+import { createTokenManager } from "../config";
 import { output, outputError } from "../output";
 
 export const authCommand = defineCommand({
@@ -24,7 +24,7 @@ export const authCommand = defineCommand({
 				if (hasArgs) {
 					// CI/script mode
 					try {
-						const tm = new TokenManager();
+						const tm = createTokenManager();
 						await tm.login(args.email, args.password);
 						const info = tm.getTokenInfo();
 						output({
@@ -70,7 +70,7 @@ export const authCommand = defineCommand({
 				s.start("Authentification en cours...");
 
 				try {
-					const tm = new TokenManager();
+					const tm = createTokenManager();
 					await tm.login(email, password);
 					const info = tm.getTokenInfo();
 					s.stop("Authentification réussie");
@@ -86,7 +86,7 @@ export const authCommand = defineCommand({
 		logout: defineCommand({
 			meta: { name: "logout", description: "Se déconnecter de Tiime" },
 			run() {
-				const tm = new TokenManager();
+				const tm = createTokenManager();
 				tm.logout();
 				output({ status: "logged_out" });
 			},
@@ -98,7 +98,7 @@ export const authCommand = defineCommand({
 				description: "Afficher le statut d'authentification",
 			},
 			run() {
-				const tm = new TokenManager();
+				const tm = createTokenManager();
 				const info = tm.getTokenInfo();
 				output({
 					authenticated: tm.isAuthenticated(),

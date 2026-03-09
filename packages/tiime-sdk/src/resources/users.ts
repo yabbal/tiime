@@ -2,7 +2,7 @@ import type { FetchFn } from "../fetch";
 import type { User } from "../types";
 
 export class UsersResource {
-	constructor(private fetch: FetchFn) {}
+	constructor(protected fetch: FetchFn) {}
 
 	me() {
 		return this.fetch<User>("/users/me");
