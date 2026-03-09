@@ -1,6 +1,6 @@
 import { defineCommand } from "citty";
 import { consola } from "consola";
-import { TiimeClient } from "../../sdk/client";
+import { TiimeClient } from "tiime-sdk";
 import {
 	type AuditReport,
 	auditForCompany,

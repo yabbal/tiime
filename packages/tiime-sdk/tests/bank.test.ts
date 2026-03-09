@@ -1,5 +1,5 @@
-import { BankAccountsResource } from "../../src/sdk/resources/bank-accounts";
-import { BankTransactionsResource } from "../../src/sdk/resources/bank-transactions";
+import { BankAccountsResource } from "../src/resources/bank-accounts";
+import { BankTransactionsResource } from "../src/resources/bank-transactions";
 
 describe("BankAccountsResource", () => {
 	const mockFetch = vi.fn();

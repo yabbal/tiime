@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { TiimeError } from "../../src/sdk/errors";
+import { TiimeError } from "../src/errors";
 
 describe("TiimeError", () => {
 	it("should be an instance of Error", () => {

@@ -1,5 +1,5 @@
 import { defineCommand } from "citty";
-import { TiimeClient } from "../../sdk/client";
+import { TiimeClient } from "tiime-sdk";
 import { getCompanyId, loadConfig, saveConfig } from "../config";
 import { formatArg, type OutputFormat, output, outputError } from "../output";
 

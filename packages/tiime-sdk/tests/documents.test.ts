@@ -1,4 +1,4 @@
-import { DocumentsResource } from "../../src/sdk/resources/documents";
+import { DocumentsResource } from "../src/resources/documents";
 
 describe("DocumentsResource", () => {
 	const mockFetch = vi.fn();

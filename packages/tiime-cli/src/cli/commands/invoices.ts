@@ -1,7 +1,7 @@
 import { writeFileSync } from "node:fs";
 import { defineCommand } from "citty";
-import { TiimeClient } from "../../sdk/client";
-import type { InvoiceCreateParams, InvoiceLine } from "../../sdk/types";
+import type { InvoiceCreateParams, InvoiceLine } from "tiime-sdk";
+import { TiimeClient } from "tiime-sdk";
 import { getCompanyId } from "../config";
 import { formatArg, type OutputFormat, output, outputError } from "../output";
 

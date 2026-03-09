@@ -8,7 +8,7 @@ import { Callout } from "fumadocs-ui/components/callout";
 ## Initialisation
 
 ```ts title="app.ts"
-import { TiimeClient } from "tiime-cli";
+import { TiimeClient } from "tiime-sdk";
 
 const client = new TiimeClient({ companyId: 12345 });
 ```
@@ -204,7 +204,7 @@ const period = await client.company.accountingPeriod();
 ## Gestion des erreurs
 
 ```ts title="errors.ts"
-import { TiimeClient, TiimeError } from "tiime-cli";
+import { TiimeClient, TiimeError } from "tiime-sdk";
 
 try {
   const invoice = await client.invoices.get(99999);

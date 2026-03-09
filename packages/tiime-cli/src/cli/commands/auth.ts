@@ -1,6 +1,6 @@
 import * as p from "@clack/prompts";
 import { defineCommand } from "citty";
-import { TokenManager } from "../../sdk/auth";
+import { TokenManager } from "tiime-sdk";
 import { output, outputError } from "../output";
 
 export const authCommand = defineCommand({

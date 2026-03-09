@@ -12,7 +12,8 @@ Use when the user asks about Tiime, accounting data, invoices (factures), client
 
 ## Pre-requis
 
-- Installer : `npm install -g tiime-cli` ou `brew tap yabbal/tap && brew install tiime`
+- Installer le CLI : `npm install -g tiime-cli` ou `brew tap yabbal/tap && brew install tiime`
+- Installer le SDK : `npm install tiime-sdk`
 - S'authentifier : `tiime auth login`
 - Configurer l'entreprise : `tiime company list` puis `tiime company use --id <ID>`
 

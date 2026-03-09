@@ -1,6 +1,6 @@
 # Tiime CLI
 
-CLI et SDK TypeScript pour la comptabilite [Tiime](https://www.tiime.fr) — pilotez votre compta depuis le terminal.
+CLI pour la comptabilite [Tiime](https://www.tiime.fr) — pilotez votre compta depuis le terminal.
 
 Sortie JSON par defaut, ideal pour les agents IA et l'automatisation.
 
@@ -15,7 +15,6 @@ Sortie JSON par defaut, ideal pour les agents IA et l'automatisation.
 - **Labels & Tags** — labels personnalises, labels standards, tags
 - **Multi-format** — sortie JSON (defaut), table ou CSV via `--format`
 - **Bilingue** — aide en francais ou anglais (detection automatique de la langue systeme)
-- **SDK programmatique** — utilisable comme librairie TypeScript
 - **Retry automatique** — retry avec backoff sur erreurs 429/5xx
 
 ## Installation
@@ -343,55 +342,20 @@ tiime clients list \
 
 ## SDK
 
-Tiime CLI exporte un SDK TypeScript utilisable comme librairie :
+Le SDK TypeScript est disponible dans un package separe : [`tiime-sdk`](https://www.npmjs.com/package/tiime-sdk)
+
+```bash
+npm install tiime-sdk
+```
 
 ```typescript
-import { TiimeClient } from "tiime-cli";
+import { TiimeClient } from "tiime-sdk";
 
 const client = new TiimeClient({ companyId: 12345 });
-
-// Factures
 const invoices = await client.invoices.list({ status: "paid" });
-const invoice = await client.invoices.get(42);
-const created = await client.invoices.create({
-  emission_date: "2026-03-01",
-  client: { id: 100 },
-  lines: [
-    {
-      description: "Prestation de conseil",
-      quantity: 5,
-      unit_amount: 800,
-      vat_type: { code: "normal" },
-      invoicing_unit: { id: 3, code: "day" },
-    },
-  ],
-  status: "draft",
-});
-
-// Envoyer une facture
-await client.invoices.send(42, {
-  recipients: [{ email: "client@example.com" }],
-});
-
-// Telecharger un PDF
-const pdf = await client.invoices.downloadPdf(42);
-
-// Banque
-const balances = await client.bankAccounts.balance();
-const transactions = await client.bankTransactions.listAll({
-  from: "2026-01-01",
-  to: "2026-01-31",
-  search: "loyer",
-});
-
-// Clients
-const clients = await client.clients.list({ archived: false });
-// Devis
-const quotations = await client.quotations.list();
-
-// Utilisateur
-const me = await client.users.me();
 ```
+
+Voir la [documentation SDK](https://yabbal.github.io/tiime-cli/docs/sdk) pour plus de details.
 
 ## Variables d'environnement
 
