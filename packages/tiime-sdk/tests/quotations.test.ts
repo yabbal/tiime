@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { QuotationsResource } from "../../src/sdk/resources/quotations";
-import type { QuotationCreateParams } from "../../src/sdk/types";
+import { QuotationsResource } from "../src/resources/quotations";
+import type { QuotationCreateParams } from "../src/types";
 
 const COMPANY_ID = 42;
 

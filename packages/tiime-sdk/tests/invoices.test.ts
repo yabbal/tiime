@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { InvoicesResource } from "../../src/sdk/resources/invoices";
-import type { Invoice, InvoiceCreateParams } from "../../src/sdk/types";
+import { InvoicesResource } from "../src/resources/invoices";
+import type { Invoice, InvoiceCreateParams } from "../src/types";
 
 const createMockFetch = () => vi.fn();
 

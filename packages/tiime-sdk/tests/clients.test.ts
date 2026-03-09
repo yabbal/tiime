@@ -1,4 +1,4 @@
-import { ClientsResource } from "../../src/sdk/resources/clients";
+import { ClientsResource } from "../src/resources/clients";
 
 describe("ClientsResource", () => {
 	const mockFetch = vi.fn();

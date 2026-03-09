@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { ExpenseReportsResource } from "../../src/sdk/resources/expense-reports";
+import { ExpenseReportsResource } from "../src/resources/expense-reports";
 
 const COMPANY_ID = 42;
 

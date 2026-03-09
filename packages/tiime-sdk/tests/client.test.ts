@@ -8,7 +8,7 @@ vi.mock("ofetch", () => ({
 	},
 }));
 
-vi.mock("../../src/sdk/auth", () => {
+vi.mock("../src/auth", () => {
 	return {
 		TokenManager: class {
 			getValidToken = vi.fn().mockResolvedValue("fake-token");
@@ -16,17 +16,17 @@ vi.mock("../../src/sdk/auth", () => {
 	};
 });
 
-import { TiimeClient } from "../../src/sdk/client";
-import { BankAccountsResource } from "../../src/sdk/resources/bank-accounts";
-import { BankTransactionsResource } from "../../src/sdk/resources/bank-transactions";
-import { ClientsResource } from "../../src/sdk/resources/clients";
-import { CompanyResource } from "../../src/sdk/resources/company";
-import { DocumentsResource } from "../../src/sdk/resources/documents";
-import { ExpenseReportsResource } from "../../src/sdk/resources/expense-reports";
-import { InvoicesResource } from "../../src/sdk/resources/invoices";
-import { LabelsResource } from "../../src/sdk/resources/labels";
-import { QuotationsResource } from "../../src/sdk/resources/quotations";
-import { UsersResource } from "../../src/sdk/resources/users";
+import { TiimeClient } from "../src/client";
+import { BankAccountsResource } from "../src/resources/bank-accounts";
+import { BankTransactionsResource } from "../src/resources/bank-transactions";
+import { ClientsResource } from "../src/resources/clients";
+import { CompanyResource } from "../src/resources/company";
+import { DocumentsResource } from "../src/resources/documents";
+import { ExpenseReportsResource } from "../src/resources/expense-reports";
+import { InvoicesResource } from "../src/resources/invoices";
+import { LabelsResource } from "../src/resources/labels";
+import { QuotationsResource } from "../src/resources/quotations";
+import { UsersResource } from "../src/resources/users";
 
 const COMPANY_ID = 42;
 

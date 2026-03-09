@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { basename } from "node:path";
 import { defineCommand } from "citty";
-import { TiimeClient } from "../../sdk/client";
+import { TiimeClient } from "tiime-sdk";
 import { getCompanyId } from "../config";
 import { formatArg, type OutputFormat, output, outputError } from "../output";
 

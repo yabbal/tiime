@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { UsersResource } from "../../src/sdk/resources/users";
+import { UsersResource } from "../src/resources/users";
 
 describe("UsersResource", () => {
 	const mockFetch = vi.fn();

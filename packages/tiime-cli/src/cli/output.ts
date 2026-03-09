@@ -1,6 +1,6 @@
 import Table from "cli-table3";
 import { consola } from "consola";
-import { TiimeError } from "../sdk/errors";
+import { TiimeError } from "tiime-sdk";
 
 export type OutputFormat = "json" | "table" | "csv";
 

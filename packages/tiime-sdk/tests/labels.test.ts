@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { LabelsResource } from "../../src/sdk/resources/labels";
+import { LabelsResource } from "../src/resources/labels";
 
 const COMPANY_ID = 42;
 

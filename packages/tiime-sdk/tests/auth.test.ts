@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { TokenManager } from "../../src/sdk/auth";
+import { TokenManager } from "../src/auth";
 
 // Mock fs and os modules to prevent reading real disk files
 vi.mock("node:fs", () => ({

@@ -1,10 +1,16 @@
 {
-  "name": "tiime-cli",
-  "version": "1.2.2",
-  "description": "CLI for Tiime accounting",
+  "name": "tiime-sdk",
+  "version": "1.0.0",
+  "description": "TypeScript SDK for Tiime accounting API",
   "type": "module",
-  "bin": {
-    "tiime": "./dist/cli.js"
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./package.json": "./package.json"
   },
   "files": [
     "dist",
@@ -24,18 +30,18 @@
   "keywords": [
     "tiime",
     "accounting",
-    "cli",
+    "sdk",
     "typescript",
     "france",
     "comptabilite",
-    "factures",
-    "invoices"
+    "api-client"
   ],
   "author": "Youness Abbal",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yabbal/tiime-cli.git"
+    "url": "git+https://github.com/yabbal/tiime-cli.git",
+    "directory": "packages/tiime-sdk"
   },
   "publishConfig": {
     "provenance": true,
@@ -49,12 +55,7 @@
     "node": ">=20"
   },
   "dependencies": {
-    "@clack/prompts": "^1.1.0",
-    "citty": "^0.2.1",
-    "cli-table3": "^0.6.5",
-    "consola": "^3.4.2",
-    "pathe": "^2.0.3",
-    "tiime-sdk": "workspace:*"
+    "ofetch": "^1.5.1"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.6",

@@ -1,5 +1,4 @@
-import type { TiimeClient } from "../sdk/client";
-import type { ImputationLabel, ImputationParams } from "../sdk/types";
+import type { ImputationLabel, ImputationParams, TiimeClient } from "tiime-sdk";
 
 export interface AutoImputeProposal {
 	company_id: number;

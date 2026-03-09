@@ -3,7 +3,7 @@ import {
 	autoImputeForCompany,
 	resolveCompanyIds,
 } from "../../src/cli/auto-impute";
-import type { TiimeClient } from "../../src/sdk/client";
+import type { TiimeClient } from "tiime-sdk";
 
 const makeTx = (id: number, wording: string, amount: number) => ({
 	id,
