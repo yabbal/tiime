@@ -1,5 +1,26 @@
 # Changelog
 
+## 2.0.5
+
+### Patch Changes
+
+- [#16](https://github.com/yabbal/tiime/pull/16) [`42d392d`](https://github.com/yabbal/tiime/commit/42d392d451addedff8c1602a6ba6e2253f5452d3) Thanks [@yabbal](https://github.com/yabbal)! - refactor(sdk): extract Node.js I/O for lighter bundle (-21.5%)
+
+  **BREAKING CHANGES (tiime-sdk):**
+
+  - `TokenManager` constructor now accepts `tokenStorage` and `credentialStorage` options instead of auto-loading from disk
+  - `resolveCompanyId` is removed — `companyId` is now required in `TiimeClientOptions`
+  - `DEFAULT_INVOICE_TEMPLATE` removed from `invoices.create()` — callers must pass full params
+
+  **New exports:**
+
+  - `TokenStorage` and `CredentialStorage` interfaces for pluggable persistence
+
+  SDK bundle: 14.48 KB → 11.37 KB, zero Node.js built-in dependencies.
+
+- Updated dependencies [[`42d392d`](https://github.com/yabbal/tiime/commit/42d392d451addedff8c1602a6ba6e2253f5452d3)]:
+  - tiime-sdk@3.0.0
+
 ## 2.0.4
 
 ### Patch Changes
