@@ -141,6 +141,26 @@ describe("BankTransactionsResource", () => {
 		);
 	});
 
+	it("matchDocuments() sends PUT with document ids", async () => {
+		mockFetch.mockResolvedValue([]);
+		await resource.matchDocuments(555, [10, 20]);
+		expect(mockFetch).toHaveBeenCalledWith(
+			"/companies/123/bank_transactions/555/document_matchings",
+			{
+				method: "PUT",
+				body: { documents: [{ id: 10 }, { id: 20 }] },
+			},
+		);
+	});
+
+	it("getMatchings() calls correct endpoint", async () => {
+		mockFetch.mockResolvedValue({ matchings: [] });
+		await resource.getMatchings(555);
+		expect(mockFetch).toHaveBeenCalledWith(
+			"/companies/123/bank_transactions/555/matchings",
+		);
+	});
+
 	it("impute() sends PATCH with imputations body", async () => {
 		const imputations = [
 			{

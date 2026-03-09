@@ -74,4 +74,58 @@ describe("DocumentsResource", () => {
 			},
 		);
 	});
+
+	it("preview() calls correct endpoint", async () => {
+		mockFetch.mockResolvedValue({});
+		await resource.preview(42);
+		expect(mockFetch).toHaveBeenCalledWith(
+			"/companies/123/documents/42/preview",
+		);
+	});
+
+	it("upload() sends FormData with file and type", async () => {
+		mockFetch.mockResolvedValue({ id: 1 });
+		const file = new Uint8Array([1, 2, 3]);
+		await resource.upload(file, "test.pdf", "receipt");
+
+		expect(mockFetch).toHaveBeenCalledWith(
+			"/companies/123/documents",
+			expect.objectContaining({
+				method: "POST",
+			}),
+		);
+		const body = mockFetch.mock.calls[0][1].body as FormData;
+		expect(body).toBeInstanceOf(FormData);
+		expect(body.get("file")).toBeInstanceOf(Blob);
+		expect(body.get("type")).toBe("receipt");
+	});
+
+	it("upload() works without type and does not append type field", async () => {
+		mockFetch.mockResolvedValue({ id: 2 });
+		const file = new Uint8Array([4, 5, 6]);
+		await resource.upload(file, "invoice.pdf");
+
+		expect(mockFetch).toHaveBeenCalledWith(
+			"/companies/123/documents",
+			expect.objectContaining({ method: "POST" }),
+		);
+		const body = mockFetch.mock.calls[0][1].body as FormData;
+		expect(body).toBeInstanceOf(FormData);
+		expect(body.get("file")).toBeInstanceOf(Blob);
+		expect(body.get("type")).toBeNull();
+	});
+
+	it("searchMatchable() calls correct endpoint with matchable query", async () => {
+		mockFetch.mockResolvedValue([]);
+		await resource.searchMatchable("facture");
+
+		expect(mockFetch).toHaveBeenCalledWith("/companies/123/documents", {
+			query: { matchable: true, q: "facture" },
+			headers: {
+				Accept:
+					"application/vnd.tiime.documents.v3+json,application/vnd.tiime.docs.imputation+json",
+				Range: "items=0-25",
+			},
+		});
+	});
 });
