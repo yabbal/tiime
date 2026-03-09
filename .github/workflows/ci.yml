@@ -49,21 +49,38 @@ jobs:
       - name: Test CLI binary
         run: node packages/tiime-cli/dist/cli.js version
 
-      - name: Coverage report — SDK
+      - name: Coverage comment on PR
         if: github.event_name == 'pull_request' && matrix.node-version == 24
-        uses: davelosert/vitest-coverage-report-action@v2
+        uses: actions/github-script@v7
         with:
-          name: tiime-sdk
-          json-summary-path: coverage/coverage-summary.json
-          working-directory: packages/tiime-sdk
+          script: |
+            const { execSync } = require('child_process');
+            const body = execSync(
+              'node .github/scripts/coverage-comment.js packages/tiime-sdk/coverage/coverage-summary.json packages/tiime-cli/coverage/coverage-summary.json'
+            ).toString();
 
-      - name: Coverage report — CLI
-        if: github.event_name == 'pull_request' && matrix.node-version == 24
-        uses: davelosert/vitest-coverage-report-action@v2
-        with:
-          name: tiime-cli
-          json-summary-path: coverage/coverage-summary.json
-          working-directory: packages/tiime-cli
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const existing = comments.find(c => c.body.includes('<!-- coverage-report-comment -->'));
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
 
       - name: Compute coverage percentage
         id: coverage-pct
