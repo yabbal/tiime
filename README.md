@@ -5,6 +5,7 @@
 CLI et SDK TypeScript pour la comptabilité [Tiime](https://www.tiime.fr) — pilotez votre compta depuis le terminal et intégrez Tiime dans vos applications.
 
 [![CI](https://github.com/yabbal/tiime/actions/workflows/ci.yml/badge.svg)](https://github.com/yabbal/tiime/actions/workflows/ci.yml)
+[![Coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/yabbal/25f26de0b93dd367c7b452d3a2253218/raw/tiime-coverage.json)](https://github.com/yabbal/tiime/actions/workflows/ci.yml)
 [![npm tiime-cli](https://img.shields.io/npm/v/tiime-cli?label=tiime-cli)](https://www.npmjs.com/package/tiime-cli)
 [![npm tiime-sdk](https://img.shields.io/npm/v/tiime-sdk?label=tiime-sdk)](https://www.npmjs.com/package/tiime-sdk)
 [![Documentation](https://img.shields.io/badge/docs-tiime--cli-blue)](https://yabbal.github.io/tiime/)

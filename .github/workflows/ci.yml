@@ -31,6 +31,8 @@ jobs:
 
   check:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     strategy:
       matrix:
         node-version: ${{ github.ref == 'refs/heads/main' && fromJSON('[22, 24]') || fromJSON('[24]') }}
@@ -43,9 +45,49 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
-      - run: pnpm test
+      - run: pnpm test -- --coverage
       - name: Test CLI binary
         run: node packages/tiime-cli/dist/cli.js version
+
+      - name: Coverage report — SDK
+        if: github.event_name == 'pull_request' && matrix.node-version == 24
+        uses: davelosert/vitest-coverage-report-action@v2
+        with:
+          name: tiime-sdk
+          json-summary-path: packages/tiime-sdk/coverage/coverage-summary.json
+          working-directory: packages/tiime-sdk
+
+      - name: Coverage report — CLI
+        if: github.event_name == 'pull_request' && matrix.node-version == 24
+        uses: davelosert/vitest-coverage-report-action@v2
+        with:
+          name: tiime-cli
+          json-summary-path: packages/tiime-cli/coverage/coverage-summary.json
+          working-directory: packages/tiime-cli
+
+      - name: Compute coverage percentage
+        id: coverage-pct
+        if: github.ref == 'refs/heads/main' && matrix.node-version == 24
+        run: |
+          SDK=$(node -e "const c=require('./packages/tiime-sdk/coverage/coverage-summary.json');console.log(c.total.statements.pct)")
+          CLI=$(node -e "const c=require('./packages/tiime-cli/coverage/coverage-summary.json');console.log(c.total.statements.pct)")
+          TOTAL=$(node -e "console.log(Math.round(($SDK+$CLI)/2))")
+          echo "total=$TOTAL" >> $GITHUB_OUTPUT
+          echo "sdk=$SDK" >> $GITHUB_OUTPUT
+          echo "cli=$CLI" >> $GITHUB_OUTPUT
+
+      - name: Update coverage badge
+        if: github.ref == 'refs/heads/main' && matrix.node-version == 24
+        uses: schneegans/dynamic-badges-action@v1.7
+        with:
+          auth: ${{ secrets.GIST_SECRET }}
+          gistID: ${{ vars.COVERAGE_GIST_ID }}
+          filename: tiime-coverage.json
+          label: coverage
+          message: ${{ steps.coverage-pct.outputs.total }}%
+          valColorRange: ${{ steps.coverage-pct.outputs.total }}
+          minColorRange: 0
+          maxColorRange: 100
 
   release:
     if: github.ref == 'refs/heads/main'
