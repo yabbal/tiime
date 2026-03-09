@@ -154,6 +154,114 @@ describe("InvoicesResource", () => {
 		});
 	});
 
+	describe("listAll()", () => {
+		it("should paginate through all results", async () => {
+			mockFetch
+				.mockResolvedValueOnce(Array(100).fill(makeFakeInvoice()))
+				.mockResolvedValueOnce([makeFakeInvoice({ id: 101 })]);
+
+			const result = await invoices.listAll();
+
+			expect(result).toHaveLength(101);
+			expect(mockFetch).toHaveBeenCalledTimes(2);
+		});
+
+		it("should stop when batch is smaller than pageSize", async () => {
+			mockFetch.mockResolvedValueOnce([makeFakeInvoice()]);
+
+			const result = await invoices.listAll({ pageSize: 50 });
+
+			expect(result).toHaveLength(1);
+			expect(mockFetch).toHaveBeenCalledTimes(1);
+		});
+
+		it("should pass status filter", async () => {
+			mockFetch.mockResolvedValueOnce([]);
+
+			await invoices.listAll({ status: "saved" });
+
+			expect(mockFetch).toHaveBeenCalledWith(
+				`/companies/${COMPANY_ID}/invoices`,
+				expect.objectContaining({
+					query: expect.objectContaining({ status: "saved" }),
+				}),
+			);
+		});
+	});
+
+	describe("get()", () => {
+		it("should call correct endpoint", async () => {
+			mockFetch.mockResolvedValueOnce(makeFakeInvoice({ id: 99 }));
+
+			await invoices.get(99);
+
+			expect(mockFetch).toHaveBeenCalledWith(
+				`/companies/${COMPANY_ID}/invoices/99`,
+			);
+		});
+	});
+
+	describe("update()", () => {
+		it("should PUT to correct endpoint", async () => {
+			mockFetch.mockResolvedValueOnce(makeFakeInvoice());
+
+			await invoices.update(99, { title: "Updated" });
+
+			expect(mockFetch).toHaveBeenCalledWith(
+				`/companies/${COMPANY_ID}/invoices/99`,
+				{ method: "PUT", body: { title: "Updated" } },
+			);
+		});
+	});
+
+	describe("send()", () => {
+		it("should POST to send endpoint", async () => {
+			mockFetch.mockResolvedValueOnce(undefined);
+
+			await invoices.send(99, {
+				emails: ["test@test.com"],
+				message: "Voici votre facture",
+			});
+
+			expect(mockFetch).toHaveBeenCalledWith(
+				`/companies/${COMPANY_ID}/invoices/99/send`,
+				{
+					method: "POST",
+					body: {
+						emails: ["test@test.com"],
+						message: "Voici votre facture",
+					},
+				},
+			);
+		});
+	});
+
+	describe("downloadPdf()", () => {
+		it("should call pdf endpoint with correct Accept header", async () => {
+			mockFetch.mockResolvedValueOnce(new ArrayBuffer(8));
+
+			await invoices.downloadPdf(99);
+
+			expect(mockFetch).toHaveBeenCalledWith(
+				`/companies/${COMPANY_ID}/invoices/99/pdf`,
+				{ headers: { Accept: "application/pdf" } },
+			);
+		});
+	});
+
+	describe("delete()", () => {
+		it("should DELETE correct endpoint", async () => {
+			mockFetch.mockResolvedValueOnce(undefined);
+
+			await invoices.delete(99);
+
+			expect(mockFetch).toHaveBeenCalledWith(
+				`/companies/${COMPANY_ID}/invoices/99`,
+				{ method: "DELETE" },
+			);
+		});
+	});
+
 	describe("duplicate()", () => {
 		it("should call get then create with the source invoice data", async () => {
 			const source = makeFakeInvoice({
