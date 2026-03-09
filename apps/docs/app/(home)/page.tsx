@@ -1,14 +1,15 @@
-import Link from "next/link";
 import {
-	Receipt,
-	Landmark,
-	Users,
-	FileText,
-	Terminal,
 	Code,
-	Zap,
+	FileText,
 	Globe,
+	Landmark,
+	Receipt,
+	Terminal,
+	Users,
+	Zap,
 } from "lucide-react";
+import Link from "next/link";
+import { version } from "tiime-cli/package.json";
 
 const features = [
 	{
@@ -50,8 +51,7 @@ const features = [
 	{
 		icon: <Zap className="size-5" />,
 		title: "Retry intelligent",
-		description:
-			"Backoff exponentiel automatique sur les erreurs 429 et 5xx.",
+		description: "Backoff exponentiel automatique sur les erreurs 429 et 5xx.",
 	},
 	{
 		icon: <Globe className="size-5" />,
@@ -68,7 +68,7 @@ export default function HomePage() {
 			<section className="flex flex-col items-center justify-center text-center px-6 pt-24 pb-16">
 				<div className="inline-flex items-center gap-2 rounded-full border border-fd-border bg-fd-secondary px-4 py-1.5 text-sm text-fd-muted-foreground mb-6">
 					<Terminal className="size-3.5" />
-					<span>v1.2.0 — Open Source</span>
+					<span>v{version} — Open Source</span>
 				</div>
 				<p className="text-xs text-fd-muted-foreground/70 mb-4">
 					Projet personnel et expérimental — non affilié à Tiime
@@ -78,9 +78,8 @@ export default function HomePage() {
 				</h1>
 				<p className="text-lg md:text-xl text-fd-muted-foreground max-w-2xl mb-10 leading-relaxed">
 					Pilotez votre comptabilité{" "}
-					<strong className="text-fd-foreground">Tiime</strong> depuis
-					le terminal. CLI puissant, SDK TypeScript, sortie JSON
-					native.
+					<strong className="text-fd-foreground">Tiime</strong> depuis le
+					terminal. CLI puissant, SDK TypeScript, sortie JSON native.
 				</p>
 				<div className="flex flex-wrap gap-4 justify-center">
 					<Link
@@ -109,17 +108,14 @@ export default function HomePage() {
 					<div className="space-y-1">
 						<p>
 							<span className="text-fd-muted-foreground">$</span>{" "}
-							<span className="text-fd-primary">
-								npm install -g tiime-cli
-							</span>
+							<span className="text-fd-primary">npm install -g tiime-cli</span>
 						</p>
 						<p>
-							<span className="text-fd-muted-foreground">$</span>{" "}
-							tiime auth login
+							<span className="text-fd-muted-foreground">$</span> tiime auth
+							login
 						</p>
 						<p>
-							<span className="text-fd-muted-foreground">$</span>{" "}
-							tiime status
+							<span className="text-fd-muted-foreground">$</span> tiime status
 						</p>
 						<p className="text-fd-muted-foreground">
 							✓ Connecté · 3 comptes · 12 factures en attente
@@ -143,9 +139,7 @@ export default function HomePage() {
 								<div className="inline-flex items-center justify-center rounded-lg bg-fd-primary/10 text-fd-primary p-2.5 mb-4">
 									{feature.icon}
 								</div>
-								<h3 className="font-semibold mb-2">
-									{feature.title}
-								</h3>
+								<h3 className="font-semibold mb-2">{feature.title}</h3>
 								<p className="text-sm text-fd-muted-foreground leading-relaxed">
 									{feature.description}
 								</p>

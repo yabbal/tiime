@@ -2,6 +2,7 @@ import type { $Fetch } from "ofetch";
 import type {
 	BankTransaction,
 	BankTransactionsResponse,
+	DocumentMatching,
 	ImputationParams,
 	LabelSuggestion,
 } from "../types";
@@ -39,8 +40,7 @@ export class BankTransactionsResource {
 			{
 				query: { hide_refused: false, ...query },
 				headers: {
-					Accept:
-						"application/vnd.tiime.bank_transactions.v2+json,application/vnd.tiime.bank_transactions.without_documents+json",
+					Accept: "application/vnd.tiime.bank_transactions.v2+json",
 					Range: `items=${start}-${end}`,
 				},
 			},
@@ -96,6 +96,22 @@ export class BankTransactionsResource {
 				method: "PATCH",
 				body: { imputations },
 			},
+		);
+	}
+
+	matchDocuments(transactionId: number, documentIds: number[]) {
+		return this.fetch<DocumentMatching[]>(
+			`/companies/${this.companyId}/bank_transactions/${transactionId}/document_matchings`,
+			{
+				method: "PUT",
+				body: { documents: documentIds.map((id) => ({ id })) },
+			},
+		);
+	}
+
+	getMatchings(transactionId: number) {
+		return this.fetch<{ matchings: DocumentMatching[] }>(
+			`/companies/${this.companyId}/bank_transactions/${transactionId}/matchings`,
 		);
 	}
 }

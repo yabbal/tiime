@@ -385,3 +385,21 @@ export interface AccountingPeriod {
 	end_date: string;
 	status: string;
 }
+
+export interface DocumentMatching {
+	id: number;
+	document: { id: number };
+	bank_transaction: { id: number };
+	matching_type: string;
+	invalid_matching: boolean;
+}
+
+export interface MatchableDocument {
+	id: number;
+	mime_type: string;
+	name: string;
+	type: string;
+	metadata: Record<string, unknown>[];
+	created_at: string;
+	tags: { id: number; name: string; type: string; amount: number }[];
+}

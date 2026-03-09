@@ -1,5 +1,5 @@
 import type { $Fetch } from "ofetch";
-import type { Document, DocumentCategory } from "../types";
+import type { Document, DocumentCategory, MatchableDocument } from "../types";
 
 export interface DocumentsListParams {
 	types?: string;
@@ -62,6 +62,20 @@ export class DocumentsResource {
 			method: "POST",
 			body: formData,
 		});
+	}
+
+	searchMatchable(query: string) {
+		return this.fetch<MatchableDocument[]>(
+			`/companies/${this.companyId}/documents`,
+			{
+				query: { matchable: true, q: query },
+				headers: {
+					Accept:
+						"application/vnd.tiime.documents.v3+json,application/vnd.tiime.docs.imputation+json",
+					Range: "items=0-25",
+				},
+			},
+		);
 	}
 
 	async download(documentId: number): Promise<ArrayBuffer> {
