@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.2.2
+
+### Patch Changes
+
+- [`7c2c558`](https://github.com/yabbal/tiime-cli/commit/7c2c558ecce64ced19408fd395e0bb6d443beb40) Thanks [@yabbal](https://github.com/yabbal)! - fix(audit): remove `without_documents` Accept header that caused incorrect `count_documents` values
+
+  feat(sdk): add document matching API support
+
+  - `bankTransactions.matchDocuments()` — link documents to transactions via `PUT /document_matchings`
+  - `bankTransactions.getMatchings()` — get existing matchings for a transaction
+  - `documents.searchMatchable()` — search matchable documents for linking
+
+  fix(docs): use dynamic version from tiime-cli package.json instead of hardcoded value
+
 ## 1.2.1
 
 ### Patch Changes
