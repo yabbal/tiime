@@ -67,7 +67,7 @@ describe("BankTransactionsResource", () => {
 			{
 				query: { hide_refused: false },
 				headers: {
-					Accept: "application/vnd.tiime.bank_transactions.v2+json,application/vnd.tiime.bank_transactions.without_documents+json",
+					Accept: "application/vnd.tiime.bank_transactions.v2+json",
 					Range: "items=0-100",
 				},
 			},
