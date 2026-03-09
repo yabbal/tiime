@@ -1,0 +1,31 @@
+name: Cancel CI on merge/close
+
+on:
+  pull_request:
+    branches: [main]
+    types: [closed]
+
+jobs:
+  cancel:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel in-progress CI runs for this PR branch
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const branch = context.payload.pull_request.head.ref;
+            const { data: runs } = await github.rest.actions.listWorkflowRunsForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              branch,
+              status: 'in_progress',
+            });
+
+            for (const run of runs.workflow_runs) {
+              console.log(`Cancelling run ${run.id} (${run.name}) on branch ${branch}`);
+              await github.rest.actions.cancelWorkflowRun({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                run_id: run.id,
+              });
+            }
