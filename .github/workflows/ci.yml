@@ -54,7 +54,7 @@ jobs:
         uses: davelosert/vitest-coverage-report-action@v2
         with:
           name: tiime-sdk
-          json-summary-path: packages/tiime-sdk/coverage/coverage-summary.json
+          json-summary-path: coverage/coverage-summary.json
           working-directory: packages/tiime-sdk
 
       - name: Coverage report — CLI
@@ -62,7 +62,7 @@ jobs:
         uses: davelosert/vitest-coverage-report-action@v2
         with:
           name: tiime-cli
-          json-summary-path: packages/tiime-cli/coverage/coverage-summary.json
+          json-summary-path: coverage/coverage-summary.json
           working-directory: packages/tiime-cli
 
       - name: Compute coverage percentage
