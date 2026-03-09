@@ -112,6 +112,39 @@ tm.getTokenInfo(); // { email, expiresAt }
 | `getTokenInfo()` | `{ email, expiresAt }` | Infos sur le token courant |
 | `logout()` | `void` | Supprime le token local |
 
+## Trouver votre Company ID
+
+Le `TIIME_COMPANY_ID` est l'identifiant numérique de votre entreprise sur Tiime. Plusieurs façons de le trouver :
+
+**Via le SDK :**
+
+```ts title="find-company-id.ts"
+import { TiimeClient } from "tiime-sdk";
+
+// Authentifiez-vous sans companyId pour lister vos entreprises
+const client = new TiimeClient({
+  email: "vous@example.com",
+  password: "votre-mot-de-passe",
+});
+
+const companies = await client.listCompanies();
+console.log(companies);
+// [{ id: 12345, name: "Mon Entreprise SAS", ... }]
+```
+
+**Via le CLI :**
+
+```bash title="Terminal"
+tiime auth login
+tiime company list
+# ID     | Nom                  | Forme juridique
+# 12345  | Mon Entreprise SAS   | SAS
+```
+
+**Via l'interface web Tiime :**
+
+Connectez-vous sur [app.tiime.fr](https://app.tiime.fr) — le Company ID apparaît dans l'URL : `app.tiime.fr/companies/12345/...`
+
 ## Variables d'environnement
 
 | Variable | Description |
@@ -119,7 +152,7 @@ tm.getTokenInfo(); // { email, expiresAt }
 | `TIIME_ACCESS_TOKEN` | Token d'accès Auth0 (prioritaire) |
 | `TIIME_EMAIL` | Email du compte Tiime |
 | `TIIME_PASSWORD` | Mot de passe du compte Tiime |
-| `TIIME_COMPANY_ID` | ID de l'entreprise |
+| `TIIME_COMPANY_ID` | ID de l'entreprise ([comment le trouver ?](#trouver-votre-company-id)) |
 
 ## Stockage des credentials (mode CLI)
 
