@@ -28,7 +28,7 @@ jobs:
       - run: pnpm --filter docs build
         env:
           BASE_PATH: /tiime
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v4
         with:
           path: apps/docs/out
 
