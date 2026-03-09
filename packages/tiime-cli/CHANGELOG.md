@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.0.2
+
+### Patch Changes
+
+- [`50f4359`](https://github.com/yabbal/tiime/commit/50f435907037f66abcdd6bc4a7e1676ff6af82bd) Thanks [@yabbal](https://github.com/yabbal)! - Update repository URLs after repo rename from tiime-cli to tiime
+
+- Updated dependencies [[`50f4359`](https://github.com/yabbal/tiime/commit/50f435907037f66abcdd6bc4a7e1676ff6af82bd)]:
+  - tiime-sdk@2.1.1
+
 ## 2.0.1
 
 ### Patch Changes
