@@ -60,8 +60,13 @@ Tiime est un ensemble d'outils TypeScript pour la comptabilite [Tiime](https://w
         ```bash title="Terminal"
         export TIIME_EMAIL=vous@example.com
         export TIIME_PASSWORD=votre-mot-de-passe
-        export TIIME_COMPANY_ID=12345
+        export TIIME_COMPANY_ID=12345  # voir ci-dessous pour le trouver
         ```
+
+        <Callout type="info" title="Trouver votre Company ID">
+          Lancez `tiime company list` (CLI) ou appelez `client.listCompanies()` (SDK) pour lister vos entreprises et leurs IDs. Vous pouvez aussi le trouver dans l'URL de l'interface web Tiime : `app.tiime.fr/companies/12345/...`
+          Voir [Authentification SDK](/docs/sdk/auth#trouver-votre-company-id) pour plus de details.
+        </Callout>
       </Step>
 
       <Step>
