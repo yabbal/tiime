@@ -1,36 +1,59 @@
 ---
 title: Premiers pas
-description: Integrez et pilotez votre comptabilite Tiime en quelques minutes
+description: Installez et configurez Tiime en quelques minutes
 ---
 
 import { Cards, Card } from "fumadocs-ui/components/card";
 import { Steps, Step } from "fumadocs-ui/components/steps";
 import { Tabs, Tab } from "fumadocs-ui/components/tabs";
 import { Callout } from "fumadocs-ui/components/callout";
-import { Terminal, Code, Receipt, Landmark, Bot, KeyRound, Database } from "lucide-react";
+import { Terminal, Code, Receipt, Landmark, Bot, KeyRound } from "lucide-react";
 
 Tiime est un ensemble d'outils TypeScript pour la comptabilite [Tiime](https://www.tiime.fr) :
 
-- **`tiime-sdk`** — SDK TypeScript pour integrer Tiime dans vos applications
+- **`tiime-sdk`** — SDK pour integrer Tiime dans vos applications
 - **`tiime-cli`** — CLI pour piloter votre compta depuis le terminal
 
 <Callout type="warn" title="Projet non officiel">
   Ce projet est personnel et experimental. Il n'est pas affilie a, ni approuve par Tiime.
 </Callout>
 
-## Choisissez votre outil
+## Installation
+
+<Tabs items={["SDK TypeScript", "CLI"]}>
+  <Tab value="SDK TypeScript">
+    ```bash title="Terminal"
+    npm install tiime-sdk
+    ```
+  </Tab>
+  <Tab value="CLI">
+    <Tabs items={["npm", "Homebrew", "Sources"]}>
+      <Tab value="npm">
+        ```bash title="Terminal"
+        npm install -g tiime-cli
+        ```
+      </Tab>
+      <Tab value="Homebrew">
+        ```bash title="Terminal"
+        brew tap yabbal/tap && brew install tiime
+        ```
+      </Tab>
+      <Tab value="Sources">
+        ```bash title="Terminal"
+        git clone https://github.com/yabbal/tiime.git
+        cd tiime && pnpm install && pnpm build
+        pnpm link --global
+        ```
+      </Tab>
+    </Tabs>
+  </Tab>
+</Tabs>
+
+## Demarrage rapide
 
 <Tabs items={["SDK TypeScript", "CLI"]}>
   <Tab value="SDK TypeScript">
     <Steps>
-      <Step>
-        ### Installer le SDK
-
-        ```bash title="Terminal"
-        npm install tiime-sdk
-        ```
-      </Step>
-
       <Step>
         ### Configurer l'authentification
 
@@ -58,23 +81,6 @@ Tiime est un ensemble d'outils TypeScript pour la comptabilite [Tiime](https://w
   <Tab value="CLI">
     <Steps>
       <Step>
-        ### Installer le CLI
-
-        <Tabs items={["npm", "Homebrew"]}>
-          <Tab value="npm">
-            ```bash title="Terminal"
-            npm install -g tiime-cli
-            ```
-          </Tab>
-          <Tab value="Homebrew">
-            ```bash title="Terminal"
-            brew tap yabbal/tap && brew install tiime
-            ```
-          </Tab>
-        </Tabs>
-      </Step>
-
-      <Step>
         ### Se connecter
 
         ```bash title="Terminal"
@@ -96,14 +102,45 @@ Tiime est un ensemble d'outils TypeScript pour la comptabilite [Tiime](https://w
   </Tab>
 </Tabs>
 
+## Configuration CLI
+
+### Autocompletion shell
+
+<Tabs items={["zsh", "bash", "fish"]}>
+  <Tab value="zsh">
+    ```bash title="~/.zshrc"
+    eval "$(tiime completion --shell zsh)"
+    ```
+  </Tab>
+  <Tab value="bash">
+    ```bash title="~/.bashrc"
+    eval "$(tiime completion --shell bash)"
+    ```
+  </Tab>
+  <Tab value="fish">
+    ```bash title="Terminal"
+    tiime completion --shell fish | source
+    ```
+  </Tab>
+</Tabs>
+
+### Langue
+
+L'aide s'affiche dans la langue de votre systeme. Pour forcer :
+
+```bash title="Terminal"
+TIIME_LANG=fr tiime --help   # Francais
+TIIME_LANG=en tiime --help   # English
+```
+
 ## Explorer
 
 <Cards>
   <Card icon={<Code />} title="SDK TypeScript" href="/docs/sdk">
-    Integrer Tiime dans vos projets — client type, 10 ressources, auth autonome.
+    Client type, 10 ressources, auth autonome.
   </Card>
   <Card icon={<Terminal />} title="CLI" href="/docs/cli">
-    13 commandes pour gerer factures, banque, clients et plus depuis le terminal.
+    13 commandes, sortie JSON/table/CSV, bilingue.
   </Card>
   <Card icon={<Receipt />} title="Factures" href="/docs/cli/invoices">
     Creer, dupliquer, envoyer et telecharger vos factures.
@@ -118,19 +155,3 @@ Tiime est un ensemble d'outils TypeScript pour la comptabilite [Tiime](https://w
     Skill pour Claude Code et workflows automatises.
   </Card>
 </Cards>
-
-## Sortie JSON native
-
-Toutes les commandes CLI retournent du JSON par defaut, combinable avec `jq` :
-
-```bash title="Terminal"
-# Total des factures payees
-tiime invoices list --status paid --all | jq '[.[].total_including_taxes] | add'
-
-# Transactions > 1000 EUR
-tiime bank transactions --all | jq '[.[] | select(.amount > 1000)]'
-
-# Autres formats
-tiime invoices list --format table   # Tableau ASCII
-tiime invoices list --format csv     # Export CSV
-```
