@@ -6,6 +6,7 @@ api-responses/
 out/
 .source/
 .turbo/
+coverage/
 .env
 .env.local
 .env.*.local
