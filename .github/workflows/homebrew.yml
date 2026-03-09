@@ -17,14 +17,26 @@ jobs:
           VERSION=${VERSION#v}
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
-          # Wait for npm publish to be available
-          sleep 30
-
-          # Get SHA256 of the npm tarball
           URL="https://registry.npmjs.org/tiime-cli/-/tiime-cli-${VERSION}.tgz"
+          echo "url=$URL" >> $GITHUB_OUTPUT
+
+          # Retry until npm tarball is available (max 5 min)
+          for i in $(seq 1 30); do
+            HTTP_STATUS=$(curl -sL -o /dev/null -w "%{http_code}" "$URL")
+            if [ "$HTTP_STATUS" = "200" ]; then
+              echo "Package available after attempt $i"
+              break
+            fi
+            if [ "$i" = "30" ]; then
+              echo "::error::Package not available after 5 minutes"
+              exit 1
+            fi
+            echo "Attempt $i: HTTP $HTTP_STATUS, retrying in 10s..."
+            sleep 10
+          done
+
           SHA=$(curl -sL "$URL" | shasum -a 256 | cut -d' ' -f1)
           echo "sha256=$SHA" >> $GITHUB_OUTPUT
-          echo "url=$URL" >> $GITHUB_OUTPUT
 
       - name: Update formula with version and SHA
         run: |
