@@ -1,23 +1,15 @@
-import type { FetchFn } from "../fetch";
+import { Resource } from "../resource";
 import type { BankAccount } from "../types";
 
-export class BankAccountsResource {
-	constructor(
-		private fetch: FetchFn,
-		private companyId: number,
-	) {}
-
+export class BankAccountsResource extends Resource {
 	list(enabled?: boolean) {
-		return this.fetch<BankAccount[]>(
-			`/companies/${this.companyId}/bank_accounts`,
-			{ query: enabled !== undefined ? { enabled } : undefined },
-		);
+		return this.fetch<BankAccount[]>(this.url("/bank_accounts"), {
+			query: enabled !== undefined ? { enabled } : undefined,
+		});
 	}
 
 	get(bankAccountId: number) {
-		return this.fetch<BankAccount>(
-			`/companies/${this.companyId}/bank_accounts/${bankAccountId}`,
-		);
+		return this.fetch<BankAccount>(this.url(`/bank_accounts/${bankAccountId}`));
 	}
 
 	async balance() {

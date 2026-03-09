@@ -1,35 +1,24 @@
-import type { FetchFn } from "../fetch";
+import { Resource } from "../resource";
 import type { ExpenseReport, ExpenseReportCreateParams } from "../types";
 
-export class ExpenseReportsResource {
-	constructor(
-		private fetch: FetchFn,
-		private companyId: number,
-	) {}
-
+export class ExpenseReportsResource extends Resource {
 	list(sorts = "metadata.date:desc") {
-		return this.fetch<ExpenseReport[]>(
-			`/companies/${this.companyId}/expense_reports`,
-			{
-				query: { expand: "total_amount", sorts },
-				headers: { Range: "items=0-25" },
-			},
-		);
+		return this.fetch<ExpenseReport[]>(this.url("/expense_reports"), {
+			query: { expand: "total_amount", sorts },
+			headers: { Range: "items=0-25" },
+		});
 	}
 
 	get(expenseReportId: number) {
 		return this.fetch<ExpenseReport>(
-			`/companies/${this.companyId}/expense_reports/${expenseReportId}`,
+			this.url(`/expense_reports/${expenseReportId}`),
 		);
 	}
 
 	create(params: ExpenseReportCreateParams) {
-		return this.fetch<ExpenseReport>(
-			`/companies/${this.companyId}/expense_reports`,
-			{
-				method: "POST",
-				body: params,
-			},
-		);
+		return this.fetch<ExpenseReport>(this.url("/expense_reports"), {
+			method: "POST",
+			body: params,
+		});
 	}
 }

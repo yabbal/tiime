@@ -1,6 +1,5 @@
 import { defineCommand } from "citty";
-import { TiimeClient } from "tiime-sdk";
-import { getCompanyId } from "../config";
+import { createClient, getCompanyId } from "../config";
 import { formatArg, type OutputFormat, output, outputError } from "../output";
 
 export const clientsCommand = defineCommand({
@@ -18,7 +17,7 @@ export const clientsCommand = defineCommand({
 			},
 			async run({ args }) {
 				try {
-					const client = new TiimeClient({ companyId: getCompanyId() });
+					const client = createClient(getCompanyId());
 					const clients = await client.clients.list({
 						archived: args.archived,
 					});
@@ -36,7 +35,7 @@ export const clientsCommand = defineCommand({
 			},
 			async run({ args }) {
 				try {
-					const client = new TiimeClient({ companyId: getCompanyId() });
+					const client = createClient(getCompanyId());
 					const result = await client.clients.get(Number(args.id));
 					output(result);
 				} catch (e) {
@@ -85,7 +84,7 @@ export const clientsCommand = defineCommand({
 			},
 			async run({ args }) {
 				try {
-					const client = new TiimeClient({ companyId: getCompanyId() });
+					const client = createClient(getCompanyId());
 					const result = await client.clients.create({
 						name: args.name,
 						address: args.address,
@@ -115,7 +114,7 @@ export const clientsCommand = defineCommand({
 			},
 			async run({ args }) {
 				try {
-					const client = new TiimeClient({ companyId: getCompanyId() });
+					const client = createClient(getCompanyId());
 					const results = await client.clients.search(args.query);
 					output(results, { format: args.format as OutputFormat });
 				} catch (e) {

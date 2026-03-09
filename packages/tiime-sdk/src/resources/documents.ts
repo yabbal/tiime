@@ -1,4 +1,4 @@
-import type { FetchFn } from "../fetch";
+import { Resource } from "../resource";
 import type { Document, DocumentCategory, MatchableDocument } from "../types";
 
 export interface DocumentsListParams {
@@ -10,18 +10,13 @@ export interface DocumentsListParams {
 	pageSize?: number;
 }
 
-export class DocumentsResource {
-	constructor(
-		private fetch: FetchFn,
-		private companyId: number,
-	) {}
-
+export class DocumentsResource extends Resource {
 	list(params?: DocumentsListParams) {
 		const start = ((params?.page ?? 1) - 1) * (params?.pageSize ?? 25);
 		const end = start + (params?.pageSize ?? 25);
 		const { page: _, pageSize: __, ...query } = params ?? {};
 
-		return this.fetch<Document[]>(`/companies/${this.companyId}/documents`, {
+		return this.fetch<Document[]>(this.url("/documents"), {
 			query: {
 				sorts: "created_at:desc",
 				expand: "file_family,preview_available",
@@ -36,20 +31,15 @@ export class DocumentsResource {
 	}
 
 	categories() {
-		return this.fetch<DocumentCategory[]>(
-			`/companies/${this.companyId}/document_categories`,
-			{
-				headers: {
-					Accept: "application/vnd.tiime.documents.v3+json",
-				},
+		return this.fetch<DocumentCategory[]>(this.url("/document_categories"), {
+			headers: {
+				Accept: "application/vnd.tiime.documents.v3+json",
 			},
-		);
+		});
 	}
 
 	preview(documentId: number): Promise<unknown> {
-		return this.fetch(
-			`/companies/${this.companyId}/documents/${documentId}/preview`,
-		);
+		return this.fetch(this.url(`/documents/${documentId}/preview`));
 	}
 
 	upload(file: Uint8Array, filename: string, type?: string) {
@@ -58,32 +48,26 @@ export class DocumentsResource {
 		if (type) {
 			formData.append("type", type);
 		}
-		return this.fetch<Document>(`/companies/${this.companyId}/documents`, {
+		return this.fetch<Document>(this.url("/documents"), {
 			method: "POST",
 			body: formData,
 		});
 	}
 
 	searchMatchable(query: string) {
-		return this.fetch<MatchableDocument[]>(
-			`/companies/${this.companyId}/documents`,
-			{
-				query: { matchable: true, q: query },
-				headers: {
-					Accept:
-						"application/vnd.tiime.documents.v3+json,application/vnd.tiime.docs.imputation+json",
-					Range: "items=0-25",
-				},
+		return this.fetch<MatchableDocument[]>(this.url("/documents"), {
+			query: { matchable: true, q: query },
+			headers: {
+				Accept:
+					"application/vnd.tiime.documents.v3+json,application/vnd.tiime.docs.imputation+json",
+				Range: "items=0-25",
 			},
-		);
+		});
 	}
 
 	async download(documentId: number): Promise<ArrayBuffer> {
-		return this.fetch(
-			`/companies/${this.companyId}/documents/${documentId}/download`,
-			{
-				headers: { Accept: "application/octet-stream" },
-			},
-		) as Promise<ArrayBuffer>;
+		return this.fetch(this.url(`/documents/${documentId}/download`), {
+			headers: { Accept: "application/octet-stream" },
+		}) as Promise<ArrayBuffer>;
 	}
 }

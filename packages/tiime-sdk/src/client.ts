@@ -1,4 +1,4 @@
-import { resolveCompanyId, TokenManager } from "./auth";
+import { TokenManager } from "./auth";
 import { TiimeError } from "./errors";
 import { createFetch, type FetchFn } from "./fetch";
 import { BankAccountsResource } from "./resources/bank-accounts";
@@ -11,7 +11,7 @@ import { InvoicesResource } from "./resources/invoices";
 import { LabelsResource } from "./resources/labels";
 import { QuotationsResource } from "./resources/quotations";
 import { UsersResource } from "./resources/users";
-import type { Company, TiimeClientOptions } from "./types";
+import type { TiimeClientOptions } from "./types";
 
 const BASE_URL = "https://chronos-api.tiime-apps.com/v1";
 
@@ -20,10 +20,8 @@ export class TiimeClient {
 	readonly tokenManager: TokenManager;
 	readonly companyId: number;
 
-	constructor(
-		options: TiimeClientOptions & { tokenManager?: TokenManager } = {},
-	) {
-		this.companyId = resolveCompanyId(options.companyId);
+	constructor(options: TiimeClientOptions & { tokenManager?: TokenManager }) {
+		this.companyId = options.companyId;
 		this.tokenManager =
 			options.tokenManager ??
 			new TokenManager({
@@ -58,7 +56,7 @@ export class TiimeClient {
 	}
 
 	listCompanies() {
-		return this.fetch<Company[]>("/companies", {
+		return this.fetch<import("./types").Company[]>("/companies", {
 			headers: {
 				Accept: "application/vnd.tiime.companies.v2+json",
 				Range: "items=0-101",

@@ -1,4 +1,4 @@
-import type { FetchFn } from "../fetch";
+import { Resource } from "../resource";
 import type {
 	BankTransaction,
 	BankTransactionsResponse,
@@ -20,12 +20,7 @@ export interface BankTransactionsListParams {
 	search?: string;
 }
 
-export class BankTransactionsResource {
-	constructor(
-		private fetch: FetchFn,
-		private companyId: number,
-	) {}
-
+export class BankTransactionsResource extends Resource {
 	list(params?: BankTransactionsListParams) {
 		const start = ((params?.page ?? 1) - 1) * (params?.pageSize ?? 100);
 		const end = start + (params?.pageSize ?? 100);
@@ -37,7 +32,7 @@ export class BankTransactionsResource {
 		if (search) query.wording = search;
 
 		return this.fetch<BankTransactionsResponse>(
-			`/companies/${this.companyId}/bank_transactions`,
+			this.url("/bank_transactions"),
 			{
 				query: { hide_refused: false, ...query },
 				headers: {
@@ -68,19 +63,19 @@ export class BankTransactionsResource {
 
 	unimputed() {
 		return this.fetch<BankTransaction[]>(
-			`/companies/${this.companyId}/bank_transactions/unimputed`,
+			this.url("/bank_transactions/unimputed"),
 		);
 	}
 
 	get(transactionId: number) {
 		return this.fetch<BankTransaction>(
-			`/companies/${this.companyId}/bank_transactions/${transactionId}`,
+			this.url(`/bank_transactions/${transactionId}`),
 		);
 	}
 
 	labelSuggestions(transactionId: number) {
 		return this.fetch<LabelSuggestion[]>(
-			`/companies/${this.companyId}/bank_transactions/${transactionId}/label_suggestions`,
+			this.url(`/bank_transactions/${transactionId}/label_suggestions`),
 			{
 				headers: {
 					Accept:
@@ -92,7 +87,7 @@ export class BankTransactionsResource {
 
 	impute(transactionId: number, imputations: ImputationParams[]) {
 		return this.fetch<BankTransaction>(
-			`/companies/${this.companyId}/bank_transactions/${transactionId}`,
+			this.url(`/bank_transactions/${transactionId}`),
 			{
 				method: "PATCH",
 				body: { imputations },
@@ -102,7 +97,7 @@ export class BankTransactionsResource {
 
 	matchDocuments(transactionId: number, documentIds: number[]) {
 		return this.fetch<DocumentMatching[]>(
-			`/companies/${this.companyId}/bank_transactions/${transactionId}/document_matchings`,
+			this.url(`/bank_transactions/${transactionId}/document_matchings`),
 			{
 				method: "PUT",
 				body: { documents: documentIds.map((id) => ({ id })) },
@@ -112,7 +107,7 @@ export class BankTransactionsResource {
 
 	getMatchings(transactionId: number) {
 		return this.fetch<{ matchings: DocumentMatching[] }>(
-			`/companies/${this.companyId}/bank_transactions/${transactionId}/matchings`,
+			this.url(`/bank_transactions/${transactionId}/matchings`),
 		);
 	}
 }

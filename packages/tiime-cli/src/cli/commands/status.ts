@@ -1,6 +1,5 @@
 import { defineCommand } from "citty";
-import { TiimeClient } from "tiime-sdk";
-import { getCompanyId } from "../config";
+import { createClient, getCompanyId } from "../config";
 import {
 	formatArg,
 	type OutputFormat,
@@ -14,7 +13,7 @@ export const statusCommand = defineCommand({
 	args: { ...formatArg },
 	async run({ args }) {
 		try {
-			const client = new TiimeClient({ companyId: getCompanyId() });
+			const client = createClient(getCompanyId());
 
 			const [
 				accounts,

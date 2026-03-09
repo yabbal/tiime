@@ -1,9 +1,23 @@
 import { writeFileSync } from "node:fs";
 import { defineCommand } from "citty";
 import type { InvoiceCreateParams, InvoiceLine } from "tiime-sdk";
-import { TiimeClient } from "tiime-sdk";
-import { getCompanyId } from "../config";
+import { createClient, getCompanyId } from "../config";
 import { formatArg, type OutputFormat, output, outputError } from "../output";
+
+const DEFAULT_INVOICE_TEMPLATE: Partial<InvoiceCreateParams> = {
+	template: "advanced",
+	status: "draft",
+	due_date_mode: "thirty_days",
+	title_enabled: true,
+	free_field_enabled: false,
+	free_field: "",
+	discount_enabled: false,
+	bank_detail_enabled: true,
+	payment_condition_enabled: true,
+	payment_condition:
+		"En cas de retard de paiement, une pénalité de 3 fois le taux d'intérêt légal sera appliquée, à laquelle s'ajoutera une indemnité forfaitaire pour frais de recouvrement de 40€.",
+	text_lines: [],
+};
 
 export const invoicesCommand = defineCommand({
 	meta: { name: "invoices", description: "Gestion des factures" },
@@ -36,7 +50,7 @@ export const invoicesCommand = defineCommand({
 			async run({ args }) {
 				try {
 					const fmt = { format: args.format as OutputFormat };
-					const client = new TiimeClient({ companyId: getCompanyId() });
+					const client = createClient(getCompanyId());
 					if (args.all) {
 						const invoices = await client.invoices.listAll({
 							sorts: args.sort,
@@ -65,7 +79,7 @@ export const invoicesCommand = defineCommand({
 			},
 			async run({ args }) {
 				try {
-					const client = new TiimeClient({ companyId: getCompanyId() });
+					const client = createClient(getCompanyId());
 					const invoice = await client.invoices.get(Number(args.id));
 					output(invoice);
 				} catch (e) {
@@ -192,6 +206,7 @@ export const invoicesCommand = defineCommand({
 					}
 
 					const params: InvoiceCreateParams = {
+						...DEFAULT_INVOICE_TEMPLATE,
 						emission_date: args.date ?? today,
 						title: args.title ?? null,
 						lines: invoiceLines,
@@ -214,7 +229,7 @@ export const invoicesCommand = defineCommand({
 						return;
 					}
 
-					const client = new TiimeClient({ companyId: getCompanyId() });
+					const client = createClient(getCompanyId());
 					const invoice = await client.invoices.create(params);
 					output(invoice);
 				} catch (e) {
@@ -246,7 +261,7 @@ export const invoicesCommand = defineCommand({
 			},
 			async run({ args }) {
 				try {
-					const client = new TiimeClient({ companyId: getCompanyId() });
+					const client = createClient(getCompanyId());
 					const invoice = await client.invoices.duplicate(Number(args.id), {
 						emission_date: args.date,
 						quantity: args.quantity ? Number(args.quantity) : undefined,
@@ -294,7 +309,7 @@ export const invoicesCommand = defineCommand({
 						updates.free_field_enabled = true;
 					}
 
-					const client = new TiimeClient({ companyId: getCompanyId() });
+					const client = createClient(getCompanyId());
 					const invoice = await client.invoices.update(
 						Number(args.id),
 						updates,
@@ -330,7 +345,7 @@ export const invoicesCommand = defineCommand({
 			},
 			async run({ args }) {
 				try {
-					const client = new TiimeClient({ companyId: getCompanyId() });
+					const client = createClient(getCompanyId());
 					await client.invoices.send(Number(args.id), {
 						recipients: [{ email: args.email }],
 						subject: args.subject,
@@ -366,7 +381,7 @@ export const invoicesCommand = defineCommand({
 			},
 			async run({ args }) {
 				try {
-					const client = new TiimeClient({ companyId: getCompanyId() });
+					const client = createClient(getCompanyId());
 					const buffer = await client.invoices.downloadPdf(Number(args.id));
 					const filePath = args.output ?? `facture-${args.id}.pdf`;
 					writeFileSync(filePath, Buffer.from(buffer));
@@ -388,7 +403,7 @@ export const invoicesCommand = defineCommand({
 			},
 			async run({ args }) {
 				try {
-					const client = new TiimeClient({ companyId: getCompanyId() });
+					const client = createClient(getCompanyId());
 					await client.invoices.delete(Number(args.id));
 					output({ status: "deleted", id: Number(args.id) });
 				} catch (e) {

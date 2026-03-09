@@ -1,4 +1,4 @@
-import type { FetchFn } from "../fetch";
+import { Resource } from "../resource";
 import type { Client } from "../types";
 
 export interface ClientsListParams {
@@ -17,14 +17,9 @@ export interface ClientCreateParams {
 	professional?: boolean;
 }
 
-export class ClientsResource {
-	constructor(
-		private fetch: FetchFn,
-		private companyId: number,
-	) {}
-
+export class ClientsResource extends Resource {
 	list(params?: ClientsListParams) {
-		return this.fetch<Client[]>(`/companies/${this.companyId}/clients`, {
+		return this.fetch<Client[]>(this.url("/clients"), {
 			query: params,
 			headers: {
 				Accept: "application/vnd.tiime.timeline.v2+json",
@@ -34,20 +29,18 @@ export class ClientsResource {
 	}
 
 	get(clientId: number) {
-		return this.fetch<Client>(
-			`/companies/${this.companyId}/clients/${clientId}`,
-		);
+		return this.fetch<Client>(this.url(`/clients/${clientId}`));
 	}
 
 	create(params: ClientCreateParams) {
-		return this.fetch<Client>(`/companies/${this.companyId}/clients`, {
+		return this.fetch<Client>(this.url("/clients"), {
 			method: "POST",
 			body: params,
 		});
 	}
 
 	search(query: string) {
-		return this.fetch<Client[]>(`/companies/${this.companyId}/clients`, {
+		return this.fetch<Client[]>(this.url("/clients"), {
 			query: { search: query },
 			headers: {
 				Accept: "application/vnd.tiime.timeline.v2+json",

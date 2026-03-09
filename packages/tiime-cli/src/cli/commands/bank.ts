@@ -4,9 +4,8 @@ import type {
 	ImputationParams,
 	LabelSuggestion,
 } from "tiime-sdk";
-import { TiimeClient } from "tiime-sdk";
 import { autoImputeForCompany, resolveCompanyIds } from "../auto-impute";
-import { getCompanyId } from "../config";
+import { createClient, getCompanyId } from "../config";
 import { formatArg, type OutputFormat, output, outputError } from "../output";
 
 export const bankCommand = defineCommand({
@@ -20,7 +19,7 @@ export const bankCommand = defineCommand({
 			args: { ...formatArg },
 			async run({ args }) {
 				try {
-					const client = new TiimeClient({ companyId: getCompanyId() });
+					const client = createClient(getCompanyId());
 					const balances = await client.bankAccounts.balance();
 					output(balances, { format: args.format as OutputFormat });
 				} catch (e) {
@@ -41,7 +40,7 @@ export const bankCommand = defineCommand({
 			},
 			async run({ args }) {
 				try {
-					const client = new TiimeClient({ companyId: getCompanyId() });
+					const client = createClient(getCompanyId());
 					const accounts = await client.bankAccounts.list(args.enabled);
 					output(accounts, { format: args.format as OutputFormat });
 				} catch (e) {
@@ -97,7 +96,7 @@ export const bankCommand = defineCommand({
 			async run({ args }) {
 				try {
 					const fmt = { format: args.format as OutputFormat };
-					const client = new TiimeClient({ companyId: getCompanyId() });
+					const client = createClient(getCompanyId());
 					const params = {
 						bank_account: args["bank-account"]
 							? Number(args["bank-account"])
@@ -134,7 +133,7 @@ export const bankCommand = defineCommand({
 			args: { ...formatArg },
 			async run({ args }) {
 				try {
-					const client = new TiimeClient({ companyId: getCompanyId() });
+					const client = createClient(getCompanyId());
 					const transactions = await client.bankTransactions.unimputed();
 					output(transactions, { format: args.format as OutputFormat });
 				} catch (e) {
@@ -172,7 +171,7 @@ export const bankCommand = defineCommand({
 			},
 			async run({ args }) {
 				try {
-					const client = new TiimeClient({ companyId: getCompanyId() });
+					const client = createClient(getCompanyId());
 					const transactionId = Number(args.id);
 					const labelId = Number(args["label-id"]);
 
@@ -292,7 +291,7 @@ export const bankCommand = defineCommand({
 					let companyIds: number[];
 
 					if (args["all-companies"]) {
-						const rootClient = new TiimeClient({ companyId: 0 });
+						const rootClient = createClient(0);
 						const companies = await rootClient.listCompanies();
 						companyIds = companies.map((c) => c.id);
 					} else if (args.company) {
@@ -301,7 +300,7 @@ export const bankCommand = defineCommand({
 						if (allNumeric) {
 							companyIds = parts.map(Number);
 						} else {
-							const rootClient = new TiimeClient({ companyId: 0 });
+							const rootClient = createClient(0);
 							const companies = await rootClient.listCompanies();
 							companyIds = resolveCompanyIds(parts, companies);
 						}
@@ -312,7 +311,7 @@ export const bankCommand = defineCommand({
 					const allProposals = [];
 
 					for (const companyId of companyIds) {
-						const client = new TiimeClient({ companyId });
+						const client = createClient(companyId);
 						let companyName = String(companyId);
 						try {
 							const info = await client.company.get();
