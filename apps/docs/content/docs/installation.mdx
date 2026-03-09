@@ -1,13 +1,37 @@
 ---
 title: Installation
-description: Installer Tiime CLI via npm, Homebrew ou depuis les sources
+description: Installer le SDK et le CLI Tiime
 ---
 
 import { Tabs, Tab } from "fumadocs-ui/components/tabs";
 import { Steps, Step } from "fumadocs-ui/components/steps";
 import { Callout } from "fumadocs-ui/components/callout";
 
-## Installer
+## SDK TypeScript
+
+```bash title="Terminal"
+npm install tiime-sdk
+```
+
+```ts title="app.ts"
+import { TiimeClient } from "tiime-sdk";
+
+const client = new TiimeClient({
+  email: "vous@example.com",
+  password: "votre-mot-de-passe",
+  companyId: 12345,
+});
+
+const invoices = await client.invoices.list({ status: "paid" });
+```
+
+<Callout type="info">
+  Le SDK fonctionne de maniere autonome. Voir [Authentification SDK](/docs/sdk/auth) pour tous les modes d'auth.
+</Callout>
+
+## CLI
+
+### Installer
 
 <Tabs items={["npm", "Homebrew", "Sources"]}>
   <Tab value="npm">
@@ -31,13 +55,13 @@ import { Callout } from "fumadocs-ui/components/callout";
   </Tab>
 </Tabs>
 
-Vérifiez l'installation :
+Verifiez l'installation :
 
 ```bash title="Terminal"
 tiime --help
 ```
 
-## Configurer
+### Configurer
 
 <Steps>
   <Step>
@@ -57,14 +81,14 @@ tiime --help
   </Step>
 
   <Step>
-    ### Sélection de l'entreprise
+    ### Selection de l'entreprise
 
     ```bash title="Terminal"
     tiime company list
     tiime company use --id 12345
     ```
 
-    Vérifiez l'entreprise active :
+    Verifiez l'entreprise active :
 
     ```bash title="Terminal"
     tiime company get
@@ -72,17 +96,17 @@ tiime --help
   </Step>
 </Steps>
 
-## Autocomplétion shell
+### Autocompletion shell
 
 <Tabs items={["zsh", "bash", "fish"]}>
   <Tab value="zsh">
-    Ajoutez à `~/.zshrc` :
+    Ajoutez a `~/.zshrc` :
     ```bash title="~/.zshrc"
     eval "$(tiime completion --shell zsh)"
     ```
   </Tab>
   <Tab value="bash">
-    Ajoutez à `~/.bashrc` :
+    Ajoutez a `~/.bashrc` :
     ```bash title="~/.bashrc"
     eval "$(tiime completion --shell bash)"
     ```
@@ -94,17 +118,17 @@ tiime --help
   </Tab>
 </Tabs>
 
-## Langue
+### Langue
 
-L'aide s'affiche dans la langue de votre système (français ou anglais).
+L'aide s'affiche dans la langue de votre systeme (francais ou anglais).
 
 Pour forcer une langue :
 
 ```bash title="Terminal"
-TIIME_LANG=fr tiime --help   # Français
+TIIME_LANG=fr tiime --help   # Francais
 TIIME_LANG=en tiime --help   # English
 ```
 
 <Callout type="info" title="Variable d'environnement">
-  Vous pouvez aussi exporter `TIIME_LANG` dans votre profil shell pour un changement permanent.
+  Exportez `TIIME_LANG` dans votre profil shell pour un changement permanent.
 </Callout>

@@ -7,7 +7,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 			nav={{
 				title: (
 					<span className="font-bold text-lg tracking-tight">
-						Tiime CLI
+						Tiime
 					</span>
 				),
 			}}

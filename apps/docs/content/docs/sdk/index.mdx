@@ -1,6 +1,6 @@
 ---
-title: Vue d'ensemble
-description: SDK TypeScript pour intégrer Tiime dans vos projets
+title: SDK TypeScript
+description: Integrez Tiime dans vos applications TypeScript
 ---
 
 import { Cards, Card } from "fumadocs-ui/components/card";
@@ -8,46 +8,48 @@ import { Callout } from "fumadocs-ui/components/callout";
 import { Tabs, Tab } from "fumadocs-ui/components/tabs";
 import { Settings, KeyRound, Database } from "lucide-react";
 
-Le SDK TypeScript permet d'intégrer Tiime directement dans vos applications Node.js. Il expose les mêmes données que le CLI sous forme d'API programmatique.
+Le SDK `tiime-sdk` permet d'integrer l'API Tiime dans vos applications Node.js. Il fonctionne de maniere autonome, sans le CLI.
 
 ## Installation
 
-<Tabs items={["npm", "pnpm"]}>
-  <Tab value="npm">
-    ```bash title="Terminal"
-    npm install tiime-sdk
-    ```
-  </Tab>
-  <Tab value="pnpm">
-    ```bash title="Terminal"
-    pnpm add tiime-sdk
-    ```
-  </Tab>
-</Tabs>
+```bash title="Terminal"
+npm install tiime-sdk
+```
 
 ## Exemple rapide
 
 ```ts title="app.ts"
 import { TiimeClient } from "tiime-sdk";
 
-const client = new TiimeClient({ companyId: 12345 });
+const client = new TiimeClient();
 
-// Factures payées
+// Factures payees
 const invoices = await client.invoices.list({ status: "paid" });
 
 // Soldes bancaires
 const balances = await client.bankAccounts.balance();
 
-// Info utilisateur
-const me = await client.users.me();
+// Creer une facture
+const created = await client.invoices.create({
+  emission_date: "2026-03-01",
+  client: { id: 100 },
+  lines: [{
+    description: "Prestation de conseil",
+    quantity: 5,
+    unit_amount: 800,
+    vat_type: { code: "normal" },
+    invoicing_unit: { id: 3, code: "day" },
+  }],
+  status: "draft",
+});
 ```
 
 ## Authentification
 
-Le SDK peut s'utiliser de manière autonome, sans le CLI. Plusieurs modes d'auth sont supportés (par ordre de priorité) :
+Le SDK resout l'authentification automatiquement. Trois modes sont supportes :
 
-<Tabs items={["Env vars", "Options", "CLI"]}>
-  <Tab value="Env vars">
+<Tabs items={["Variables d'environnement", "Options explicites", "Via le CLI"]}>
+  <Tab value="Variables d'environnement">
     ```bash title="Terminal"
     export TIIME_EMAIL=vous@example.com
     export TIIME_PASSWORD=votre-mot-de-passe
@@ -55,10 +57,10 @@ Le SDK peut s'utiliser de manière autonome, sans le CLI. Plusieurs modes d'auth
     ```
 
     ```ts title="app.ts"
-    const client = new TiimeClient(); // tout est résolu automatiquement
+    const client = new TiimeClient(); // tout est resolu automatiquement
     ```
   </Tab>
-  <Tab value="Options">
+  <Tab value="Options explicites">
     ```ts title="app.ts"
     const client = new TiimeClient({
       email: "vous@example.com",
@@ -67,15 +69,15 @@ Le SDK peut s'utiliser de manière autonome, sans le CLI. Plusieurs modes d'auth
     });
     ```
   </Tab>
-  <Tab value="CLI">
+  <Tab value="Via le CLI">
+    Si [`tiime-cli`](https://www.npmjs.com/package/tiime-cli) est installe, le SDK utilise ses tokens automatiquement :
+
     ```bash title="Terminal"
-    npm install -g tiime-cli
-    tiime auth login
-    tiime company use --id 12345
+    tiime auth login && tiime company use --id 12345
     ```
 
     ```ts title="app.ts"
-    const client = new TiimeClient(); // utilise les tokens stockés par le CLI
+    const client = new TiimeClient(); // utilise les tokens stockes par le CLI
     ```
   </Tab>
 </Tabs>
@@ -86,30 +88,49 @@ Le SDK peut s'utiliser de manière autonome, sans le CLI. Plusieurs modes d'auth
 
 ## Ressources disponibles
 
-| Ressource | Accès | Méthodes | Description |
+| Ressource | Acces | Methodes | Description |
 |-----------|-------|----------|-------------|
 | Factures | `client.invoices` | 8 | CRUD + envoi + PDF + duplication |
 | Devis | `client.quotations` | 5 | CRUD + envoi + PDF |
 | Clients | `client.clients` | 4 | CRUD + recherche |
-| Comptes bancaires | `client.bankAccounts` | 3 | Liste + détails + soldes |
+| Comptes bancaires | `client.bankAccounts` | 3 | Liste + details + soldes |
 | Transactions | `client.bankTransactions` | 6 | Liste + pagination auto + imputation |
 | Notes de frais | `client.expenseReports` | 3 | CRUD |
-| Documents | `client.documents` | 5 | Liste + catégories + upload + download |
-| Labels | `client.labels` | 3 | Personnalisés + standards + tags |
-| Utilisateurs | `client.users` | 3 | Profil + infos légales + settings |
-| Entreprise | `client.company` | 4 | Détails + config + dashboard |
+| Documents | `client.documents` | 5 | Liste + categories + upload + download |
+| Labels | `client.labels` | 3 | Personnalises + standards + tags |
+| Utilisateurs | `client.users` | 3 | Profil + infos legales + settings |
+| Entreprise | `client.company` | 4 | Details + config + dashboard |
 | Entreprises | `client.listCompanies()` | 1 | Liste des entreprises du compte |
+
+## Gestion des erreurs
+
+```ts title="errors.ts"
+import { TiimeClient, TiimeError } from "tiime-sdk";
+
+try {
+  const invoice = await client.invoices.get(99999);
+} catch (error) {
+  if (error instanceof TiimeError) {
+    console.error(`Erreur ${error.status}: ${error.message}`);
+    console.error(`Endpoint: ${error.endpoint}`);
+  }
+}
+```
+
+<Callout type="info" title="Retry automatique">
+  Le SDK integre un retry avec backoff exponentiel sur les erreurs **429** (rate limit) et **5xx** (erreurs serveur).
+</Callout>
 
 ## En savoir plus
 
 <Cards>
   <Card icon={<Settings />} title="TiimeClient" href="/docs/sdk/client">
-    Initialisation, options et exemples d'utilisation détaillés.
+    Initialisation, options et exemples detailles.
   </Card>
   <Card icon={<KeyRound />} title="Authentification" href="/docs/sdk/auth">
-    Gestion des tokens, stockage et résilience.
+    Cascade d'auth, tokens, stockage et resilience.
   </Card>
   <Card icon={<Database />} title="Ressources API" href="/docs/sdk/resources">
-    Référence complète de chaque ressource avec paramètres et types.
+    Reference complete de chaque ressource avec parametres et types.
   </Card>
 </Cards>

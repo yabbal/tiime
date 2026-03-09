@@ -5,11 +5,11 @@ import type { ReactNode } from "react";
 
 export const metadata = {
 	title: {
-		default: "Tiime CLI",
-		template: "%s | Tiime CLI",
+		default: "Tiime",
+		template: "%s | Tiime",
 	},
 	description:
-		"CLI & SDK TypeScript pour la comptabilité Tiime — pilotez votre compta depuis le terminal",
+		"SDK TypeScript & CLI pour la comptabilité Tiime — intégrez et pilotez votre compta en quelques lignes",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
