@@ -42,18 +42,47 @@ const balances = await client.bankAccounts.balance();
 const me = await client.users.me();
 ```
 
-<Callout type="info" title="Authentification automatique">
-  Le SDK utilise le token stocké par `tiime auth login`. Pas besoin de gérer l'auth manuellement.
+## Authentification
+
+Le SDK peut s'utiliser de manière autonome, sans le CLI. Plusieurs modes d'auth sont supportés (par ordre de priorité) :
+
+<Tabs items={["Env vars", "Options", "CLI"]}>
+  <Tab value="Env vars">
+    ```bash title="Terminal"
+    export TIIME_EMAIL=vous@example.com
+    export TIIME_PASSWORD=votre-mot-de-passe
+    export TIIME_COMPANY_ID=12345
+    ```
+
+    ```ts title="app.ts"
+    const client = new TiimeClient(); // tout est résolu automatiquement
+    ```
+  </Tab>
+  <Tab value="Options">
+    ```ts title="app.ts"
+    const client = new TiimeClient({
+      email: "vous@example.com",
+      password: "votre-mot-de-passe",
+      companyId: 12345,
+    });
+    ```
+  </Tab>
+  <Tab value="CLI">
+    ```bash title="Terminal"
+    npm install -g tiime-cli
+    tiime auth login
+    tiime company use --id 12345
+    ```
+
+    ```ts title="app.ts"
+    const client = new TiimeClient(); // utilise les tokens stockés par le CLI
+    ```
+  </Tab>
+</Tabs>
+
+<Callout type="info" title="Token direct">
+  Vous pouvez aussi passer un access token via `TIIME_ACCESS_TOKEN` ou l'option `tokens: { access_token, expires_at }`.
 </Callout>
-
-## Prérequis
-
-Avant d'utiliser le SDK, assurez-vous d'être authentifié via le CLI :
-
-```bash title="Terminal"
-tiime auth login
-tiime company use --id 12345
-```
 
 ## Ressources disponibles
 

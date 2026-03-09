@@ -10,19 +10,29 @@ import { Callout } from "fumadocs-ui/components/callout";
 ```ts title="app.ts"
 import { TiimeClient } from "tiime-sdk";
 
-const client = new TiimeClient({ companyId: 12345 });
+// Avec options explicites
+const client = new TiimeClient({
+  companyId: 12345,
+  email: "vous@example.com",
+  password: "votre-mot-de-passe",
+});
+
+// Ou via env vars (TIIME_EMAIL, TIIME_PASSWORD, TIIME_COMPANY_ID)
+const client2 = new TiimeClient();
 ```
 
 ### Options
 
 | Option | Type | Description |
 |--------|------|-------------|
-| `companyId` | `number` | ID de l'entreprise (obligatoire) |
-| `tokens` | `AuthTokens` | Tokens d'authentification (optionnel, utilise le fichier local par défaut) |
+| `companyId` | `number` | ID de l'entreprise (optionnel — résolu via `TIIME_COMPANY_ID` ou config locale) |
+| `email` | `string` | Email du compte (optionnel — résolu via `TIIME_EMAIL`) |
+| `password` | `string` | Mot de passe (optionnel — résolu via `TIIME_PASSWORD`) |
+| `tokens` | `AuthTokens` | Tokens d'authentification directe (optionnel — résolu via `TIIME_ACCESS_TOKEN`) |
 | `tokenManager` | `TokenManager` | Instance custom de TokenManager (optionnel) |
 
 <Callout type="info">
-  Par défaut, le client utilise le token et le `companyId` stockés localement par `tiime auth login` et `tiime company use`. Vous pouvez les surcharger via les options.
+  Toutes les options sont optionnelles. Le SDK résout automatiquement l'authentification et le `companyId` via les variables d'environnement ou les fichiers de configuration locaux.
 </Callout>
 
 ## Lister les entreprises

@@ -10,6 +10,7 @@ const AUTH0_CLIENT_ID = "iEbsbe3o66gcTBfGRa012kj1Rb6vjAND";
 const AUTH0_AUDIENCE = "https://chronos/";
 const CONFIG_DIR = join(homedir(), ".config", "tiime");
 const AUTH_FILE = join(CONFIG_DIR, "auth.json");
+const CONFIG_FILE = join(CONFIG_DIR, "config.json");
 
 const KEYCHAIN_ACCOUNT = "tiime-cli";
 const KEYCHAIN_SERVICE = "tiime-credentials";
@@ -100,10 +101,87 @@ const loadCredentials = (): Credentials | null => {
 	return loadCredentialsFromKeychain() ?? loadCredentialsFromFile();
 };
 
+/**
+ * Resolve companyId from multiple sources (in priority order):
+ * 1. Explicit option
+ * 2. TIIME_COMPANY_ID env var
+ * 3. ~/.config/tiime/config.json
+ */
+export const resolveCompanyId = (explicit?: number): number => {
+	if (explicit) return explicit;
+
+	const envId = process.env.TIIME_COMPANY_ID;
+	if (envId) {
+		const parsed = Number.parseInt(envId, 10);
+		if (!Number.isNaN(parsed)) return parsed;
+	}
+
+	try {
+		if (existsSync(CONFIG_FILE)) {
+			const config = JSON.parse(readFileSync(CONFIG_FILE, "utf-8"));
+			if (config.companyId) return config.companyId;
+		}
+	} catch {
+		// Ignore
+	}
+
+	throw new Error(
+		"No company ID configured. Set TIIME_COMPANY_ID env var, pass companyId option, or run `tiime company use --id <ID>`.",
+	);
+};
+
 export class TokenManager {
 	private tokens: AuthTokens | null = null;
+	private credentials: Credentials | null = null;
+	private persist: boolean;
 
-	constructor() {
+	/**
+	 * @param options.tokens - Use these tokens directly (no disk I/O)
+	 * @param options.email - Login with these credentials
+	 * @param options.password - Login with these credentials
+	 * @param options.persist - Save tokens/credentials to disk (default: true when no explicit auth)
+	 */
+	constructor(
+		options: {
+			tokens?: AuthTokens;
+			email?: string;
+			password?: string;
+			persist?: boolean;
+		} = {},
+	) {
+		const hasExplicitAuth =
+			options.tokens || (options.email && options.password);
+		this.persist = options.persist ?? !hasExplicitAuth;
+
+		if (options.tokens) {
+			this.tokens = options.tokens;
+			return;
+		}
+
+		if (options.email && options.password) {
+			this.credentials = { email: options.email, password: options.password };
+			return;
+		}
+
+		// Check env vars: TIIME_ACCESS_TOKEN or TIIME_EMAIL + TIIME_PASSWORD
+		const envToken = process.env.TIIME_ACCESS_TOKEN;
+		if (envToken) {
+			this.tokens = {
+				access_token: envToken,
+				// No expiry info from env — assume valid, never auto-refresh
+				expires_at: Number.MAX_SAFE_INTEGER,
+			};
+			return;
+		}
+
+		const envEmail = process.env.TIIME_EMAIL;
+		const envPassword = process.env.TIIME_PASSWORD;
+		if (envEmail && envPassword) {
+			this.credentials = { email: envEmail, password: envPassword };
+			return;
+		}
+
+		// Fallback: load from disk (CLI compat)
 		this.loadFromDisk();
 	}
 
@@ -129,22 +207,25 @@ export class TokenManager {
 			expires_at: Date.now() + response.expires_in * 1000,
 		};
 
-		this.saveToDisk();
-		saveCredentials(email, password);
+		if (this.persist) {
+			this.saveToDisk();
+			saveCredentials(email, password);
+		}
 		return this.tokens;
 	}
 
 	async getValidToken(): Promise<string> {
 		if (!this.tokens || this.isExpired()) {
-			const creds = loadCredentials();
+			// Try explicit credentials first, then stored credentials
+			const creds = this.credentials ?? loadCredentials();
 			if (creds) {
 				const tokens = await this.login(creds.email, creds.password);
 				return tokens.access_token;
 			}
 			throw new Error(
 				this.tokens
-					? "Token expired. Run `tiime auth login` to re-authenticate."
-					: "Not authenticated. Run `tiime auth login` first.",
+					? "Token expired. Provide credentials via options, TIIME_EMAIL/TIIME_PASSWORD env vars, or run `tiime auth login`."
+					: "Not authenticated. Provide credentials via options, TIIME_EMAIL/TIIME_PASSWORD env vars, or run `tiime auth login`.",
 			);
 		}
 

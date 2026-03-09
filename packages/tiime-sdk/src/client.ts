@@ -1,5 +1,5 @@
 import { type $Fetch, ofetch } from "ofetch";
-import { TokenManager } from "./auth";
+import { resolveCompanyId, TokenManager } from "./auth";
 import { TiimeError } from "./errors";
 import { BankAccountsResource } from "./resources/bank-accounts";
 import { BankTransactionsResource } from "./resources/bank-transactions";
@@ -20,9 +20,17 @@ export class TiimeClient {
 	readonly tokenManager: TokenManager;
 	readonly companyId: number;
 
-	constructor(options: TiimeClientOptions & { tokenManager?: TokenManager }) {
-		this.companyId = options.companyId;
-		this.tokenManager = options.tokenManager ?? new TokenManager();
+	constructor(
+		options: TiimeClientOptions & { tokenManager?: TokenManager } = {},
+	) {
+		this.companyId = resolveCompanyId(options.companyId);
+		this.tokenManager =
+			options.tokenManager ??
+			new TokenManager({
+				tokens: options.tokens,
+				email: options.email,
+				password: options.password,
+			});
 
 		this.fetch = ofetch.create({
 			baseURL: BASE_URL,

@@ -4,38 +4,102 @@ description: Gestion des tokens, stockage et résilience du SDK
 ---
 
 import { Callout } from "fumadocs-ui/components/callout";
+import { Tabs, Tab } from "fumadocs-ui/components/tabs";
 
 ## Fonctionnement
 
-Le SDK utilise automatiquement le token généré par `tiime auth login`. L'authentification passe par **Auth0** (OAuth2 password grant). Les tokens sont rafraîchis automatiquement à expiration.
+Le SDK résout l'authentification automatiquement selon cette cascade (par ordre de priorité) :
 
-<Callout type="info">
-  Pas besoin de gérer l'authentification manuellement — connectez-vous une fois via le CLI, le SDK fait le reste.
+1. **Options explicites** — `tokens`, `email`/`password` passés au constructeur
+2. **Variables d'environnement** — `TIIME_ACCESS_TOKEN` ou `TIIME_EMAIL` + `TIIME_PASSWORD`
+3. **Fichiers locaux** — `~/.config/tiime/auth.json` + Keychain (compatibilité CLI)
+
+Le `companyId` suit la même logique : option > `TIIME_COMPANY_ID` > `~/.config/tiime/config.json`.
+
+## Modes d'authentification
+
+<Tabs items={["Env vars", "Credentials", "Token direct", "CLI"]}>
+  <Tab value="Env vars">
+    ```bash title="Terminal"
+    export TIIME_EMAIL=vous@example.com
+    export TIIME_PASSWORD=votre-mot-de-passe
+    export TIIME_COMPANY_ID=12345
+    ```
+
+    ```ts title="app.ts"
+    import { TiimeClient } from "tiime-sdk";
+    const client = new TiimeClient(); // tout est résolu via les env vars
+    ```
+  </Tab>
+  <Tab value="Credentials">
+    ```ts title="app.ts"
+    import { TiimeClient } from "tiime-sdk";
+
+    const client = new TiimeClient({
+      email: "vous@example.com",
+      password: "votre-mot-de-passe",
+      companyId: 12345,
+    });
+    ```
+  </Tab>
+  <Tab value="Token direct">
+    ```ts title="app.ts"
+    import { TiimeClient } from "tiime-sdk";
+
+    const client = new TiimeClient({
+      tokens: { access_token: "eyJ...", expires_at: 1234567890000 },
+      companyId: 12345,
+    });
+    ```
+
+    Ou via variable d'environnement :
+
+    ```bash title="Terminal"
+    export TIIME_ACCESS_TOKEN=eyJ...
+    export TIIME_COMPANY_ID=12345
+    ```
+  </Tab>
+  <Tab value="CLI">
+    Si le CLI est installé et configuré, le SDK utilise les tokens stockés automatiquement :
+
+    ```bash title="Terminal"
+    tiime auth login
+    tiime company use --id 12345
+    ```
+
+    ```ts title="app.ts"
+    import { TiimeClient } from "tiime-sdk";
+    const client = new TiimeClient();
+    ```
+  </Tab>
+</Tabs>
+
+<Callout type="info" title="Pas de persistence en mode explicite">
+  Quand vous passez des tokens ou credentials via les options ou env vars, le SDK ne sauvegarde rien sur le disque. La persistence n'est active que pour le mode CLI (fichiers locaux).
 </Callout>
 
 ## TokenManager
 
-Le `TokenManager` est la classe interne qui gère le cycle de vie des tokens :
+Le `TokenManager` gère le cycle de vie des tokens :
 
 ```ts title="auth.ts"
 import { TokenManager } from "tiime-sdk";
 
-const tm = new TokenManager();
+// Avec credentials
+const tm = new TokenManager({ email: "vous@example.com", password: "..." });
 
-// Se connecter
-await tm.login("email@example.com", "password");
+// Avec token direct
+const tm2 = new TokenManager({ tokens: { access_token: "eyJ...", expires_at: ... } });
+
+// Auto (env vars ou fichiers locaux)
+const tm3 = new TokenManager();
 
 // Obtenir un token valide (renouvelle si expiré)
 const token = await tm.getValidToken();
 
-// Vérifier l'état d'authentification
+// Vérifier l'état
 tm.isAuthenticated(); // true | false
-
-// Info sur le token actuel
 tm.getTokenInfo(); // { email, expiresAt }
-
-// Se déconnecter
-tm.logout();
 ```
 
 ### Méthodes
@@ -48,7 +112,16 @@ tm.logout();
 | `getTokenInfo()` | `{ email, expiresAt }` | Infos sur le token courant |
 | `logout()` | `void` | Supprime le token local |
 
-## Stockage des credentials
+## Variables d'environnement
+
+| Variable | Description |
+|----------|-------------|
+| `TIIME_ACCESS_TOKEN` | Token d'accès Auth0 (prioritaire) |
+| `TIIME_EMAIL` | Email du compte Tiime |
+| `TIIME_PASSWORD` | Mot de passe du compte Tiime |
+| `TIIME_COMPANY_ID` | ID de l'entreprise |
+
+## Stockage des credentials (mode CLI)
 
 | Fichier | Contenu |
 |---------|---------|

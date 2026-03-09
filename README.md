@@ -2,10 +2,11 @@
 
 > **Projet personnel et expérimental** — Ce projet n'est pas affilié à, ni approuvé par [Tiime](https://www.tiime.fr). Il s'agit d'un outil non officiel développé à titre personnel pour un usage expérimental.
 
-CLI et SDK TypeScript pour la comptabilité [Tiime](https://www.tiime.fr) — pilotez votre compta depuis le terminal.
+CLI et SDK TypeScript pour la comptabilité [Tiime](https://www.tiime.fr) — pilotez votre compta depuis le terminal et intégrez Tiime dans vos applications.
 
 [![CI](https://github.com/yabbal/tiime-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/yabbal/tiime-cli/actions/workflows/ci.yml)
-[![npm](https://img.shields.io/npm/v/tiime-cli)](https://www.npmjs.com/package/tiime-cli)
+[![npm tiime-cli](https://img.shields.io/npm/v/tiime-cli?label=tiime-cli)](https://www.npmjs.com/package/tiime-cli)
+[![npm tiime-sdk](https://img.shields.io/npm/v/tiime-sdk?label=tiime-sdk)](https://www.npmjs.com/package/tiime-sdk)
 [![Documentation](https://img.shields.io/badge/docs-tiime--cli-blue)](https://yabbal.github.io/tiime-cli/)
 
 ## Fonctionnalités
@@ -20,7 +21,7 @@ CLI et SDK TypeScript pour la comptabilité [Tiime](https://www.tiime.fr) — pi
 - **Audit comptable** — audit multi-entreprises avec auto-correction
 - **Multi-format** — sortie JSON (défaut), table ou CSV via `--format`
 - **Bilingue** — aide en français ou anglais (détection automatique)
-- **SDK TypeScript** — utilisable comme librairie dans vos projets Node.js
+- **SDK TypeScript** — package [`tiime-sdk`](https://www.npmjs.com/package/tiime-sdk) utilisable en standalone
 - **Skill IA** — compatible Claude Code et agents IA via [skills.sh](https://skills.sh)
 - **Retry automatique** — backoff exponentiel sur erreurs 429/5xx
 
@@ -70,10 +71,24 @@ tiime bank transactions --all | jq '[.[] | select(.amount > 1000)]'
 
 ## SDK TypeScript
 
-```typescript
-import { TiimeClient } from "tiime-cli";
+Le SDK est disponible dans un package séparé : [`tiime-sdk`](https://www.npmjs.com/package/tiime-sdk)
 
-const client = new TiimeClient({ companyId: 12345 });
+```bash
+npm install tiime-sdk
+```
+
+```typescript
+import { TiimeClient } from "tiime-sdk";
+
+// Via env vars (TIIME_EMAIL, TIIME_PASSWORD, TIIME_COMPANY_ID)
+const client = new TiimeClient();
+
+// Ou avec options explicites
+const client2 = new TiimeClient({
+  email: "vous@example.com",
+  password: "votre-mot-de-passe",
+  companyId: 12345,
+});
 
 const invoices = await client.invoices.list({ status: "paid" });
 const balances = await client.bankAccounts.balance();
@@ -102,7 +117,8 @@ Documentation complète : **[yabbal.github.io/tiime-cli](https://yabbal.github.i
 
 ```
 tiime/
-├── packages/tiime-cli/   # CLI & SDK (publié sur npm)
+├── packages/tiime-sdk/   # SDK TypeScript (publié sur npm)
+├── packages/tiime-cli/   # CLI (publié sur npm, dépend de tiime-sdk)
 ├── apps/docs/            # Documentation Fumadocs (GitHub Pages)
 ├── turbo.json            # Turborepo
 └── SKILL.md              # Skill pour agents IA (skills.sh)

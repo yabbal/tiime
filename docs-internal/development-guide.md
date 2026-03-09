@@ -21,7 +21,7 @@ pnpm install
 
 | Commande | Description |
 |----------|-------------|
-| `pnpm build` | Build les 2 bundles (SDK + CLI) via tsup |
+| `pnpm build` | Build tous les packages (SDK + CLI + docs) via Turborepo |
 | `pnpm dev` | Watch mode — rebuild à chaque modification |
 | `pnpm lint` | Vérifie le code avec Biome (`src/`) |
 | `pnpm format` | Formate le code avec Biome (`--write src/`) |
@@ -51,24 +51,29 @@ Les credentials sont stockés dans le **Keychain macOS** (service `tiime-credent
 | `~/.config/tiime/config.json` | `{ companyId: number }` |
 | `~/.config/tiime/credentials.json` | Email + password (fallback keychain) |
 
-### Variable d'environnement
+### Variables d'environnement
 
 | Variable | Valeurs | Défaut | Rôle |
 |----------|---------|--------|------|
 | `TIIME_LANG` | `fr`, `en` | `fr` (détection locale) | Langue de l'interface CLI |
+| `TIIME_ACCESS_TOKEN` | JWT | — | Token d'accès Auth0 (SDK standalone) |
+| `TIIME_EMAIL` | email | — | Email du compte Tiime (SDK standalone) |
+| `TIIME_PASSWORD` | string | — | Mot de passe (SDK standalone) |
+| `TIIME_COMPANY_ID` | number | — | ID de l'entreprise (SDK standalone) |
 
 ## Build
 
-### tsup — 2 bundles
+### 2 packages npm
 
-Le build produit 2 bundles ESM indépendants :
+Le monorepo publie 2 packages npm :
 
-| Bundle | Entrée | Sortie | Usage |
-|--------|--------|--------|-------|
-| SDK | `src/index.ts` | `dist/index.js` + `dist/index.d.ts` | Import npm (`import { TiimeClient } from 'tiime-cli'`) |
-| CLI | `src/cli/index.ts` | `dist/cli.js` | Exécutable (`tiime` ou `./dist/cli.js`) |
+| Package | Entrée | Sortie | Usage |
+|---------|--------|--------|-------|
+| `tiime-sdk` | `packages/tiime-sdk/src/index.ts` | `dist/index.js` + `dist/index.d.ts` | Import npm (`import { TiimeClient } from 'tiime-sdk'`) |
+| `tiime-cli` | `packages/tiime-cli/src/cli/index.ts` | `dist/cli.js` | Exécutable (`tiime` ou `./dist/cli.js`) |
 
-La version est injectée dynamiquement depuis `package.json` via `tsup define` (`__VERSION__`).
+Turborepo ordonne le build : tiime-sdk d'abord (dépendance), puis tiime-cli.
+La version CLI est injectée dynamiquement depuis `package.json` via `tsup define` (`__VERSION__`).
 
 ## Tests
 
@@ -80,15 +85,8 @@ La version est injectée dynamiquement depuis `package.json` via `tsup define` (
 ### Structure des tests
 
 ```
-tests/
-├── cli/
-│   └── output.test.ts      # Formatage JSON/table/CSV, escape caractères
-└── sdk/
-    ├── auth.test.ts         # TokenManager, JWT decode, expiration buffer
-    ├── bank.test.ts         # Comptes bancaires, transactions, pagination
-    ├── clients.test.ts      # CRUD clients, headers custom
-    ├── documents.test.ts    # Documents, download, categories
-    └── invoices.test.ts     # Factures, template merge, duplicate, line_amount
+packages/tiime-sdk/tests/   # Tests SDK (auth, client, resources)
+packages/tiime-cli/tests/   # Tests CLI (output, config, auto-impute, i18n)
 ```
 
 ### Lancer les tests

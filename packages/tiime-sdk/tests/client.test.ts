@@ -13,6 +13,7 @@ vi.mock("../src/auth", () => {
 		TokenManager: class {
 			getValidToken = vi.fn().mockResolvedValue("fake-token");
 		},
+		resolveCompanyId: (id?: number) => id ?? 42,
 	};
 });
 

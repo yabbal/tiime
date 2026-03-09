@@ -9,8 +9,10 @@ export interface AuthConfig {
 }
 
 export interface TiimeClientOptions {
-	companyId: number;
+	companyId?: number;
 	tokens?: AuthTokens;
+	email?: string;
+	password?: string;
 }
 
 export interface Address {

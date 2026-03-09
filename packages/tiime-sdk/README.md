@@ -8,14 +8,39 @@ SDK TypeScript pour l'API de comptabilite [Tiime](https://www.tiime.fr) — inte
 npm install tiime-sdk
 ```
 
-## Pre-requis
+## Authentification
 
-Authentifiez-vous via le CLI [`tiime-cli`](https://www.npmjs.com/package/tiime-cli) :
+Le SDK fonctionne de maniere autonome. Plusieurs modes d'auth sont supportes :
+
+### Via variables d'environnement (recommande)
 
 ```bash
-npm install -g tiime-cli
-tiime auth login
-tiime company use --id 12345
+export TIIME_EMAIL=vous@example.com
+export TIIME_PASSWORD=votre-mot-de-passe
+export TIIME_COMPANY_ID=12345
+```
+
+```typescript
+import { TiimeClient } from "tiime-sdk";
+const client = new TiimeClient(); // tout est resolu automatiquement
+```
+
+### Via options explicites
+
+```typescript
+const client = new TiimeClient({
+  email: "vous@example.com",
+  password: "votre-mot-de-passe",
+  companyId: 12345,
+});
+```
+
+### Via le CLI (optionnel)
+
+Si [`tiime-cli`](https://www.npmjs.com/package/tiime-cli) est installe, le SDK utilise ses tokens automatiquement :
+
+```bash
+tiime auth login && tiime company use --id 12345
 ```
 
 ## Utilisation
