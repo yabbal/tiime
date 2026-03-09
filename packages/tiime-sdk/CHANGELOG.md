@@ -1,5 +1,11 @@
 # tiime-sdk
 
+## 2.2.0
+
+### Minor Changes
+
+- [#14](https://github.com/yabbal/tiime/pull/14) [`5bb5333`](https://github.com/yabbal/tiime/commit/5bb5333a5845e75d6e395097a176c828779c8741) Thanks [@yabbal](https://github.com/yabbal)! - Replace ofetch with native fetch — zero production dependencies, smaller bundle (14.5 KB vs 22 KB), minification enabled
+
 ## 2.1.2
 
 ### Patch Changes

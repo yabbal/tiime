@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.0.4
+
+### Patch Changes
+
+- Updated dependencies [[`5bb5333`](https://github.com/yabbal/tiime/commit/5bb5333a5845e75d6e395097a176c828779c8741)]:
+  - tiime-sdk@2.2.0
+
 ## 2.0.3
 
 ### Patch Changes
