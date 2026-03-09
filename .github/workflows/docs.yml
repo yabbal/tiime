@@ -27,7 +27,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm --filter docs build
         env:
-          BASE_PATH: /tiime-cli
+          BASE_PATH: /tiime
       - uses: actions/upload-pages-artifact@v3
         with:
           path: apps/docs/out
