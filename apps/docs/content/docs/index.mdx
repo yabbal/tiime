@@ -1,110 +1,136 @@
 ---
 title: Premiers pas
-description: Démarrez avec Tiime CLI en quelques minutes
+description: Integrez et pilotez votre comptabilite Tiime en quelques minutes
 ---
 
 import { Cards, Card } from "fumadocs-ui/components/card";
 import { Steps, Step } from "fumadocs-ui/components/steps";
 import { Tabs, Tab } from "fumadocs-ui/components/tabs";
 import { Callout } from "fumadocs-ui/components/callout";
-import { Terminal, Code, Receipt, Landmark, Bot } from "lucide-react";
+import { Terminal, Code, Receipt, Landmark, Bot, KeyRound, Database } from "lucide-react";
 
-Tiime CLI est un outil en ligne de commande pour piloter votre comptabilité [Tiime](https://www.tiime.fr) depuis le terminal. Le SDK TypeScript (`tiime-sdk`) permet d'intégrer Tiime dans vos applications.
+Tiime est un ensemble d'outils TypeScript pour la comptabilite [Tiime](https://www.tiime.fr) :
+
+- **`tiime-sdk`** — SDK TypeScript pour integrer Tiime dans vos applications
+- **`tiime-cli`** — CLI pour piloter votre compta depuis le terminal
 
 <Callout type="warn" title="Projet non officiel">
-  Ce projet est personnel et expérimental. Il n'est pas affilié à, ni approuvé par Tiime.
+  Ce projet est personnel et experimental. Il n'est pas affilie a, ni approuve par Tiime.
 </Callout>
 
-<Callout type="info" title="Sortie JSON native">
-  Toutes les commandes retournent du JSON par défaut, idéal pour les scripts, `jq` et les agents IA.
-</Callout>
+## Choisissez votre outil
 
-## Démarrage rapide
+<Tabs items={["SDK TypeScript", "CLI"]}>
+  <Tab value="SDK TypeScript">
+    <Steps>
+      <Step>
+        ### Installer le SDK
 
-<Steps>
-  <Step>
-    ### Installer
-
-    <Tabs items={["npm", "Homebrew"]}>
-      <Tab value="npm">
         ```bash title="Terminal"
-        npm install -g tiime-cli
+        npm install tiime-sdk
         ```
-      </Tab>
-      <Tab value="Homebrew">
+      </Step>
+
+      <Step>
+        ### Configurer l'authentification
+
         ```bash title="Terminal"
-        brew tap yabbal/tap
-        brew install tiime
+        export TIIME_EMAIL=vous@example.com
+        export TIIME_PASSWORD=votre-mot-de-passe
+        export TIIME_COMPANY_ID=12345
         ```
-      </Tab>
-    </Tabs>
-  </Step>
+      </Step>
 
-  <Step>
-    ### Se connecter
+      <Step>
+        ### Utiliser
 
-    ```bash title="Terminal"
-    tiime auth login
-    ```
-  </Step>
+        ```ts title="app.ts"
+        import { TiimeClient } from "tiime-sdk";
 
-  <Step>
-    ### Sélectionner l'entreprise
+        const client = new TiimeClient();
 
-    ```bash title="Terminal"
-    tiime company list
-    tiime company use --id 12345
-    ```
-  </Step>
+        const invoices = await client.invoices.list({ status: "paid" });
+        const balances = await client.bankAccounts.balance();
+        ```
+      </Step>
+    </Steps>
+  </Tab>
+  <Tab value="CLI">
+    <Steps>
+      <Step>
+        ### Installer le CLI
 
-  <Step>
-    ### C'est prêt !
+        <Tabs items={["npm", "Homebrew"]}>
+          <Tab value="npm">
+            ```bash title="Terminal"
+            npm install -g tiime-cli
+            ```
+          </Tab>
+          <Tab value="Homebrew">
+            ```bash title="Terminal"
+            brew tap yabbal/tap && brew install tiime
+            ```
+          </Tab>
+        </Tabs>
+      </Step>
 
-    ```bash title="Terminal"
-    tiime status
-    ```
-  </Step>
-</Steps>
+      <Step>
+        ### Se connecter
 
-## Que voulez-vous faire ?
+        ```bash title="Terminal"
+        tiime auth login
+        tiime company use --id 12345
+        ```
+      </Step>
+
+      <Step>
+        ### Utiliser
+
+        ```bash title="Terminal"
+        tiime status
+        tiime invoices list --status paid --format table
+        tiime bank balance
+        ```
+      </Step>
+    </Steps>
+  </Tab>
+</Tabs>
+
+## Explorer
 
 <Cards>
-  <Card icon={<Receipt />} title="Gérer les factures" href="/docs/cli/invoices">
-    Créer, dupliquer, envoyer et télécharger vos factures.
+  <Card icon={<Code />} title="SDK TypeScript" href="/docs/sdk">
+    Integrer Tiime dans vos projets — client type, 10 ressources, auth autonome.
   </Card>
-  <Card icon={<Landmark />} title="Consulter la banque" href="/docs/cli/bank">
-    Soldes, transactions et opérations non imputées.
+  <Card icon={<Terminal />} title="CLI" href="/docs/cli">
+    13 commandes pour gerer factures, banque, clients et plus depuis le terminal.
   </Card>
-  <Card icon={<Terminal />} title="Explorer le CLI" href="/docs/cli">
-    Toutes les commandes disponibles.
+  <Card icon={<Receipt />} title="Factures" href="/docs/cli/invoices">
+    Creer, dupliquer, envoyer et telecharger vos factures.
   </Card>
-  <Card icon={<Code />} title="Utiliser le SDK" href="/docs/sdk">
-    Intégrer Tiime dans vos projets TypeScript.
+  <Card icon={<Landmark />} title="Banque" href="/docs/cli/bank">
+    Soldes, transactions et operations non imputees.
+  </Card>
+  <Card icon={<KeyRound />} title="Authentification" href="/docs/sdk/auth">
+    Variables d'environnement, tokens, cascade d'auth.
   </Card>
   <Card icon={<Bot />} title="Agents IA" href="/docs/agents">
-    Skill pour Claude Code et workflows automatisés.
+    Skill pour Claude Code et workflows automatises.
   </Card>
 </Cards>
 
-## Formats de sortie
+## Sortie JSON native
 
-Toutes les commandes supportent `--format` :
-
-```bash title="Terminal"
-tiime invoices list --format json    # JSON (défaut)
-tiime invoices list --format table   # Tableau ASCII
-tiime invoices list --format csv     # CSV
-```
-
-## Combiner avec jq
+Toutes les commandes CLI retournent du JSON par defaut, combinable avec `jq` :
 
 ```bash title="Terminal"
-# Noms des clients
-tiime clients list | jq '.[].name'
-
-# Total des factures payées
+# Total des factures payees
 tiime invoices list --status paid --all | jq '[.[].total_including_taxes] | add'
 
-# Transactions > 1000 €
+# Transactions > 1000 EUR
 tiime bank transactions --all | jq '[.[] | select(.amount > 1000)]'
+
+# Autres formats
+tiime invoices list --format table   # Tableau ASCII
+tiime invoices list --format csv     # Export CSV
 ```
