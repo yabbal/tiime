@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.3.0
+
+### Minor Changes
+
+- [`88bac79`](https://github.com/yabbal/tiime/commit/88bac79d6da6e987f6c44cc5ad0b154b10cd78c1) Thanks [@yabbal](https://github.com/yabbal)! - Fix table format display: smart column selection per resource type, unwrap API envelopes, display nested objects intelligently
+
 ## 2.2.0
 
 ### Minor Changes
