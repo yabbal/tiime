@@ -1,6 +1,6 @@
 {
 	"name": "tiime-sdk",
-	"version": "3.0.0",
+	"version": "3.0.1",
 	"description": "TypeScript SDK for Tiime accounting API",
 	"type": "module",
 	"main": "./dist/index.js",
