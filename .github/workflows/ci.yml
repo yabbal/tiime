@@ -124,6 +124,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
       - name: Create Release PR or Publish
+        id: changesets
         uses: changesets/action@v1
         with:
           publish: pnpm run release
@@ -133,3 +134,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_CONFIG_PROVENANCE: 'true'
+
+      - name: Trigger Homebrew update
+        if: steps.changesets.outputs.published == 'true'
+        run: |
+          CLI_VERSION=$(echo '${{ steps.changesets.outputs.publishedPackages }}' | jq -r '.[] | select(.name == "tiime-cli") | .version')
+          if [ -n "$CLI_VERSION" ]; then
+            gh workflow run homebrew.yml -f version="$CLI_VERSION"
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
