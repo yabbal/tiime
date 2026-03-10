@@ -8,5 +8,17 @@
 	"formatter": {
 		"enabled": true,
 		"indentStyle": "tab"
-	}
+	},
+	"overrides": [
+		{
+			"includes": ["tests/**", "**/*.test.ts"],
+			"linter": {
+				"rules": {
+					"suspicious": {
+						"noExplicitAny": "off"
+					}
+				}
+			}
+		}
+	]
 }

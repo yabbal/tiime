@@ -1,4 +1,9 @@
-import { defineCommand, renderUsage, runMain } from "citty";
+import {
+	defineCommand,
+	type RunMainOptions,
+	renderUsage,
+	runMain,
+} from "citty";
 import { auditCommand } from "./commands/audit";
 import { authCommand } from "./commands/auth";
 import { bankCommand } from "./commands/bank";
@@ -49,4 +54,6 @@ const showTranslatedUsage = async (
 	console.error(`${translateHelp(usage)}\n`);
 };
 
-runMain(main, { showUsage: showTranslatedUsage });
+runMain(main, {
+	showUsage: showTranslatedUsage as NonNullable<RunMainOptions["showUsage"]>,
+});
