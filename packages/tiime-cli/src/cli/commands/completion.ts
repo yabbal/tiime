@@ -1,115 +1,57 @@
+import type { CommandDef, SubCommandsDef } from "citty";
 import { defineCommand } from "citty";
 
-const commands: Record<
-	string,
-	{ description: string; subs: Record<string, string> }
-> = {
-	auth: {
-		description: "Gestion de l'authentification",
-		subs: {
-			login: "Se connecter",
-			logout: "Se déconnecter",
-			status: "Statut de connexion",
-		},
-	},
-	company: {
-		description: "Gestion de l'entreprise",
-		subs: {
-			list: "Lister les entreprises",
-			get: "Détails de l'entreprise active",
-			use: "Définir l'entreprise active",
-			me: "Info utilisateur",
-		},
-	},
-	invoices: {
-		description: "Gestion des factures",
-		subs: {
-			list: "Lister les factures",
-			get: "Détails d'une facture",
-			create: "Créer une facture",
-			duplicate: "Dupliquer une facture",
-			update: "Modifier une facture",
-			send: "Envoyer par email",
-			pdf: "Télécharger le PDF",
-			delete: "Supprimer un brouillon",
-		},
-	},
-	clients: {
-		description: "Gestion des clients",
-		subs: {
-			list: "Lister les clients",
-			get: "Détails d'un client",
-			create: "Créer un client",
-			search: "Rechercher un client",
-		},
-	},
-	bank: {
-		description: "Comptes et transactions",
-		subs: {
-			accounts: "Comptes bancaires",
-			balance: "Soldes des comptes",
-			transactions: "Transactions bancaires",
-			unimputed: "Transactions non imputées",
-		},
-	},
-	quotations: {
-		description: "Gestion des devis",
-		subs: {
-			list: "Lister les devis",
-			get: "Détails d'un devis",
-			create: "Créer un devis",
-			pdf: "Télécharger le PDF",
-			send: "Envoyer par email",
-		},
-	},
-	expenses: {
-		description: "Notes de frais",
-		subs: {
-			list: "Lister les notes de frais",
-			get: "Détails d'une note de frais",
-			create: "Créer une note de frais",
-		},
-	},
-	documents: {
-		description: "Gestion des documents",
-		subs: {
-			list: "Lister les documents",
-			categories: "Catégories de documents",
-			upload: "Uploader un justificatif",
-			download: "Télécharger un document",
-		},
-	},
-	labels: {
-		description: "Labels et tags",
-		subs: {
-			list: "Labels personnalisés",
-			standard: "Labels standards",
-			tags: "Tags",
-		},
-	},
-	status: {
-		description: "Résumé rapide de la situation",
-		subs: {},
-	},
-	open: {
-		description: "Ouvrir Tiime dans le navigateur",
-		subs: {},
-	},
-	version: {
-		description: "Afficher la version",
-		subs: {},
-	},
-	completion: {
-		description: "Script d'autocomplétion",
-		subs: {},
-	},
+type CommandInfo = {
+	description: string;
+	subs: Record<string, string>;
 };
 
-const topLevelNames = Object.keys(commands);
+const resolveCommand = (
+	cmd: CommandDef | (() => Promise<CommandDef>),
+): CommandDef | undefined => {
+	// Only handle already-resolved CommandDef objects (not lazy imports)
+	if (typeof cmd === "function") return undefined;
+	return cmd;
+};
+
+const extractCommands = (
+	subCommands: SubCommandsDef,
+): Record<string, CommandInfo> => {
+	const result: Record<string, CommandInfo> = {};
+
+	for (const [name, rawCmd] of Object.entries(subCommands)) {
+		const cmd = resolveCommand(
+			rawCmd as CommandDef | (() => Promise<CommandDef>),
+		);
+		if (!cmd) continue;
+
+		const meta = cmd.meta as { description?: string } | undefined;
+		const description = meta?.description ?? name;
+		const subs: Record<string, string> = {};
+
+		if (cmd.subCommands && typeof cmd.subCommands === "object") {
+			for (const [subName, rawSub] of Object.entries(
+				cmd.subCommands as SubCommandsDef,
+			)) {
+				const sub = resolveCommand(
+					rawSub as CommandDef | (() => Promise<CommandDef>),
+				);
+				const subMeta = sub?.meta as { description?: string } | undefined;
+				subs[subName] = subMeta?.description ?? subName;
+			}
+		}
+
+		result[name] = { description, subs };
+	}
+
+	return result;
+};
+
 const commonFlags = ["--format", "--id", "--all"];
 
-const generateZsh = (): string => {
+const generateZsh = (commands: Record<string, CommandInfo>): string => {
 	const esc = (s: string) => s.replace(/'/g, "'\\''");
+	const topLevelNames = Object.keys(commands);
 
 	const subcases = topLevelNames
 		.filter((cmd) => Object.keys(commands[cmd].subs).length > 0)
@@ -154,7 +96,9 @@ compdef _tiime tiime
 `;
 };
 
-const generateBash = (): string => {
+const generateBash = (commands: Record<string, CommandInfo>): string => {
+	const topLevelNames = Object.keys(commands);
+
 	const subcases = topLevelNames
 		.filter((cmd) => Object.keys(commands[cmd].subs).length > 0)
 		.map((cmd) => {
@@ -190,8 +134,9 @@ complete -F _tiime tiime
 `;
 };
 
-const generateFish = (): string => {
+const generateFish = (commands: Record<string, CommandInfo>): string => {
 	const esc = (s: string) => s.replace(/'/g, "\\'");
+	const topLevelNames = Object.keys(commands);
 
 	const lines = [
 		"# Disable file completions by default",
@@ -210,7 +155,6 @@ const generateFish = (): string => {
 		const subs = commands[cmd].subs;
 		const subNames = Object.keys(subs);
 		if (subNames.length > 0) {
-			// Only show subcommands when the parent command is selected and no subcommand yet
 			const condition = `__fish_seen_subcommand_from ${cmd}; and not __fish_seen_subcommand_from ${subNames.join(" ")}`;
 			for (const [sub, desc] of Object.entries(subs)) {
 				lines.push(
@@ -221,7 +165,6 @@ const generateFish = (): string => {
 		}
 	}
 
-	// Common flags after subcommand level
 	lines.push("# Common flags");
 	for (const cmd of topLevelNames) {
 		const subNames = Object.keys(commands[cmd].subs);
@@ -242,36 +185,46 @@ const generateFish = (): string => {
 	return `${lines.join("\n")}\n`;
 };
 
-export const completionCommand = defineCommand({
-	meta: {
-		name: "completion",
-		description: "Générer le script d'autocomplétion shell",
-	},
-	args: {
-		shell: {
-			type: "string",
-			description: "Shell cible (zsh, bash, fish)",
-			default: "zsh",
-		},
-	},
-	run({ args }) {
-		const shell = args.shell;
+export const createCompletionCommand = (subCommands: SubCommandsDef) => {
+	const commands = extractCommands(subCommands);
 
-		switch (shell) {
-			case "zsh":
-				process.stdout.write(generateZsh());
-				break;
-			case "bash":
-				process.stdout.write(generateBash());
-				break;
-			case "fish":
-				process.stdout.write(generateFish());
-				break;
-			default:
-				process.stderr.write(
-					`Shell non supporté : ${shell}. Utilisez zsh, bash ou fish.\n`,
-				);
-				process.exit(1);
-		}
-	},
-});
+	// Add completion itself
+	commands.completion = {
+		description: "Générer le script d'autocomplétion shell",
+		subs: {},
+	};
+
+	return defineCommand({
+		meta: {
+			name: "completion",
+			description: "Générer le script d'autocomplétion shell",
+		},
+		args: {
+			shell: {
+				type: "string",
+				description: "Shell cible (zsh, bash, fish)",
+				default: "zsh",
+			},
+		},
+		run({ args }) {
+			const shell = args.shell;
+
+			switch (shell) {
+				case "zsh":
+					process.stdout.write(generateZsh(commands));
+					break;
+				case "bash":
+					process.stdout.write(generateBash(commands));
+					break;
+				case "fish":
+					process.stdout.write(generateFish(commands));
+					break;
+				default:
+					process.stderr.write(
+						`Shell non supporté : ${shell}. Utilisez zsh, bash ou fish.\n`,
+					);
+					process.exit(1);
+			}
+		},
+	});
+};

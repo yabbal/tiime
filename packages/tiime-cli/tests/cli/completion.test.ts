@@ -1,7 +1,50 @@
+import { defineCommand } from "citty";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 let stdoutData: string;
 let stderrData: string;
+
+const fakeCommands = {
+	auth: defineCommand({
+		meta: { name: "auth", description: "Gestion de l'authentification" },
+		subCommands: {
+			login: defineCommand({
+				meta: { name: "login", description: "Se connecter" },
+			}),
+			logout: defineCommand({
+				meta: { name: "logout", description: "Se déconnecter" },
+			}),
+		},
+	}),
+	invoices: defineCommand({
+		meta: { name: "invoices", description: "Gestion des factures" },
+		subCommands: {
+			list: defineCommand({
+				meta: { name: "list", description: "Lister les factures" },
+			}),
+			get: defineCommand({
+				meta: { name: "get", description: "Détails d'une facture" },
+			}),
+		},
+	}),
+	bank: defineCommand({
+		meta: { name: "bank", description: "Comptes et transactions" },
+		subCommands: {
+			accounts: defineCommand({
+				meta: { name: "accounts", description: "Comptes bancaires" },
+			}),
+		},
+	}),
+	status: defineCommand({
+		meta: { name: "status", description: "Résumé rapide" },
+	}),
+	open: defineCommand({
+		meta: { name: "open", description: "Ouvrir Tiime" },
+	}),
+	version: defineCommand({
+		meta: { name: "version", description: "Afficher la version" },
+	}),
+};
 
 beforeEach(() => {
 	stdoutData = "";
@@ -24,13 +67,14 @@ beforeEach(() => {
 
 describe("completion command", () => {
 	it("generates zsh completion by default", async () => {
-		const { completionCommand } = await import(
+		const { createCompletionCommand } = await import(
 			"../../src/cli/commands/completion"
 		);
-		await completionCommand.run?.({
+		const cmd = createCompletionCommand(fakeCommands);
+		await cmd.run?.({
 			args: { shell: "zsh", _: [] },
 			rawArgs: [],
-			cmd: completionCommand,
+			cmd,
 		});
 
 		expect(stdoutData).toContain("#compdef tiime");
@@ -39,44 +83,40 @@ describe("completion command", () => {
 	});
 
 	it("zsh completion contains all top-level commands", async () => {
-		const { completionCommand } = await import(
+		const { createCompletionCommand } = await import(
 			"../../src/cli/commands/completion"
 		);
-		await completionCommand.run?.({
+		const cmd = createCompletionCommand(fakeCommands);
+		await cmd.run?.({
 			args: { shell: "zsh", _: [] },
 			rawArgs: [],
-			cmd: completionCommand,
+			cmd,
 		});
 
 		const expectedCommands = [
 			"auth",
-			"company",
 			"invoices",
-			"clients",
 			"bank",
-			"quotations",
-			"expenses",
-			"documents",
-			"labels",
 			"status",
 			"open",
 			"version",
 			"completion",
 		];
 
-		for (const cmd of expectedCommands) {
-			expect(stdoutData).toContain(cmd);
+		for (const name of expectedCommands) {
+			expect(stdoutData).toContain(name);
 		}
 	});
 
 	it("generates bash completion", async () => {
-		const { completionCommand } = await import(
+		const { createCompletionCommand } = await import(
 			"../../src/cli/commands/completion"
 		);
-		await completionCommand.run?.({
+		const cmd = createCompletionCommand(fakeCommands);
+		await cmd.run?.({
 			args: { shell: "bash", _: [] },
 			rawArgs: [],
-			cmd: completionCommand,
+			cmd,
 		});
 
 		expect(stdoutData).toContain("_tiime()");
@@ -85,13 +125,14 @@ describe("completion command", () => {
 	});
 
 	it("generates fish completion", async () => {
-		const { completionCommand } = await import(
+		const { createCompletionCommand } = await import(
 			"../../src/cli/commands/completion"
 		);
-		await completionCommand.run?.({
+		const cmd = createCompletionCommand(fakeCommands);
+		await cmd.run?.({
 			args: { shell: "fish", _: [] },
 			rawArgs: [],
-			cmd: completionCommand,
+			cmd,
 		});
 
 		expect(stdoutData).toContain("complete -c tiime");
@@ -99,13 +140,14 @@ describe("completion command", () => {
 	});
 
 	it("fish completion contains subcommands", async () => {
-		const { completionCommand } = await import(
+		const { createCompletionCommand } = await import(
 			"../../src/cli/commands/completion"
 		);
-		await completionCommand.run?.({
+		const cmd = createCompletionCommand(fakeCommands);
+		await cmd.run?.({
 			args: { shell: "fish", _: [] },
 			rawArgs: [],
-			cmd: completionCommand,
+			cmd,
 		});
 
 		expect(stdoutData).toContain("login");
@@ -114,13 +156,14 @@ describe("completion command", () => {
 	});
 
 	it("errors on unsupported shell", async () => {
-		const { completionCommand } = await import(
+		const { createCompletionCommand } = await import(
 			"../../src/cli/commands/completion"
 		);
-		await completionCommand.run?.({
+		const cmd = createCompletionCommand(fakeCommands);
+		await cmd.run?.({
 			args: { shell: "powershell", _: [] },
 			rawArgs: [],
-			cmd: completionCommand,
+			cmd,
 		});
 
 		expect(stderrData).toContain("Shell non supporté");
@@ -129,29 +172,30 @@ describe("completion command", () => {
 	});
 
 	it("zsh completion includes subcommands for commands with subs", async () => {
-		const { completionCommand } = await import(
+		const { createCompletionCommand } = await import(
 			"../../src/cli/commands/completion"
 		);
-		await completionCommand.run?.({
+		const cmd = createCompletionCommand(fakeCommands);
+		await cmd.run?.({
 			args: { shell: "zsh", _: [] },
 			rawArgs: [],
-			cmd: completionCommand,
+			cmd,
 		});
 
-		// Should have subcommand cases for invoices, bank, etc.
 		expect(stdoutData).toContain("invoices)");
 		expect(stdoutData).toContain("bank)");
 		expect(stdoutData).toContain("auth)");
 	});
 
 	it("bash completion includes subcommands for commands with subs", async () => {
-		const { completionCommand } = await import(
+		const { createCompletionCommand } = await import(
 			"../../src/cli/commands/completion"
 		);
-		await completionCommand.run?.({
+		const cmd = createCompletionCommand(fakeCommands);
+		await cmd.run?.({
 			args: { shell: "bash", _: [] },
 			rawArgs: [],
-			cmd: completionCommand,
+			cmd,
 		});
 
 		expect(stdoutData).toContain("invoices)");
