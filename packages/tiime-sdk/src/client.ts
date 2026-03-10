@@ -56,7 +56,7 @@ export class TiimeClient {
 	}
 
 	listCompanies() {
-		return this.fetch<import("./types").Company[]>("/companies", {
+		return this.fetch<import("./types").Company[]>("companies", {
 			headers: {
 				Accept: "application/vnd.tiime.companies.v2+json",
 				Range: "items=0-101",

@@ -5,7 +5,7 @@ export class UsersResource {
 	constructor(protected fetch: FetchFn) {}
 
 	me() {
-		return this.fetch<User>("/users/me");
+		return this.fetch<User>("users/me");
 	}
 
 	legalInformations(): Promise<unknown> {
@@ -13,6 +13,6 @@ export class UsersResource {
 	}
 
 	settings(companyId: number): Promise<unknown> {
-		return this.fetch(`/users/me/companies/${companyId}/settings`);
+		return this.fetch(`users/me/companies/${companyId}/settings`);
 	}
 }

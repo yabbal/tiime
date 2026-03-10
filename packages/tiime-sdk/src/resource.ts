@@ -7,6 +7,6 @@ export class Resource {
 	) {}
 
 	protected url(path: string) {
-		return `/companies/${this.companyId}${path}`;
+		return `companies/${this.companyId}${path}`;
 	}
 }
