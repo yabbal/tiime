@@ -10,6 +10,7 @@ import { bankCommand } from "./commands/bank";
 import { clientsCommand } from "./commands/clients";
 import { companyCommand } from "./commands/company";
 import { completionCommand } from "./commands/completion";
+import { dashboardCommand } from "./commands/dashboard";
 import { documentsCommand } from "./commands/documents";
 import { expensesCommand } from "./commands/expenses";
 import { invoicesCommand } from "./commands/invoices";
@@ -32,6 +33,7 @@ const main = defineCommand({
 		audit: auditCommand,
 		auth: authCommand,
 		company: companyCommand,
+		dashboard: dashboardCommand,
 		invoices: invoicesCommand,
 		clients: clientsCommand,
 		bank: bankCommand,
