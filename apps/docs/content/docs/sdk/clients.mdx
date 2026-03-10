@@ -1,0 +1,114 @@
+---
+title: Clients
+description: Lister, créer et rechercher des clients
+---
+
+Accès via `client.clients`.
+
+## list
+
+Lister les clients.
+
+```ts title="clients.ts"
+// Tous les clients actifs
+const clients = await client.clients.list({ archived: false });
+
+// Tous les clients (y compris archivés)
+const all = await client.clients.list();
+```
+
+**Paramètres (`ClientsListParams`) :**
+
+| Champ | Type | Description |
+|-------|------|-------------|
+| `archived` | `boolean` | Filtrer par statut d'archivage |
+
+**Retour :** `Promise<Client[]>`
+
+## get
+
+Récupérer les détails d'un client.
+
+```ts title="clients.ts"
+const detail = await client.clients.get(100);
+```
+
+| Paramètre | Type | Description |
+|-----------|------|-------------|
+| `clientId` | `number` | ID du client |
+
+**Retour :** `Promise<Client>`
+
+## create
+
+Créer un nouveau client.
+
+```ts title="clients.ts"
+const newClient = await client.clients.create({
+  name: "ACME Corp",
+  email: "contact@acme.com",
+  siren_or_siret: "12345678901234",
+  city: "Paris",
+  postal_code: "75001",
+  address: "1 rue de Rivoli",
+  professional: true,
+});
+```
+
+**Paramètres (`ClientCreateParams`) :**
+
+| Champ | Type | Obligatoire | Description |
+|-------|------|:-----------:|-------------|
+| `name` | `string` | oui | Nom du client |
+| `email` | `string` | — | Email |
+| `phone` | `string` | — | Téléphone |
+| `address` | `string` | — | Adresse |
+| `postal_code` | `string` | — | Code postal |
+| `city` | `string` | — | Ville |
+| `country_id` | `number` | — | ID du pays |
+| `siren_or_siret` | `string` | — | SIREN ou SIRET |
+| `professional` | `boolean` | — | Client professionnel |
+
+**Retour :** `Promise<Client>`
+
+## search
+
+Rechercher des clients par nom.
+
+```ts title="clients.ts"
+const results = await client.clients.search("acme");
+```
+
+| Paramètre | Type | Description |
+|-----------|------|-------------|
+| `query` | `string` | Texte de recherche |
+
+**Retour :** `Promise<Client[]>`
+
+## Type Client
+
+| Champ | Type | Description |
+|-------|------|-------------|
+| `id` | `number` | Identifiant unique |
+| `name` | `string` | Nom du client |
+| `slug` | `string` | Slug |
+| `address` | `string` | Adresse |
+| `address_complement` | `string \| null` | Complément d'adresse |
+| `postal_code` | `string` | Code postal |
+| `city` | `string` | Ville |
+| `country` | `Country` | Pays |
+| `country_code` | `string` | Code pays |
+| `email` | `string \| null` | Email |
+| `phone` | `string \| null` | Téléphone |
+| `siren_or_siret` | `string` | SIREN ou SIRET |
+| `siret` | `string \| null` | SIRET |
+| `siren` | `string \| null` | SIREN |
+| `intracom_vat_number` | `string \| null` | Numéro de TVA intracommunautaire |
+| `archived` | `boolean` | Archivé |
+| `archived_at` | `string \| null` | Date d'archivage |
+| `professional` | `boolean` | Client professionnel |
+| `color` | `string` | Couleur |
+| `acronym` | `string` | Acronyme |
+| `note` | `string \| null` | Note |
+| `bic` | `string \| null` | BIC |
+| `iban` | `string \| null` | IBAN |

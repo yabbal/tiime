@@ -1,0 +1,54 @@
+---
+title: Labels
+description: Labels comptables personnalisés, standards et tags
+---
+
+Accès via `client.labels`.
+
+## list
+
+Récupérer les labels personnalisés de l'entreprise.
+
+```ts title="labels.ts"
+const labels = await client.labels.list();
+// [{ id: 1, name: "Fournitures bureau", color: "#4CAF50" }, ...]
+```
+
+**Retour :** `Promise<Label[]>`
+
+## standard
+
+Récupérer les labels standards du plan comptable.
+
+```ts title="labels.ts"
+const standard = await client.labels.standard();
+```
+
+**Retour :** `Promise<Label[]>`
+
+## tags
+
+Récupérer les tags avec leurs détails.
+
+```ts title="labels.ts"
+const tags = await client.labels.tags();
+// [{ id: 1, label: "Projet A", tag_detail: { id: 10, label: "Projet A" } }, ...]
+```
+
+**Retour :** `Promise<Tag[]>`
+
+## Type Label
+
+| Champ | Type | Description |
+|-------|------|-------------|
+| `id` | `number` | Identifiant unique |
+| `name` | `string` | Nom du label |
+| `color` | `string` | Couleur (hex) |
+
+## Type Tag
+
+| Champ | Type | Description |
+|-------|------|-------------|
+| `id` | `number` | Identifiant unique |
+| `label` | `string` | Libellé du tag |
+| `tag_detail` | `{ id, label }` | Détails du tag (si `expand: "tag_detail"`) |

@@ -1,0 +1,61 @@
+---
+title: Utilisateurs
+description: Profil utilisateur, informations légales et paramètres
+---
+
+Accès via `client.users`.
+
+## me
+
+Récupérer les informations de l'utilisateur connecté.
+
+```ts title="users.ts"
+const me = await client.users.me();
+// { id: 50272, firstname: "Jean", lastname: "Dupont", email: "...", ... }
+```
+
+**Retour :** `Promise<User>`
+
+## legalInformations
+
+Récupérer les informations légales de l'utilisateur.
+
+```ts title="users.ts"
+const legal = await client.users.legalInformations();
+```
+
+**Retour :** `Promise<unknown>`
+
+## settings
+
+Récupérer les paramètres de l'utilisateur pour une entreprise donnée.
+
+```ts title="users.ts"
+const settings = await client.users.settings(12345);
+```
+
+| Paramètre | Type | Description |
+|-----------|------|-------------|
+| `companyId` | `number` | ID de l'entreprise |
+
+**Retour :** `Promise<unknown>`
+
+## Type User
+
+| Champ | Type | Description |
+|-------|------|-------------|
+| `id` | `number` | Identifiant unique |
+| `firstname` | `string` | Prénom |
+| `lastname` | `string` | Nom |
+| `email` | `string` | Email |
+| `phone` | `string` | Téléphone |
+| `civility` | `string` | Civilité |
+| `status` | `string` | Statut |
+| `roles` | `string[]` | Rôles |
+| `active_company` | `number` | ID de l'entreprise active |
+| `director` | `boolean` | Dirigeant |
+| `has_wallet_access` | `boolean` | Accès au wallet |
+| `has_business_account` | `boolean` | Compte professionnel |
+| `address` | `Address` | Adresse |
+| `created_at` | `string` | Date de création |
+| `acronym` | `string` | Acronyme |

@@ -1,4 +1,20 @@
 {
-  "title": "SDK TypeScript",
-  "pages": ["index", "auth", "client", "resources"]
+	"title": "SDK TypeScript",
+	"pages": [
+		"index",
+		"auth",
+		"client",
+		"resources",
+		"---Ressources---",
+		"invoices",
+		"quotations",
+		"clients",
+		"bank-accounts",
+		"bank-transactions",
+		"documents",
+		"expense-reports",
+		"labels",
+		"users",
+		"company"
+	]
 }

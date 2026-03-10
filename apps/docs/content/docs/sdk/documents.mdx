@@ -1,0 +1,138 @@
+---
+title: Documents
+description: Lister, uploader, télécharger et rechercher des documents
+---
+
+Accès via `client.documents`.
+
+## list
+
+Lister les documents avec pagination.
+
+```ts title="documents.ts"
+const docs = await client.documents.list({
+  types: "receipt",
+  page: 1,
+  pageSize: 25,
+});
+```
+
+**Paramètres (`DocumentsListParams`) :**
+
+| Champ | Type | Défaut | Description |
+|-------|------|--------|-------------|
+| `types` | `string` | — | Type de document (ex: `receipt`) |
+| `source` | `string` | — | Source (ex: `accountant`) |
+| `sorts` | `string` | `"created_at:desc"` | Tri |
+| `accountable` | `boolean` | — | Filtrer les documents comptabilisables |
+| `page` | `number` | `1` | Numéro de page |
+| `pageSize` | `number` | `25` | Résultats par page |
+
+**Retour :** `Promise<Document[]>`
+
+## categories
+
+Récupérer les catégories de documents disponibles.
+
+```ts title="documents.ts"
+const categories = await client.documents.categories();
+// [{ id: 1, name: "Justificatifs", code: "receipt", count: 42 }, ...]
+```
+
+**Retour :** `Promise<DocumentCategory[]>`
+
+## upload
+
+Uploader un document.
+
+```ts title="documents.ts"
+const file = new Uint8Array(/* contenu du fichier */);
+const uploaded = await client.documents.upload(file, "facture.pdf", "receipt");
+```
+
+| Paramètre | Type | Obligatoire | Description |
+|-----------|------|:-----------:|-------------|
+| `file` | `Uint8Array` | oui | Contenu du fichier |
+| `filename` | `string` | oui | Nom du fichier |
+| `type` | `string` | — | Type de document (ex: `receipt`) |
+
+**Retour :** `Promise<Document>`
+
+## download
+
+Télécharger un document.
+
+```ts title="documents.ts"
+const content = await client.documents.download(123);
+// content est un ArrayBuffer
+```
+
+| Paramètre | Type | Description |
+|-----------|------|-------------|
+| `documentId` | `number` | ID du document |
+
+**Retour :** `Promise<ArrayBuffer>`
+
+## preview
+
+Récupérer la prévisualisation d'un document.
+
+```ts title="documents.ts"
+const preview = await client.documents.preview(123);
+```
+
+| Paramètre | Type | Description |
+|-----------|------|-------------|
+| `documentId` | `number` | ID du document |
+
+**Retour :** `Promise<unknown>`
+
+## searchMatchable
+
+Rechercher des documents pouvant être rapprochés avec des transactions bancaires.
+
+```ts title="documents.ts"
+const matchable = await client.documents.searchMatchable("facture fournisseur");
+```
+
+| Paramètre | Type | Description |
+|-----------|------|-------------|
+| `query` | `string` | Texte de recherche |
+
+**Retour :** `Promise<MatchableDocument[]>`
+
+## Type Document
+
+| Champ | Type | Description |
+|-------|------|-------------|
+| `id` | `number` | Identifiant unique |
+| `name` | `string` | Nom du fichier |
+| `type` | `string` | Type de document |
+| `source` | `string` | Source |
+| `created_at` | `string` | Date de création |
+| `metadata.date` | `string \| null` | Date du document |
+| `metadata.amount` | `number \| null` | Montant |
+| `metadata.supplier_name` | `string \| null` | Nom du fournisseur |
+| `file_family` | `string \| null` | Famille de fichier |
+| `preview_available` | `boolean` | Prévisualisation disponible |
+
+### Type DocumentCategory
+
+| Champ | Type | Description |
+|-------|------|-------------|
+| `id` | `number` | Identifiant unique |
+| `name` | `string` | Nom de la catégorie |
+| `code` | `string` | Code |
+| `count` | `number` | Nombre de documents |
+
+### Type MatchableDocument
+
+| Champ | Type | Description |
+|-------|------|-------------|
+| `id` | `number` | Identifiant unique |
+| `mime_type` | `string` | Type MIME |
+| `name` | `string` | Nom du fichier |
+| `type` | `string` | Type de document |
+| `metadata` | `array` | Métadonnées (date, montant, fournisseur) |
+| `created_at` | `string` | Date de création |
+| `tags` | `array` | Tags avec montants |

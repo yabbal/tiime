@@ -1,0 +1,126 @@
+---
+title: Devis
+description: Créer, lister, envoyer et télécharger des devis
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+Accès via `client.quotations`.
+
+## list
+
+Lister les devis.
+
+```ts title="quotations.ts"
+const quotations = await client.quotations.list();
+
+// Avec les factures liées (par défaut)
+const withInvoices = await client.quotations.list("invoices");
+```
+
+| Paramètre | Type | Défaut | Description |
+|-----------|------|--------|-------------|
+| `expand` | `string` | `"invoices"` | Relations à inclure |
+
+**Retour :** `Promise<Quotation[]>`
+
+## get
+
+Récupérer les détails d'un devis.
+
+```ts title="quotations.ts"
+const quotation = await client.quotations.get(10);
+```
+
+| Paramètre | Type | Description |
+|-----------|------|-------------|
+| `quotationId` | `number` | ID du devis |
+
+**Retour :** `Promise<Quotation>`
+
+## create
+
+Créer un nouveau devis.
+
+```ts title="quotations.ts"
+const quotation = await client.quotations.create({
+  date: "2026-03-01",
+  client: { id: 100 },
+  lines: [
+    {
+      description: "Mission conseil",
+      quantity: 10,
+      unit_amount: 600,
+      vat_type: { code: "normal" },
+      invoicing_unit: { id: 3, code: "day" },
+    },
+  ],
+  status: "draft",
+});
+```
+
+**Paramètres (`QuotationCreateParams`) :**
+
+| Champ | Type | Obligatoire | Description |
+|-------|------|:-----------:|-------------|
+| `date` | `string` | oui | Date du devis (YYYY-MM-DD) |
+| `lines` | `InvoiceLine[]` | oui | Lignes du devis |
+| `client` | `{ id: number }` | — | Client existant |
+| `client_name` | `string` | — | Nom du client (si pas de `client`) |
+| `title` | `string \| null` | — | Titre du devis |
+| `status` | `"draft" \| "saved"` | — | Statut (défaut: `draft`) |
+
+**Retour :** `Promise<Quotation>`
+
+<Callout type="info">
+  Les champs `line_amount`, `sequence`, `invoicing_category_type` et les champs de remise sont calculés automatiquement, comme pour les factures.
+</Callout>
+
+## send
+
+Envoyer un devis par email.
+
+```ts title="quotations.ts"
+await client.quotations.send(10, {
+  recipients: [{ email: "client@example.com" }],
+  subject: "Devis mars 2026",
+  message: "Veuillez trouver ci-joint notre proposition.",
+});
+```
+
+**Paramètres (`QuotationSendParams`) :**
+
+| Champ | Type | Obligatoire | Description |
+|-------|------|:-----------:|-------------|
+| `recipients` | `{ email: string }[]` | oui | Destinataires |
+| `subject` | `string` | — | Sujet de l'email |
+| `message` | `string` | — | Corps de l'email |
+
+**Retour :** `Promise<void>`
+
+## downloadPdf
+
+Télécharger le PDF d'un devis.
+
+```ts title="quotations.ts"
+const pdf = await client.quotations.downloadPdf(10);
+```
+
+| Paramètre | Type | Description |
+|-----------|------|-------------|
+| `quotationId` | `number` | ID du devis |
+
+**Retour :** `Promise<ArrayBuffer>`
+
+## Type Quotation
+
+| Champ | Type | Description |
+|-------|------|-------------|
+| `id` | `number` | Identifiant unique |
+| `quotation_number` | `string \| null` | Numéro du devis |
+| `date` | `string` | Date du devis |
+| `status` | `string` | Statut |
+| `amount_excluding_taxes` | `number` | Montant HT |
+| `amount_including_taxes` | `number` | Montant TTC |
+| `client` | `{ id: number, name: string } \| null` | Client associé |
+| `invoices` | `Invoice[]` | Factures liées (si `expand: "invoices"`) |
