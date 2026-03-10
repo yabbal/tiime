@@ -7,14 +7,15 @@ on:
 jobs:
   homebrew:
     runs-on: ubuntu-latest
+    if: startsWith(github.event.release.tag_name, 'tiime-cli@')
     steps:
       - uses: actions/checkout@v6
 
       - name: Get version and SHA
         id: info
         run: |
-          VERSION=${{ github.event.release.tag_name }}
-          VERSION=${VERSION#v}
+          TAG="${{ github.event.release.tag_name }}"
+          VERSION="${TAG#tiime-cli@}"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
           URL="https://registry.npmjs.org/tiime-cli/-/tiime-cli-${VERSION}.tgz"
