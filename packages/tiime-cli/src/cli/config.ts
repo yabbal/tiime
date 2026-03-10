@@ -10,7 +10,10 @@ import {
 	type TokenStorage,
 } from "tiime-sdk";
 
-const CONFIG_DIR = join(homedir(), ".config", "tiime");
+const CONFIG_DIR = join(
+	process.env.XDG_CONFIG_HOME || join(homedir(), ".config"),
+	"tiime",
+);
 const AUTH_FILE = join(CONFIG_DIR, "auth.json");
 const CONFIG_FILE = join(CONFIG_DIR, "config.json");
 const KEYCHAIN_ACCOUNT = "tiime-cli";
