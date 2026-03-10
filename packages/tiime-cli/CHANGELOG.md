@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.1.0
+
+### Minor Changes
+
+- [#30](https://github.com/yabbal/tiime/pull/30) [`a2d6b1a`](https://github.com/yabbal/tiime/commit/a2d6b1aafee3862e9c2aa65257e06c17b61c5847) Thanks [@yabbal](https://github.com/yabbal)! - Add dashboard command with local web server, fix API paths (remove leading slashes for ofetch compatibility), and respect XDG_CONFIG_HOME for config directory.
+
+### Patch Changes
+
+- Updated dependencies [[`a2d6b1a`](https://github.com/yabbal/tiime/commit/a2d6b1aafee3862e9c2aa65257e06c17b61c5847)]:
+  - tiime-sdk@3.0.1
+
 ## 2.0.5
 
 ### Patch Changes
