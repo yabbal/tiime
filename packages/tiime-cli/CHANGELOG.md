@@ -1,5 +1,18 @@
 # Changelog
 
+## 2.2.0
+
+### Minor Changes
+
+- [#36](https://github.com/yabbal/tiime/pull/36) [`058daa9`](https://github.com/yabbal/tiime/commit/058daa9fd676ec033017089c64b801fb9dae51f3) Thanks [@yabbal](https://github.com/yabbal)! - feat(cli): add Money Wrapped — Spotify Wrapped-style financial storytelling
+
+  - New `/wrapped` page with slide-based storytelling UI
+  - Multi-company aggregation by default, per-company selection via dropdown
+  - Per-year and all-time stats with animated transitions
+  - Slides: revenue, invoices, biggest invoice, top clients, cashflow ratio, top expenses, best/worst months, transactions count, monthly chart, summary
+  - Mobile-optimized with CSS scroll-snap navigation
+  - Confetti animations, countUp effects, floating decorations
+
 ## 2.1.1
 
 ### Patch Changes
