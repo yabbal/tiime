@@ -1,0 +1,220 @@
+---
+title: Transactions bancaires
+description: Lister, filtrer, imputer et rapprocher des transactions bancaires
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+Accès via `client.bankTransactions`.
+
+## list
+
+Lister les transactions bancaires avec pagination.
+
+```ts title="bank-transactions.ts"
+const response = await client.bankTransactions.list({
+  from: "2026-01-01",
+  to: "2026-01-31",
+  search: "loyer",
+  bank_account: 123,
+  page: 1,
+  pageSize: 100,
+});
+
+// response.transactions contient les transactions
+// response.metadata contient les métadonnées (total, etc.)
+```
+
+**Paramètres (`BankTransactionsListParams`) :**
+
+| Champ | Type | Défaut | Description |
+|-------|------|--------|-------------|
+| `from` | `string` | — | Date de début (YYYY-MM-DD) |
+| `to` | `string` | — | Date de fin (YYYY-MM-DD) |
+| `search` | `string` | — | Recherche dans le libellé |
+| `bank_account` | `number` | — | ID du compte bancaire |
+| `hide_refused` | `boolean` | `false` | Masquer les transactions refusées |
+| `amount_type` | `"positive" \| "negative"` | — | Filtrer par sens (crédit/débit) |
+| `operation_type` | `string` | — | Type d'opération |
+| `sorts` | `string` | — | Tri (ex: `transaction_date:desc`) |
+| `page` | `number` | `1` | Numéro de page |
+| `pageSize` | `number` | `100` | Résultats par page |
+
+**Retour :** `Promise<BankTransactionsResponse>`
+
+```ts
+interface BankTransactionsResponse {
+  metadata: {
+    has_multiple_cardholder: boolean;
+    accountant_detail_request_data: { id: number }[];
+    total_amount: number;
+  };
+  transactions: BankTransaction[];
+}
+```
+
+## listAll
+
+Récupérer toutes les transactions avec pagination automatique.
+
+```ts title="bank-transactions.ts"
+const all = await client.bankTransactions.listAll({
+  from: "2026-01-01",
+  to: "2026-03-31",
+  search: "loyer",
+});
+```
+
+Accepte les mêmes paramètres que `list()` sauf `page`. La pagination est gérée automatiquement.
+
+**Retour :** `Promise<BankTransaction[]>`
+
+## get
+
+Récupérer les détails d'une transaction.
+
+```ts title="bank-transactions.ts"
+const tx = await client.bankTransactions.get(317543840);
+```
+
+| Paramètre | Type | Description |
+|-----------|------|-------------|
+| `transactionId` | `number` | ID de la transaction |
+
+**Retour :** `Promise<BankTransaction>`
+
+## unimputed
+
+Récupérer les transactions non imputées.
+
+```ts title="bank-transactions.ts"
+const unimputed = await client.bankTransactions.unimputed();
+```
+
+**Retour :** `Promise<BankTransaction[]>`
+
+<Callout type="warn" title="Données partielles">
+  Cette méthode peut retourner des transactions avec uniquement l'`id`, sans les champs `wording`, `amount`, etc. Utilisez `get(id)` pour récupérer les détails complets si nécessaire.
+</Callout>
+
+## labelSuggestions
+
+Obtenir les suggestions de label comptable pour une transaction.
+
+```ts title="bank-transactions.ts"
+const suggestions = await client.bankTransactions.labelSuggestions(317543840);
+// [{ id: 3901280, label: "restaurant", name: "Restaurant", color: "#...", ... }]
+```
+
+| Paramètre | Type | Description |
+|-----------|------|-------------|
+| `transactionId` | `number` | ID de la transaction |
+
+**Retour :** `Promise<LabelSuggestion[]>`
+
+## impute
+
+Imputer une transaction avec un ou plusieurs labels comptables.
+
+```ts title="bank-transactions.ts"
+await client.bankTransactions.impute(317543840, [
+  {
+    label: { id: 3901280 },
+    amount: 25.50,
+    documents: [],
+    accountant_detail_requests: [],
+  },
+]);
+```
+
+| Paramètre | Type | Description |
+|-----------|------|-------------|
+| `transactionId` | `number` | ID de la transaction |
+| `imputations` | `ImputationParams[]` | Imputations à appliquer |
+
+**ImputationParams :**
+
+| Champ | Type | Description |
+|-------|------|-------------|
+| `label` | `{ id: number }` | Label comptable |
+| `amount` | `number` | Montant imputé |
+| `documents` | `{ id: number }[]` | Documents associés |
+| `accountant_detail_requests` | `{ id: number }[]` | Demandes de détails comptable |
+
+**Retour :** `Promise<BankTransaction>`
+
+## matchDocuments
+
+Rapprocher des documents avec une transaction.
+
+```ts title="bank-transactions.ts"
+const matchings = await client.bankTransactions.matchDocuments(317543840, [456, 789]);
+```
+
+| Paramètre | Type | Description |
+|-----------|------|-------------|
+| `transactionId` | `number` | ID de la transaction |
+| `documentIds` | `number[]` | IDs des documents à rapprocher |
+
+**Retour :** `Promise<DocumentMatching[]>`
+
+## getMatchings
+
+Récupérer les rapprochements de documents d'une transaction.
+
+```ts title="bank-transactions.ts"
+const { matchings } = await client.bankTransactions.getMatchings(317543840);
+```
+
+| Paramètre | Type | Description |
+|-----------|------|-------------|
+| `transactionId` | `number` | ID de la transaction |
+
+**Retour :** `Promise<{ matchings: DocumentMatching[] }>`
+
+## Type BankTransaction
+
+| Champ | Type | Description |
+|-------|------|-------------|
+| `id` | `number` | Identifiant unique |
+| `wording` | `string` | Libellé |
+| `original_wording` | `string` | Libellé original |
+| `amount` | `number` | Montant |
+| `currency` | `string` | Devise |
+| `transaction_date` | `string` | Date de transaction |
+| `realization_date` | `string` | Date de réalisation |
+| `vat_application_date` | `string` | Date d'application TVA |
+| `bank_account` | `{ id: number }` | Compte bancaire |
+| `operation_type` | `string` | Type d'opération |
+| `status` | `string` | Statut |
+| `status_code` | `string` | Code statut |
+| `comment` | `string \| null` | Commentaire |
+| `tags` | `Tag[]` | Tags |
+| `short_bank_name` | `string` | Nom court de la banque |
+| `beneficiary` | `{ id, name } \| null` | Bénéficiaire |
+| `merchant` | `{ id, name } \| null` | Commerçant |
+| `transfer_label` | `string \| null` | Libellé du virement |
+| `imputations` | `Imputation[]` | Imputations |
+| `count_documents` | `number` | Nombre de documents |
+| `count_invoices` | `number` | Nombre de factures |
+
+### Type LabelSuggestion
+
+| Champ | Type | Description |
+|-------|------|-------------|
+| `id` | `number` | Identifiant unique |
+| `label` | `string` | Libellé |
+| `name` | `string` | Nom |
+| `acronym` | `string` | Acronyme |
+| `color` | `string` | Couleur |
+| `client` | `{ id, name } \| null` | Client associé |
+
+### Type DocumentMatching
+
+| Champ | Type | Description |
+|-------|------|-------------|
+| `id` | `number` | Identifiant unique |
+| `document` | `{ id: number }` | Document |
+| `bank_transaction` | `{ id: number }` | Transaction |
+| `matching_type` | `string` | Type de rapprochement |
+| `invalid_matching` | `boolean` | Rapprochement invalide |

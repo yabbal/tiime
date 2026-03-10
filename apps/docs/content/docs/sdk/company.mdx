@@ -1,0 +1,123 @@
+---
+title: Entreprise
+description: Détails de l'entreprise, configuration et dashboard
+---
+
+Accès via `client.company`.
+
+## get
+
+Récupérer les détails de l'entreprise active.
+
+```ts title="company.ts"
+const company = await client.company.get();
+// { id: 50824, name: "Mon Entreprise", legal_form: "SAS", siret: "...", ... }
+```
+
+**Retour :** `Promise<Company>`
+
+## users
+
+Récupérer les utilisateurs de l'entreprise.
+
+```ts title="company.ts"
+const users = await client.company.users();
+```
+
+**Retour :** `Promise<unknown>`
+
+## appConfig
+
+Récupérer la configuration de l'application pour l'entreprise.
+
+```ts title="company.ts"
+const config = await client.company.appConfig();
+```
+
+**Retour :** `Promise<unknown>`
+
+## accountingPeriod
+
+Récupérer la période comptable en cours.
+
+```ts title="company.ts"
+const period = await client.company.accountingPeriod();
+// { id: 1, start_date: "2026-01-01", end_date: "2026-12-31", status: "open" }
+
+// Avec une plage de N années
+const multiYear = await client.company.accountingPeriod(3);
+```
+
+| Paramètre | Type | Défaut | Description |
+|-----------|------|--------|-------------|
+| `rangeYear` | `number` | `1` | Nombre d'années de la plage |
+
+**Retour :** `Promise<AccountingPeriod>`
+
+## tiles
+
+Récupérer les tuiles du dashboard.
+
+```ts title="company.ts"
+const tiles = await client.company.tiles(["revenue", "expenses", "balance"]);
+```
+
+| Paramètre | Type | Description |
+|-----------|------|-------------|
+| `keys` | `string[]` | Clés des tuiles à récupérer |
+
+**Retour :** `Promise<unknown>`
+
+## dashboardBlocks
+
+Récupérer les blocs du dashboard.
+
+```ts title="company.ts"
+const blocks = await client.company.dashboardBlocks();
+
+// Avec un groupe d'affichage spécifique
+const custom = await client.company.dashboardBlocks("analytics");
+```
+
+| Paramètre | Type | Défaut | Description |
+|-----------|------|--------|-------------|
+| `displayGroup` | `string` | `"monitoring"` | Groupe d'affichage |
+
+**Retour :** `Promise<unknown>`
+
+## Type Company
+
+| Champ | Type | Description |
+|-------|------|-------------|
+| `id` | `number` | Identifiant unique |
+| `name` | `string` | Nom de l'entreprise |
+| `legal_form` | `string` | Forme juridique |
+| `siret` | `string` | SIRET |
+| `vat_number` | `string` | Numéro de TVA |
+| `intracom_vat_number` | `string` | TVA intracommunautaire |
+| `ape_code` | `ApeCode` | Code APE |
+| `street` | `string` | Rue |
+| `address_complement` | `string \| null` | Complément d'adresse |
+| `postal_code` | `string` | Code postal |
+| `city` | `string` | Ville |
+| `country` | `string` | Pays |
+| `share_capital` | `number` | Capital social |
+| `registration_date` | `string` | Date d'immatriculation |
+| `activity_start_date` | `string` | Date de début d'activité |
+| `vat_system` | `VatSystem` | Régime de TVA |
+| `tax_regime` | `string` | Régime fiscal |
+| `receipt_email` | `string` | Email de réception |
+| `payment_email` | `string` | Email de paiement |
+| `has_invoices` | `boolean` | A des factures |
+| `logo` | `{ id: number }` | Logo |
+| `uuid` | `string` | UUID |
+| `slug` | `string` | Slug |
+
+### Type AccountingPeriod
+
+| Champ | Type | Description |
+|-------|------|-------------|
+| `id` | `number` | Identifiant unique |
+| `start_date` | `string` | Date de début |
+| `end_date` | `string` | Date de fin |
+| `status` | `string` | Statut |

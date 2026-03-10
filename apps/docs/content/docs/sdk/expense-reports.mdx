@@ -1,0 +1,67 @@
+---
+title: Notes de frais
+description: Lister, consulter et créer des notes de frais
+---
+
+Accès via `client.expenseReports`.
+
+## list
+
+Lister les notes de frais.
+
+```ts title="expense-reports.ts"
+const expenses = await client.expenseReports.list();
+
+// Avec un tri personnalisé
+const sorted = await client.expenseReports.list("metadata.date:asc");
+```
+
+| Paramètre | Type | Défaut | Description |
+|-----------|------|--------|-------------|
+| `sorts` | `string` | `"metadata.date:desc"` | Tri |
+
+**Retour :** `Promise<ExpenseReport[]>`
+
+## get
+
+Récupérer les détails d'une note de frais.
+
+```ts title="expense-reports.ts"
+const expense = await client.expenseReports.get(5);
+```
+
+| Paramètre | Type | Description |
+|-----------|------|-------------|
+| `expenseReportId` | `number` | ID de la note de frais |
+
+**Retour :** `Promise<ExpenseReport>`
+
+## create
+
+Créer une note de frais.
+
+```ts title="expense-reports.ts"
+const expense = await client.expenseReports.create({
+  name: "Déplacement client mars 2026",
+  metadata: { date: "2026-03-15" },
+});
+```
+
+**Paramètres (`ExpenseReportCreateParams`) :**
+
+| Champ | Type | Obligatoire | Description |
+|-------|------|:-----------:|-------------|
+| `name` | `string` | oui | Nom de la note de frais |
+| `metadata.date` | `string` | — | Date (YYYY-MM-DD) |
+
+**Retour :** `Promise<ExpenseReport>`
+
+## Type ExpenseReport
+
+| Champ | Type | Description |
+|-------|------|-------------|
+| `id` | `number` | Identifiant unique |
+| `name` | `string` | Nom |
+| `status` | `string` | Statut |
+| `total_amount` | `number \| null` | Montant total |
+| `metadata.date` | `string \| null` | Date |

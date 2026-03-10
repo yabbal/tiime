@@ -1,0 +1,249 @@
+---
+title: Factures
+description: Créer, lister, modifier, envoyer et télécharger des factures
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+Accès via `client.invoices`.
+
+## list
+
+Lister les factures avec pagination.
+
+```ts title="invoices.ts"
+const invoices = await client.invoices.list({
+  status: "paid",
+  sorts: "invoice_number:desc",
+  page: 1,
+  pageSize: 25,
+});
+```
+
+**Paramètres (`InvoicesListParams`) :**
+
+| Champ | Type | Défaut | Description |
+|-------|------|--------|-------------|
+| `status` | `string` | — | Filtrer par statut : `draft`, `saved`, `sent`, `paid` |
+| `sorts` | `string` | `"invoice_number:desc"` | Tri (ex: `emission_date:asc`) |
+| `page` | `number` | `1` | Numéro de page |
+| `pageSize` | `number` | `25` | Nombre de résultats par page |
+
+**Retour :** `Promise<Invoice[]>`
+
+## listAll
+
+Récupérer toutes les factures avec pagination automatique.
+
+```ts title="invoices.ts"
+const all = await client.invoices.listAll({ status: "sent" });
+```
+
+| Champ | Type | Défaut | Description |
+|-------|------|--------|-------------|
+| `status` | `string` | — | Filtrer par statut |
+| `sorts` | `string` | `"invoice_number:desc"` | Tri |
+| `pageSize` | `number` | `100` | Taille de chaque page (interne) |
+
+**Retour :** `Promise<Invoice[]>`
+
+<Callout type="info">
+  Cette méthode itère automatiquement sur toutes les pages jusqu'à récupérer l'ensemble des résultats.
+</Callout>
+
+## get
+
+Récupérer les détails d'une facture.
+
+```ts title="invoices.ts"
+const invoice = await client.invoices.get(42);
+```
+
+| Paramètre | Type | Description |
+|-----------|------|-------------|
+| `invoiceId` | `number` | ID de la facture |
+
+**Retour :** `Promise<Invoice>`
+
+## create
+
+Créer une nouvelle facture.
+
+```ts title="invoices.ts"
+const invoice = await client.invoices.create({
+  emission_date: "2026-03-01",
+  client: { id: 100 },
+  lines: [
+    {
+      description: "Prestation de conseil",
+      quantity: 5,
+      unit_amount: 800,
+      vat_type: { code: "normal" },
+      invoicing_unit: { id: 3, code: "day" },
+    },
+  ],
+  status: "draft",
+});
+```
+
+**Paramètres (`InvoiceCreateParams`) :**
+
+| Champ | Type | Obligatoire | Description |
+|-------|------|:-----------:|-------------|
+| `emission_date` | `string` | oui | Date d'émission (YYYY-MM-DD) |
+| `lines` | `InvoiceLine[]` | oui | Lignes de la facture |
+| `client` | `{ id: number }` | — | Client existant |
+| `client_name` | `string` | — | Nom du client (si pas de `client`) |
+| `client_address` | `string` | — | Adresse du client |
+| `client_postal_code` | `string` | — | Code postal du client |
+| `client_city` | `string` | — | Ville du client |
+| `client_country_code` | `string` | — | Code pays du client |
+| `client_siren_or_siret` | `string \| null` | — | SIREN/SIRET du client |
+| `status` | `"draft" \| "saved"` | — | Statut (défaut: `draft`) |
+| `title` | `string \| null` | — | Titre de la facture |
+| `title_enabled` | `boolean` | — | Activer le titre |
+| `due_date` | `string` | — | Date d'échéance |
+| `due_date_mode` | `string` | — | Mode d'échéance |
+| `template` | `string` | — | Template de facture |
+| `free_field` | `string` | — | Champ libre |
+| `free_field_enabled` | `boolean` | — | Activer le champ libre |
+| `discount_enabled` | `boolean` | — | Activer les remises |
+| `bank_detail_enabled` | `boolean` | — | Afficher les coordonnées bancaires |
+| `payment_condition` | `string` | — | Conditions de paiement |
+| `payment_condition_enabled` | `boolean` | — | Activer les conditions de paiement |
+| `iban` | `string` | — | IBAN |
+| `bic` | `string` | — | BIC |
+
+**InvoiceLine :**
+
+| Champ | Type | Obligatoire | Description |
+|-------|------|:-----------:|-------------|
+| `description` | `string` | oui | Description de la ligne |
+| `quantity` | `number` | oui | Quantité |
+| `unit_amount` | `number` | oui | Prix unitaire HT |
+| `vat_type` | `{ code: string }` | oui | Type de TVA (`"normal"`, `"reduced"`, etc.) |
+| `invoicing_unit` | `{ id: number, code: string }` | — | Unité de facturation |
+| `invoicing_category_type` | `string` | — | Type de catégorie (défaut: `"benefit"`) |
+| `article` | `{ id: number }` | — | Article du catalogue |
+| `sequence` | `number` | — | Ordre de la ligne (défaut: `1`) |
+| `discount_description` | `string` | — | Description de la remise |
+| `discount_amount` | `number \| null` | — | Montant de la remise |
+| `discount_percentage` | `number \| null` | — | Pourcentage de la remise |
+
+**Retour :** `Promise<Invoice>`
+
+<Callout type="info">
+  Les champs `line_amount`, `sequence`, `invoicing_category_type`, `discount_description`, `discount_amount` et `discount_percentage` sont calculés ou définis automatiquement si non fournis.
+</Callout>
+
+## update
+
+Modifier une facture existante.
+
+```ts title="invoices.ts"
+await client.invoices.update(42, {
+  title: "Nouveau titre",
+  due_date: "2026-04-15",
+});
+```
+
+| Paramètre | Type | Description |
+|-----------|------|-------------|
+| `invoiceId` | `number` | ID de la facture |
+| `params` | `Partial<InvoiceCreateParams>` | Champs à modifier |
+
+**Retour :** `Promise<Invoice>`
+
+## duplicate
+
+Dupliquer une facture existante en tant que nouveau brouillon.
+
+```ts title="invoices.ts"
+const copy = await client.invoices.duplicate(42, {
+  emission_date: "2026-04-01",
+  quantity: 18,
+});
+```
+
+| Paramètre | Type | Description |
+|-----------|------|-------------|
+| `invoiceId` | `number` | ID de la facture source |
+| `overrides.emission_date` | `string` | Nouvelle date d'émission (défaut: aujourd'hui) |
+| `overrides.quantity` | `number` | Nouvelle quantité pour toutes les lignes |
+
+**Retour :** `Promise<Invoice>`
+
+<Callout type="info">
+  La facture dupliquée est toujours créée avec le statut `draft`. Le client, le titre et les lignes sont copiés depuis la source.
+</Callout>
+
+## send
+
+Envoyer une facture par email.
+
+```ts title="invoices.ts"
+await client.invoices.send(42, {
+  recipients: [{ email: "client@example.com" }],
+  subject: "Facture mars 2026",
+  message: "Veuillez trouver ci-joint...",
+});
+```
+
+**Paramètres (`InvoiceSendParams`) :**
+
+| Champ | Type | Obligatoire | Description |
+|-------|------|:-----------:|-------------|
+| `recipients` | `{ email: string }[]` | oui | Destinataires |
+| `subject` | `string` | — | Sujet de l'email |
+| `message` | `string` | — | Corps de l'email |
+
+**Retour :** `Promise<void>`
+
+## downloadPdf
+
+Télécharger le PDF d'une facture.
+
+```ts title="invoices.ts"
+const pdf = await client.invoices.downloadPdf(42);
+// pdf est un ArrayBuffer
+```
+
+| Paramètre | Type | Description |
+|-----------|------|-------------|
+| `invoiceId` | `number` | ID de la facture |
+
+**Retour :** `Promise<ArrayBuffer>`
+
+## delete
+
+Supprimer un brouillon de facture.
+
+```ts title="invoices.ts"
+await client.invoices.delete(42);
+```
+
+| Paramètre | Type | Description |
+|-----------|------|-------------|
+| `invoiceId` | `number` | ID de la facture |
+
+**Retour :** `Promise<void>`
+
+## Type Invoice
+
+| Champ | Type | Description |
+|-------|------|-------------|
+| `id` | `number` | Identifiant unique |
+| `client_id` | `number \| null` | ID du client |
+| `client_name` | `string` | Nom du client |
+| `compiled_number` | `string` | Numéro de facture formaté |
+| `emission_date` | `string` | Date d'émission |
+| `number` | `number \| null` | Numéro de facture |
+| `status` | `string` | Statut (`draft`, `saved`, `sent`, `paid`) |
+| `title` | `string \| null` | Titre |
+| `template` | `string` | Template utilisé |
+| `total_excluding_taxes` | `number` | Total HT |
+| `total_including_taxes` | `number` | Total TTC |
+| `due_date` | `string` | Date d'échéance |
+| `lines` | `InvoiceLine[]` | Lignes de la facture |
+| `type` | `string` | Type de facture |
+| `tags` | `Tag[]` | Tags associés |

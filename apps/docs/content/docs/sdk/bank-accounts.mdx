@@ -1,0 +1,78 @@
+---
+title: Comptes bancaires
+description: Lister les comptes bancaires et consulter les soldes
+---
+
+Accès via `client.bankAccounts`.
+
+## list
+
+Lister les comptes bancaires.
+
+```ts title="bank-accounts.ts"
+// Comptes actifs uniquement
+const accounts = await client.bankAccounts.list(true);
+
+// Tous les comptes (actifs et inactifs)
+const all = await client.bankAccounts.list();
+```
+
+| Paramètre | Type | Défaut | Description |
+|-----------|------|--------|-------------|
+| `enabled` | `boolean` | — | Filtrer par statut (`true` = actifs uniquement) |
+
+**Retour :** `Promise<BankAccount[]>`
+
+## get
+
+Récupérer les détails d'un compte bancaire.
+
+```ts title="bank-accounts.ts"
+const account = await client.bankAccounts.get(123);
+```
+
+| Paramètre | Type | Description |
+|-----------|------|-------------|
+| `bankAccountId` | `number` | ID du compte |
+
+**Retour :** `Promise<BankAccount>`
+
+## balance
+
+Récupérer les soldes de tous les comptes actifs.
+
+```ts title="bank-accounts.ts"
+const balances = await client.bankAccounts.balance();
+// [{ name: "Compte courant", balance_amount: 15420.50, currency: "EUR" }]
+```
+
+**Retour :** `Promise<Array<{ name: string, balance_amount: number, currency: string }>>`
+
+## Type BankAccount
+
+| Champ | Type | Description |
+|-------|------|-------------|
+| `id` | `number` | Identifiant unique |
+| `name` | `string` | Nom du compte |
+| `bank` | `Bank` | Banque associée |
+| `bank_account_type` | `{ id, code, description }` | Type de compte |
+| `iban` | `string` | IBAN |
+| `bic` | `string` | BIC |
+| `enabled` | `boolean` | Compte actif |
+| `balance_amount` | `number` | Solde |
+| `balance_currency` | `string` | Devise du solde |
+| `balance_date` | `string` | Date du solde |
+| `is_wallet` | `boolean` | Compte wallet |
+| `closed` | `boolean` | Compte clôturé |
+| `synchronization_date` | `string` | Date de dernière synchronisation |
+
+### Type Bank
+
+| Champ | Type | Description |
+|-------|------|-------------|
+| `id` | `number` | Identifiant unique |
+| `name` | `string` | Nom de la banque |
+| `brand` | `string` | Marque |
+| `sigle` | `string` | Sigle |
+| `code` | `string` | Code banque |
+| `logo_url` | `string` | URL du logo |
