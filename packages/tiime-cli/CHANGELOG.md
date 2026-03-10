@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.1.1
+
+### Patch Changes
+
+- [#32](https://github.com/yabbal/tiime/pull/32) [`e840762`](https://github.com/yabbal/tiime/commit/e8407625e0c6908206a4909c86e4e49cbd725a18) Thanks [@yabbal](https://github.com/yabbal)! - refactor(cli): generate shell completion dynamically from registered commands
+
 ## 2.1.0
 
 ### Minor Changes
