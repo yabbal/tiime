@@ -222,7 +222,8 @@ describe("commands without auth", () => {
 		"expenses list",
 		"quotations list",
 		"company get",
-		"company list",
+		// "company list" is excluded: it doesn't require companyId and the token
+		// may still be available via macOS keychain (not affected by XDG_CONFIG_HOME)
 		"status",
 	];
 
