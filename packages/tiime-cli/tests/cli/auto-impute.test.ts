@@ -1,9 +1,9 @@
+import type { TiimeClient } from "tiime-sdk";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
 	autoImputeForCompany,
 	resolveCompanyIds,
 } from "../../src/cli/auto-impute";
-import type { TiimeClient } from "tiime-sdk";
 
 const makeTx = (id: number, wording: string, amount: number) => ({
 	id,

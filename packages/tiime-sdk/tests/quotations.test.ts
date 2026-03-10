@@ -53,6 +53,7 @@ describe("QuotationsResource", () => {
 		it("should compute line_amount = quantity * unit_amount", async () => {
 			mockFetch.mockResolvedValueOnce({});
 			const params: QuotationCreateParams = {
+				date: "2024-01-01",
 				lines: [
 					{
 						description: "Dev",
@@ -72,6 +73,7 @@ describe("QuotationsResource", () => {
 		it("should apply default values for missing fields", async () => {
 			mockFetch.mockResolvedValueOnce({});
 			const params: QuotationCreateParams = {
+				date: "2024-01-01",
 				lines: [
 					{
 						description: "Dev",
@@ -95,6 +97,7 @@ describe("QuotationsResource", () => {
 		it("should not override existing values", async () => {
 			mockFetch.mockResolvedValueOnce({});
 			const params: QuotationCreateParams = {
+				date: "2024-01-01",
 				lines: [
 					{
 						description: "Dev",
@@ -118,6 +121,7 @@ describe("QuotationsResource", () => {
 			mockFetch.mockResolvedValueOnce({});
 			// lines is optional at runtime even if typed — test the ?? [] guard
 			const params: QuotationCreateParams = {
+				date: "2024-01-01",
 				lines: undefined as never,
 			};
 
@@ -137,7 +141,10 @@ describe("QuotationsResource", () => {
 				unit_amount: 150,
 				vat_type: { code: "20" },
 			};
-			const params: QuotationCreateParams = { lines: [line] };
+			const params: QuotationCreateParams = {
+				date: "2024-01-01",
+				lines: [line],
+			};
 
 			await resource.create(params);
 
@@ -148,7 +155,7 @@ describe("QuotationsResource", () => {
 
 		it("should POST to correct endpoint", async () => {
 			mockFetch.mockResolvedValueOnce({});
-			await resource.create({ lines: [] } as QuotationCreateParams);
+			await resource.create({ date: "2024-01-01", lines: [] });
 
 			expect(mockFetch).toHaveBeenCalledWith(
 				`/companies/${COMPANY_ID}/quotations`,

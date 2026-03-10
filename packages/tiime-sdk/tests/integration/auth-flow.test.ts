@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import type { TokenStorage } from "../../src/auth";
 import { TokenManager } from "../../src/auth";
-import type { AuthTokens, TokenStorage } from "../../src/types";
+import type { AuthTokens } from "../../src/types";
 
 /**
  * Integration tests: TokenManager full auth flow
@@ -88,7 +89,7 @@ describe("TokenManager auth flow", () => {
 			const saved: AuthTokens[] = [];
 			const storage: TokenStorage = {
 				load: () => null,
-				save: (tokens) => saved.push(tokens),
+				save: (tokens: AuthTokens) => saved.push(tokens),
 				clear: () => {},
 			};
 

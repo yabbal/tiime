@@ -219,7 +219,7 @@ describe("InvoicesResource", () => {
 			mockFetch.mockResolvedValueOnce(undefined);
 
 			await invoices.send(99, {
-				emails: ["test@test.com"],
+				recipients: [{ email: "test@test.com" }],
 				message: "Voici votre facture",
 			});
 
@@ -228,7 +228,7 @@ describe("InvoicesResource", () => {
 				{
 					method: "POST",
 					body: {
-						emails: ["test@test.com"],
+						recipients: [{ email: "test@test.com" }],
 						message: "Voici votre facture",
 					},
 				},

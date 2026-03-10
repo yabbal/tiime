@@ -104,14 +104,18 @@ beforeEach(() => {
 		}
 	}
 
-	vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
-		stdoutData += String(chunk);
-		return true;
-	});
-	vi.spyOn(process.stderr, "write").mockImplementation((chunk) => {
-		stderrData += String(chunk);
-		return true;
-	});
+	vi.spyOn(process.stdout, "write").mockImplementation(
+		(chunk: string | Uint8Array) => {
+			stdoutData += String(chunk);
+			return true;
+		},
+	);
+	vi.spyOn(process.stderr, "write").mockImplementation(
+		(chunk: string | Uint8Array) => {
+			stderrData += String(chunk);
+			return true;
+		},
+	);
 	vi.spyOn(process, "exit").mockImplementation(() => undefined as never);
 });
 
@@ -126,7 +130,7 @@ describe("invoices commands", () => {
 		mockClient.invoices.list.mockResolvedValue(fakeInvoices);
 
 		const { invoicesCommand } = await import("../../src/cli/commands/invoices");
-		const listCmd = invoicesCommand.subCommands?.list;
+		const listCmd = (invoicesCommand.subCommands as Record<string, any>)?.list;
 		await listCmd.run?.({
 			args: {
 				format: "json",
@@ -154,7 +158,7 @@ describe("invoices commands", () => {
 		mockClient.invoices.listAll.mockResolvedValue([]);
 
 		const { invoicesCommand } = await import("../../src/cli/commands/invoices");
-		const listCmd = invoicesCommand.subCommands?.list;
+		const listCmd = (invoicesCommand.subCommands as Record<string, any>)?.list;
 		await listCmd.run?.({
 			args: {
 				format: "json",
@@ -181,7 +185,7 @@ describe("invoices commands", () => {
 		});
 
 		const { invoicesCommand } = await import("../../src/cli/commands/invoices");
-		const getCmd = invoicesCommand.subCommands?.get;
+		const getCmd = (invoicesCommand.subCommands as Record<string, any>)?.get;
 		await getCmd.run?.({
 			args: { id: "99" },
 			rawArgs: [],
@@ -197,7 +201,8 @@ describe("invoices commands", () => {
 		mockClient.invoices.delete.mockResolvedValue(undefined);
 
 		const { invoicesCommand } = await import("../../src/cli/commands/invoices");
-		const deleteCmd = invoicesCommand.subCommands?.delete;
+		const deleteCmd = (invoicesCommand.subCommands as Record<string, any>)
+			?.delete;
 		await deleteCmd.run?.({
 			args: { id: "55" },
 			rawArgs: [],
@@ -212,7 +217,8 @@ describe("invoices commands", () => {
 
 	it("create --dry-run outputs payload without calling API", async () => {
 		const { invoicesCommand } = await import("../../src/cli/commands/invoices");
-		const createCmd = invoicesCommand.subCommands?.create;
+		const createCmd = (invoicesCommand.subCommands as Record<string, any>)
+			?.create;
 		await createCmd.run?.({
 			args: {
 				description: "Dev",
@@ -242,7 +248,8 @@ describe("bank commands", () => {
 		]);
 
 		const { bankCommand } = await import("../../src/cli/commands/bank");
-		const balanceCmd = bankCommand.subCommands?.balance;
+		const balanceCmd = (bankCommand.subCommands as Record<string, any>)
+			?.balance;
 		await balanceCmd.run?.({
 			args: { format: "json" },
 			rawArgs: [],
@@ -260,7 +267,8 @@ describe("bank commands", () => {
 		]);
 
 		const { bankCommand } = await import("../../src/cli/commands/bank");
-		const unimputedCmd = bankCommand.subCommands?.unimputed;
+		const unimputedCmd = (bankCommand.subCommands as Record<string, any>)
+			?.unimputed;
 		await unimputedCmd.run?.({
 			args: { format: "json" },
 			rawArgs: [],
@@ -279,7 +287,8 @@ describe("bank commands", () => {
 		});
 
 		const { bankCommand } = await import("../../src/cli/commands/bank");
-		const txCmd = bankCommand.subCommands?.transactions;
+		const txCmd = (bankCommand.subCommands as Record<string, any>)
+			?.transactions;
 		await txCmd.run?.({
 			args: {
 				format: "json",
@@ -310,7 +319,8 @@ describe("bank commands", () => {
 		mockClient.bankTransactions.listAll.mockResolvedValue([]);
 
 		const { bankCommand } = await import("../../src/cli/commands/bank");
-		const txCmd = bankCommand.subCommands?.transactions;
+		const txCmd = (bankCommand.subCommands as Record<string, any>)
+			?.transactions;
 		await txCmd.run?.({
 			args: {
 				format: "json",
@@ -332,7 +342,7 @@ describe("clients commands", () => {
 		mockClient.clients.list.mockResolvedValue([{ id: 1, name: "Acme Corp" }]);
 
 		const { clientsCommand } = await import("../../src/cli/commands/clients");
-		const listCmd = clientsCommand.subCommands?.list;
+		const listCmd = (clientsCommand.subCommands as Record<string, any>)?.list;
 		await listCmd.run?.({
 			args: { format: "json", archived: false },
 			rawArgs: [],
@@ -351,7 +361,7 @@ describe("clients commands", () => {
 		});
 
 		const { clientsCommand } = await import("../../src/cli/commands/clients");
-		const getCmd = clientsCommand.subCommands?.get;
+		const getCmd = (clientsCommand.subCommands as Record<string, any>)?.get;
 		await getCmd.run?.({
 			args: { id: "10" },
 			rawArgs: [],
@@ -365,7 +375,8 @@ describe("clients commands", () => {
 		mockClient.clients.create.mockResolvedValue({ id: 99, name: "New Co" });
 
 		const { clientsCommand } = await import("../../src/cli/commands/clients");
-		const createCmd = clientsCommand.subCommands?.create;
+		const createCmd = (clientsCommand.subCommands as Record<string, any>)
+			?.create;
 		await createCmd.run?.({
 			args: {
 				name: "New Co",
@@ -400,7 +411,7 @@ describe("company commands", () => {
 		});
 
 		const { companyCommand } = await import("../../src/cli/commands/company");
-		const getCmd = companyCommand.subCommands?.get;
+		const getCmd = (companyCommand.subCommands as Record<string, any>)?.get;
 		await getCmd.run?.({
 			args: {},
 			rawArgs: [],
@@ -425,7 +436,7 @@ describe("company commands", () => {
 		]);
 
 		const { companyCommand } = await import("../../src/cli/commands/company");
-		const listCmd = companyCommand.subCommands?.list;
+		const listCmd = (companyCommand.subCommands as Record<string, any>)?.list;
 		await listCmd.run?.({
 			args: { format: "json" },
 			rawArgs: [],
@@ -453,7 +464,7 @@ describe("documents commands", () => {
 		const { documentsCommand } = await import(
 			"../../src/cli/commands/documents"
 		);
-		const listCmd = documentsCommand.subCommands?.list;
+		const listCmd = (documentsCommand.subCommands as Record<string, any>)?.list;
 		await listCmd.run?.({
 			args: {
 				format: "json",
@@ -480,7 +491,8 @@ describe("documents commands", () => {
 		const { documentsCommand } = await import(
 			"../../src/cli/commands/documents"
 		);
-		const catCmd = documentsCommand.subCommands?.categories;
+		const catCmd = (documentsCommand.subCommands as Record<string, any>)
+			?.categories;
 		await catCmd.run?.({
 			args: { format: "json" },
 			rawArgs: [],
@@ -496,7 +508,7 @@ describe("labels commands", () => {
 		mockClient.labels.list.mockResolvedValue([{ id: 1, name: "Restaurant" }]);
 
 		const { labelsCommand } = await import("../../src/cli/commands/labels");
-		const listCmd = labelsCommand.subCommands?.list;
+		const listCmd = (labelsCommand.subCommands as Record<string, any>)?.list;
 		await listCmd.run?.({
 			args: { format: "json" },
 			rawArgs: [],
@@ -512,7 +524,7 @@ describe("labels commands", () => {
 		mockClient.labels.standard.mockResolvedValue([]);
 
 		const { labelsCommand } = await import("../../src/cli/commands/labels");
-		const stdCmd = labelsCommand.subCommands?.standard;
+		const stdCmd = (labelsCommand.subCommands as Record<string, any>)?.standard;
 		await stdCmd.run?.({
 			args: { format: "json" },
 			rawArgs: [],
@@ -528,7 +540,7 @@ describe("expenses commands", () => {
 		mockClient.expenseReports.list.mockResolvedValue([]);
 
 		const { expensesCommand } = await import("../../src/cli/commands/expenses");
-		const listCmd = expensesCommand.subCommands?.list;
+		const listCmd = (expensesCommand.subCommands as Record<string, any>)?.list;
 		await listCmd.run?.({
 			args: { format: "json", sort: "metadata.date:desc" },
 			rawArgs: [],
@@ -544,7 +556,8 @@ describe("expenses commands", () => {
 		mockClient.expenseReports.create.mockResolvedValue({ id: 1 });
 
 		const { expensesCommand } = await import("../../src/cli/commands/expenses");
-		const createCmd = expensesCommand.subCommands?.create;
+		const createCmd = (expensesCommand.subCommands as Record<string, any>)
+			?.create;
 		await createCmd.run?.({
 			args: { name: "Déplacement mars", date: "2026-03-15" },
 			rawArgs: [],
@@ -561,7 +574,7 @@ describe("expenses commands", () => {
 describe("auth commands", () => {
 	it("status outputs authentication info", async () => {
 		const { authCommand } = await import("../../src/cli/commands/auth");
-		const statusCmd = authCommand.subCommands?.status;
+		const statusCmd = (authCommand.subCommands as Record<string, any>)?.status;
 		await statusCmd.run?.({
 			args: {},
 			rawArgs: [],
@@ -575,7 +588,7 @@ describe("auth commands", () => {
 
 	it("logout calls tokenManager.logout", async () => {
 		const { authCommand } = await import("../../src/cli/commands/auth");
-		const logoutCmd = authCommand.subCommands?.logout;
+		const logoutCmd = (authCommand.subCommands as Record<string, any>)?.logout;
 		await logoutCmd.run?.({
 			args: {},
 			rawArgs: [],
@@ -610,7 +623,7 @@ describe("status command", () => {
 
 		const { statusCommand } = await import("../../src/cli/commands/status");
 		await statusCommand.run?.({
-			args: { format: "json" },
+			args: { format: "json", _: [] },
 			rawArgs: [],
 			cmd: statusCommand,
 		});
@@ -634,7 +647,7 @@ describe("error handling", () => {
 		);
 
 		const { invoicesCommand } = await import("../../src/cli/commands/invoices");
-		const listCmd = invoicesCommand.subCommands?.list;
+		const listCmd = (invoicesCommand.subCommands as Record<string, any>)?.list;
 		await listCmd.run?.({
 			args: {
 				format: "json",
@@ -657,7 +670,7 @@ describe("error handling", () => {
 		mockClient.clients.list.mockRejectedValue(new Error("Network fail"));
 
 		const { clientsCommand } = await import("../../src/cli/commands/clients");
-		const listCmd = clientsCommand.subCommands?.list;
+		const listCmd = (clientsCommand.subCommands as Record<string, any>)?.list;
 		await listCmd.run?.({
 			args: { format: "json", archived: false },
 			rawArgs: [],
