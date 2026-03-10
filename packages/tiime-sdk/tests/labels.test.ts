@@ -16,14 +16,11 @@ describe("LabelsResource", () => {
 		it("should call correct endpoint with Accept header", async () => {
 			mockFetch.mockResolvedValueOnce([]);
 			await resource.list();
-			expect(mockFetch).toHaveBeenCalledWith(
-				`/companies/${COMPANY_ID}/labels`,
-				{
-					headers: {
-						Accept: "application/vnd.tiime.labels.v2+json",
-					},
+			expect(mockFetch).toHaveBeenCalledWith(`companies/${COMPANY_ID}/labels`, {
+				headers: {
+					Accept: "application/vnd.tiime.labels.v2+json",
 				},
-			);
+			});
 		});
 	});
 
@@ -32,7 +29,7 @@ describe("LabelsResource", () => {
 			mockFetch.mockResolvedValueOnce([]);
 			await resource.standard();
 			expect(mockFetch).toHaveBeenCalledWith(
-				`/companies/${COMPANY_ID}/standard_labels`,
+				`companies/${COMPANY_ID}/standard_labels`,
 			);
 		});
 	});
@@ -41,7 +38,7 @@ describe("LabelsResource", () => {
 		it("should call correct endpoint with expand query", async () => {
 			mockFetch.mockResolvedValueOnce([]);
 			await resource.tags();
-			expect(mockFetch).toHaveBeenCalledWith(`/companies/${COMPANY_ID}/tags`, {
+			expect(mockFetch).toHaveBeenCalledWith(`companies/${COMPANY_ID}/tags`, {
 				query: { expand: "tag_detail" },
 			});
 		});

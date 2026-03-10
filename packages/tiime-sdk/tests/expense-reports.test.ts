@@ -17,7 +17,7 @@ describe("ExpenseReportsResource", () => {
 			mockFetch.mockResolvedValueOnce([]);
 			await resource.list();
 			expect(mockFetch).toHaveBeenCalledWith(
-				`/companies/${COMPANY_ID}/expense_reports`,
+				`companies/${COMPANY_ID}/expense_reports`,
 				{
 					query: { expand: "total_amount", sorts: "metadata.date:desc" },
 					headers: { Range: "items=0-25" },
@@ -29,7 +29,7 @@ describe("ExpenseReportsResource", () => {
 			mockFetch.mockResolvedValueOnce([]);
 			await resource.list("created_at:asc");
 			expect(mockFetch).toHaveBeenCalledWith(
-				`/companies/${COMPANY_ID}/expense_reports`,
+				`companies/${COMPANY_ID}/expense_reports`,
 				{
 					query: { expand: "total_amount", sorts: "created_at:asc" },
 					headers: { Range: "items=0-25" },
@@ -43,7 +43,7 @@ describe("ExpenseReportsResource", () => {
 			mockFetch.mockResolvedValueOnce({});
 			await resource.get(42);
 			expect(mockFetch).toHaveBeenCalledWith(
-				`/companies/${COMPANY_ID}/expense_reports/42`,
+				`companies/${COMPANY_ID}/expense_reports/42`,
 			);
 		});
 	});
@@ -54,7 +54,7 @@ describe("ExpenseReportsResource", () => {
 			mockFetch.mockResolvedValueOnce({});
 			await resource.create(params as never);
 			expect(mockFetch).toHaveBeenCalledWith(
-				`/companies/${COMPANY_ID}/expense_reports`,
+				`companies/${COMPANY_ID}/expense_reports`,
 				{
 					method: "POST",
 					body: params,

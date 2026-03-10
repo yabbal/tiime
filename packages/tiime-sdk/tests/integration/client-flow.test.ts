@@ -67,7 +67,7 @@ describe("TiimeClient integration", () => {
 			await client.clients.list();
 
 			const url = mockFetch.mock.calls[0][0] as string;
-			expect(url).toContain(`/companies/${COMPANY_ID}/clients`);
+			expect(url).toContain(`companies/${COMPANY_ID}/clients`);
 		});
 
 		it("builds correct URL for nested resource paths", async () => {
@@ -77,7 +77,7 @@ describe("TiimeClient integration", () => {
 			await client.invoices.get(99);
 
 			const url = mockFetch.mock.calls[0][0] as string;
-			expect(url).toContain(`/companies/${COMPANY_ID}/invoices/99`);
+			expect(url).toContain(`companies/${COMPANY_ID}/invoices/99`);
 		});
 
 		it("builds correct URL for listCompanies (no companyId prefix)", async () => {
@@ -87,8 +87,8 @@ describe("TiimeClient integration", () => {
 			await client.listCompanies();
 
 			const url = mockFetch.mock.calls[0][0] as string;
-			expect(url).toContain("/companies");
-			expect(url).not.toContain(`/companies/${COMPANY_ID}/companies`);
+			expect(url).toContain("companies");
+			expect(url).not.toContain(`companies/${COMPANY_ID}/companies`);
 		});
 	});
 
@@ -109,9 +109,9 @@ describe("TiimeClient integration", () => {
 				],
 			});
 
-			const init = mockFetch.mock.calls[0][1]!;
-			expect(init.method).toBe("POST");
-			const body = JSON.parse(init.body as string);
+			const init = mockFetch.mock.calls[0][1];
+			expect(init?.method).toBe("POST");
+			const body = JSON.parse(init?.body as string);
 			expect(body.emission_date).toBe("2026-03-01");
 			expect(body.lines[0].line_amount).toBe(2500);
 		});
@@ -137,8 +137,8 @@ describe("TiimeClient integration", () => {
 				},
 			]);
 
-			const init = mockFetch.mock.calls[0][1]!;
-			expect(init.method).toBe("PATCH");
+			const init = mockFetch.mock.calls[0][1];
+			expect(init?.method).toBe("PATCH");
 		});
 
 		it("sends DELETE for invoice deletion", async () => {
@@ -147,8 +147,8 @@ describe("TiimeClient integration", () => {
 
 			await client.invoices.delete(99);
 
-			const init = mockFetch.mock.calls[0][1]!;
-			expect(init.method).toBe("DELETE");
+			const init = mockFetch.mock.calls[0][1];
+			expect(init?.method).toBe("DELETE");
 		});
 	});
 

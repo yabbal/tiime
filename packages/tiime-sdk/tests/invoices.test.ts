@@ -56,7 +56,7 @@ describe("InvoicesResource", () => {
 			await invoices.list();
 
 			expect(mockFetch).toHaveBeenCalledWith(
-				`/companies/${COMPANY_ID}/invoices`,
+				`companies/${COMPANY_ID}/invoices`,
 				{
 					query: { sorts: "invoice_number:desc" },
 					headers: { Range: "items=0-25" },
@@ -70,7 +70,7 @@ describe("InvoicesResource", () => {
 			await invoices.list({ page: 3, pageSize: 10 });
 
 			expect(mockFetch).toHaveBeenCalledWith(
-				`/companies/${COMPANY_ID}/invoices`,
+				`companies/${COMPANY_ID}/invoices`,
 				expect.objectContaining({
 					headers: { Range: "items=20-30" },
 				}),
@@ -83,7 +83,7 @@ describe("InvoicesResource", () => {
 			await invoices.list({ status: "saved" });
 
 			expect(mockFetch).toHaveBeenCalledWith(
-				`/companies/${COMPANY_ID}/invoices`,
+				`companies/${COMPANY_ID}/invoices`,
 				expect.objectContaining({
 					query: { sorts: "invoice_number:desc", status: "saved" },
 				}),
@@ -148,7 +148,7 @@ describe("InvoicesResource", () => {
 			});
 
 			expect(mockFetch).toHaveBeenCalledWith(
-				`/companies/${COMPANY_ID}/invoices`,
+				`companies/${COMPANY_ID}/invoices`,
 				expect.objectContaining({ method: "POST" }),
 			);
 		});
@@ -181,7 +181,7 @@ describe("InvoicesResource", () => {
 			await invoices.listAll({ status: "saved" });
 
 			expect(mockFetch).toHaveBeenCalledWith(
-				`/companies/${COMPANY_ID}/invoices`,
+				`companies/${COMPANY_ID}/invoices`,
 				expect.objectContaining({
 					query: expect.objectContaining({ status: "saved" }),
 				}),
@@ -196,7 +196,7 @@ describe("InvoicesResource", () => {
 			await invoices.get(99);
 
 			expect(mockFetch).toHaveBeenCalledWith(
-				`/companies/${COMPANY_ID}/invoices/99`,
+				`companies/${COMPANY_ID}/invoices/99`,
 			);
 		});
 	});
@@ -208,7 +208,7 @@ describe("InvoicesResource", () => {
 			await invoices.update(99, { title: "Updated" });
 
 			expect(mockFetch).toHaveBeenCalledWith(
-				`/companies/${COMPANY_ID}/invoices/99`,
+				`companies/${COMPANY_ID}/invoices/99`,
 				{ method: "PUT", body: { title: "Updated" } },
 			);
 		});
@@ -224,7 +224,7 @@ describe("InvoicesResource", () => {
 			});
 
 			expect(mockFetch).toHaveBeenCalledWith(
-				`/companies/${COMPANY_ID}/invoices/99/send`,
+				`companies/${COMPANY_ID}/invoices/99/send`,
 				{
 					method: "POST",
 					body: {
@@ -243,7 +243,7 @@ describe("InvoicesResource", () => {
 			await invoices.downloadPdf(99);
 
 			expect(mockFetch).toHaveBeenCalledWith(
-				`/companies/${COMPANY_ID}/invoices/99/pdf`,
+				`companies/${COMPANY_ID}/invoices/99/pdf`,
 				{ headers: { Accept: "application/pdf" } },
 			);
 		});
@@ -256,7 +256,7 @@ describe("InvoicesResource", () => {
 			await invoices.delete(99);
 
 			expect(mockFetch).toHaveBeenCalledWith(
-				`/companies/${COMPANY_ID}/invoices/99`,
+				`companies/${COMPANY_ID}/invoices/99`,
 				{ method: "DELETE" },
 			);
 		});
@@ -293,12 +293,12 @@ describe("InvoicesResource", () => {
 
 			// First call should be GET (no method specified = GET)
 			expect(mockFetch.mock.calls[0][0]).toBe(
-				`/companies/${COMPANY_ID}/invoices/99`,
+				`companies/${COMPANY_ID}/invoices/99`,
 			);
 
 			// Second call should be POST (create)
 			const createCall = mockFetch.mock.calls[1];
-			expect(createCall[0]).toBe(`/companies/${COMPANY_ID}/invoices`);
+			expect(createCall[0]).toBe(`companies/${COMPANY_ID}/invoices`);
 			expect(createCall[1].method).toBe("POST");
 
 			const createBody = createCall[1].body;

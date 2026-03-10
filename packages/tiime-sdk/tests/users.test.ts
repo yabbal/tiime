@@ -14,7 +14,7 @@ describe("UsersResource", () => {
 		it("should call /users/me without companyId", async () => {
 			mockFetch.mockResolvedValueOnce({});
 			await resource.me();
-			expect(mockFetch).toHaveBeenCalledWith("/users/me");
+			expect(mockFetch).toHaveBeenCalledWith("users/me");
 		});
 	});
 
@@ -22,7 +22,7 @@ describe("UsersResource", () => {
 		it("should call correct endpoint", async () => {
 			mockFetch.mockResolvedValueOnce({});
 			await resource.legalInformations();
-			expect(mockFetch).toHaveBeenCalledWith("/users/me/legal_informations");
+			expect(mockFetch).toHaveBeenCalledWith("users/me/legal_informations");
 		});
 	});
 
@@ -31,7 +31,7 @@ describe("UsersResource", () => {
 			mockFetch.mockResolvedValueOnce({});
 			await resource.settings(50824);
 			expect(mockFetch).toHaveBeenCalledWith(
-				"/users/me/companies/50824/settings",
+				"users/me/companies/50824/settings",
 			);
 		});
 	});

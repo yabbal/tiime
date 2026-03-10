@@ -16,7 +16,7 @@ describe("CompanyResource", () => {
 		it("should call correct endpoint", async () => {
 			mockFetch.mockResolvedValueOnce({});
 			await resource.get();
-			expect(mockFetch).toHaveBeenCalledWith(`/companies/${COMPANY_ID}`);
+			expect(mockFetch).toHaveBeenCalledWith(`companies/${COMPANY_ID}`);
 		});
 	});
 
@@ -24,7 +24,7 @@ describe("CompanyResource", () => {
 		it("should call correct endpoint", async () => {
 			mockFetch.mockResolvedValueOnce([]);
 			await resource.users();
-			expect(mockFetch).toHaveBeenCalledWith(`/companies/${COMPANY_ID}/users`);
+			expect(mockFetch).toHaveBeenCalledWith(`companies/${COMPANY_ID}/users`);
 		});
 	});
 
@@ -33,7 +33,7 @@ describe("CompanyResource", () => {
 			mockFetch.mockResolvedValueOnce({});
 			await resource.appConfig();
 			expect(mockFetch).toHaveBeenCalledWith(
-				`/companies/${COMPANY_ID}/app_config`,
+				`companies/${COMPANY_ID}/app_config`,
 			);
 		});
 	});
@@ -43,7 +43,7 @@ describe("CompanyResource", () => {
 			mockFetch.mockResolvedValueOnce({});
 			await resource.accountingPeriod();
 			expect(mockFetch).toHaveBeenCalledWith(
-				`/companies/${COMPANY_ID}/accounting_period/current`,
+				`companies/${COMPANY_ID}/accounting_period/current`,
 				{ query: { range_year: 1 } },
 			);
 		});
@@ -52,7 +52,7 @@ describe("CompanyResource", () => {
 			mockFetch.mockResolvedValueOnce({});
 			await resource.accountingPeriod(3);
 			expect(mockFetch).toHaveBeenCalledWith(
-				`/companies/${COMPANY_ID}/accounting_period/current`,
+				`companies/${COMPANY_ID}/accounting_period/current`,
 				{ query: { range_year: 3 } },
 			);
 		});
@@ -62,7 +62,7 @@ describe("CompanyResource", () => {
 		it("should join keys with comma", async () => {
 			mockFetch.mockResolvedValueOnce([]);
 			await resource.tiles(["revenue", "expenses"]);
-			expect(mockFetch).toHaveBeenCalledWith(`/companies/${COMPANY_ID}/tiles`, {
+			expect(mockFetch).toHaveBeenCalledWith(`companies/${COMPANY_ID}/tiles`, {
 				query: { keys: "revenue,expenses" },
 			});
 		});
@@ -70,7 +70,7 @@ describe("CompanyResource", () => {
 		it("should handle empty keys array", async () => {
 			mockFetch.mockResolvedValueOnce([]);
 			await resource.tiles([]);
-			expect(mockFetch).toHaveBeenCalledWith(`/companies/${COMPANY_ID}/tiles`, {
+			expect(mockFetch).toHaveBeenCalledWith(`companies/${COMPANY_ID}/tiles`, {
 				query: { keys: "" },
 			});
 		});
@@ -81,7 +81,7 @@ describe("CompanyResource", () => {
 			mockFetch.mockResolvedValueOnce([]);
 			await resource.dashboardBlocks();
 			expect(mockFetch).toHaveBeenCalledWith(
-				`/companies/${COMPANY_ID}/dashboard_blocks`,
+				`companies/${COMPANY_ID}/dashboard_blocks`,
 				{ query: { sorts: "rank:asc", display_group: "monitoring" } },
 			);
 		});
@@ -90,7 +90,7 @@ describe("CompanyResource", () => {
 			mockFetch.mockResolvedValueOnce([]);
 			await resource.dashboardBlocks("custom");
 			expect(mockFetch).toHaveBeenCalledWith(
-				`/companies/${COMPANY_ID}/dashboard_blocks`,
+				`companies/${COMPANY_ID}/dashboard_blocks`,
 				{ query: { sorts: "rank:asc", display_group: "custom" } },
 			);
 		});

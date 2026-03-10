@@ -12,7 +12,7 @@ describe("ClientsResource", () => {
 	it("list() calls correct endpoint with headers", async () => {
 		mockFetch.mockResolvedValue([]);
 		await resource.list();
-		expect(mockFetch).toHaveBeenCalledWith("/companies/123/clients", {
+		expect(mockFetch).toHaveBeenCalledWith("companies/123/clients", {
 			query: undefined,
 			headers: {
 				Accept: "application/vnd.tiime.timeline.v2+json",
@@ -24,7 +24,7 @@ describe("ClientsResource", () => {
 	it("list() passes archived param in query", async () => {
 		mockFetch.mockResolvedValue([]);
 		await resource.list({ archived: true });
-		expect(mockFetch).toHaveBeenCalledWith("/companies/123/clients", {
+		expect(mockFetch).toHaveBeenCalledWith("companies/123/clients", {
 			query: { archived: true },
 			headers: {
 				Accept: "application/vnd.tiime.timeline.v2+json",
@@ -36,13 +36,13 @@ describe("ClientsResource", () => {
 	it("get() calls correct endpoint with ID", async () => {
 		mockFetch.mockResolvedValue({ id: 42, name: "Test" });
 		await resource.get(42);
-		expect(mockFetch).toHaveBeenCalledWith("/companies/123/clients/42");
+		expect(mockFetch).toHaveBeenCalledWith("companies/123/clients/42");
 	});
 
 	it("create() sends POST with body", async () => {
 		mockFetch.mockResolvedValue({ id: 1, name: "New" });
 		await resource.create({ name: "New Client" });
-		expect(mockFetch).toHaveBeenCalledWith("/companies/123/clients", {
+		expect(mockFetch).toHaveBeenCalledWith("companies/123/clients", {
 			method: "POST",
 			body: { name: "New Client" },
 		});
@@ -51,7 +51,7 @@ describe("ClientsResource", () => {
 	it("search() passes query and headers", async () => {
 		mockFetch.mockResolvedValue([]);
 		await resource.search("acme");
-		expect(mockFetch).toHaveBeenCalledWith("/companies/123/clients", {
+		expect(mockFetch).toHaveBeenCalledWith("companies/123/clients", {
 			query: { search: "acme" },
 			headers: {
 				Accept: "application/vnd.tiime.timeline.v2+json",

@@ -9,7 +9,7 @@ export class UsersResource {
 	}
 
 	legalInformations(): Promise<unknown> {
-		return this.fetch("/users/me/legal_informations");
+		return this.fetch("users/me/legal_informations");
 	}
 
 	settings(companyId: number): Promise<unknown> {

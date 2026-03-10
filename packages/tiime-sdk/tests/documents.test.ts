@@ -10,7 +10,7 @@ describe("DocumentsResource", () => {
 	it("list() calls correct endpoint with default params", async () => {
 		mockFetch.mockResolvedValue([]);
 		await resource.list();
-		expect(mockFetch).toHaveBeenCalledWith("/companies/123/documents", {
+		expect(mockFetch).toHaveBeenCalledWith("companies/123/documents", {
 			query: {
 				sorts: "created_at:desc",
 				expand: "file_family,preview_available",
@@ -27,7 +27,7 @@ describe("DocumentsResource", () => {
 		mockFetch.mockResolvedValue([]);
 		await resource.list({ types: "receipt" });
 		expect(mockFetch).toHaveBeenCalledWith(
-			"/companies/123/documents",
+			"companies/123/documents",
 			expect.objectContaining({
 				query: expect.objectContaining({
 					types: "receipt",
@@ -42,7 +42,7 @@ describe("DocumentsResource", () => {
 		mockFetch.mockResolvedValue([]);
 		await resource.list({ page: 2, pageSize: 10 });
 		expect(mockFetch).toHaveBeenCalledWith(
-			"/companies/123/documents",
+			"companies/123/documents",
 			expect.objectContaining({
 				headers: expect.objectContaining({
 					Range: "items=10-20",
@@ -55,7 +55,7 @@ describe("DocumentsResource", () => {
 		mockFetch.mockResolvedValue([]);
 		await resource.categories();
 		expect(mockFetch).toHaveBeenCalledWith(
-			"/companies/123/document_categories",
+			"companies/123/document_categories",
 			{
 				headers: {
 					Accept: "application/vnd.tiime.documents.v3+json",
@@ -68,7 +68,7 @@ describe("DocumentsResource", () => {
 		mockFetch.mockResolvedValue(new ArrayBuffer(8));
 		await resource.download(42);
 		expect(mockFetch).toHaveBeenCalledWith(
-			"/companies/123/documents/42/download",
+			"companies/123/documents/42/download",
 			{
 				headers: { Accept: "application/octet-stream" },
 			},
@@ -79,7 +79,7 @@ describe("DocumentsResource", () => {
 		mockFetch.mockResolvedValue({});
 		await resource.preview(42);
 		expect(mockFetch).toHaveBeenCalledWith(
-			"/companies/123/documents/42/preview",
+			"companies/123/documents/42/preview",
 		);
 	});
 
@@ -89,7 +89,7 @@ describe("DocumentsResource", () => {
 		await resource.upload(file, "test.pdf", "receipt");
 
 		expect(mockFetch).toHaveBeenCalledWith(
-			"/companies/123/documents",
+			"companies/123/documents",
 			expect.objectContaining({
 				method: "POST",
 			}),
@@ -106,7 +106,7 @@ describe("DocumentsResource", () => {
 		await resource.upload(file, "invoice.pdf");
 
 		expect(mockFetch).toHaveBeenCalledWith(
-			"/companies/123/documents",
+			"companies/123/documents",
 			expect.objectContaining({ method: "POST" }),
 		);
 		const body = mockFetch.mock.calls[0][1].body as FormData;
@@ -119,7 +119,7 @@ describe("DocumentsResource", () => {
 		mockFetch.mockResolvedValue([]);
 		await resource.searchMatchable("facture");
 
-		expect(mockFetch).toHaveBeenCalledWith("/companies/123/documents", {
+		expect(mockFetch).toHaveBeenCalledWith("companies/123/documents", {
 			query: { matchable: true, q: "facture" },
 			headers: {
 				Accept:

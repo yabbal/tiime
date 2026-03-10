@@ -89,7 +89,7 @@ describe("TiimeClient", () => {
 		it("should call fetch with correct URL and headers", async () => {
 			mockFetchInstance.mockResolvedValueOnce([]);
 			await client.listCompanies();
-			expect(mockFetchInstance).toHaveBeenCalledWith("/companies", {
+			expect(mockFetchInstance).toHaveBeenCalledWith("companies", {
 				headers: {
 					Accept: "application/vnd.tiime.companies.v2+json",
 					Range: "items=0-101",

@@ -11,7 +11,7 @@ describe("BankAccountsResource", () => {
 	it("list() calls correct endpoint with no filter", async () => {
 		mockFetch.mockResolvedValue([]);
 		await resource.list();
-		expect(mockFetch).toHaveBeenCalledWith("/companies/123/bank_accounts", {
+		expect(mockFetch).toHaveBeenCalledWith("companies/123/bank_accounts", {
 			query: undefined,
 		});
 	});
@@ -19,7 +19,7 @@ describe("BankAccountsResource", () => {
 	it("list(true) passes enabled filter", async () => {
 		mockFetch.mockResolvedValue([]);
 		await resource.list(true);
-		expect(mockFetch).toHaveBeenCalledWith("/companies/123/bank_accounts", {
+		expect(mockFetch).toHaveBeenCalledWith("companies/123/bank_accounts", {
 			query: { enabled: true },
 		});
 	});
@@ -37,7 +37,7 @@ describe("BankAccountsResource", () => {
 			{ name: "Compte Pro", balance_amount: 1000, currency: "EUR" },
 		]);
 		// balance() should call list(true)
-		expect(mockFetch).toHaveBeenCalledWith("/companies/123/bank_accounts", {
+		expect(mockFetch).toHaveBeenCalledWith("companies/123/bank_accounts", {
 			query: { enabled: true },
 		});
 	});
@@ -45,7 +45,7 @@ describe("BankAccountsResource", () => {
 	it("get() calls correct endpoint", async () => {
 		mockFetch.mockResolvedValue({ id: 42 });
 		await resource.get(42);
-		expect(mockFetch).toHaveBeenCalledWith("/companies/123/bank_accounts/42");
+		expect(mockFetch).toHaveBeenCalledWith("companies/123/bank_accounts/42");
 	});
 });
 
@@ -58,7 +58,7 @@ describe("BankTransactionsResource", () => {
 	it("list() calls correct endpoint with default pagination", async () => {
 		mockFetch.mockResolvedValue({ transactions: [], metadata: {} });
 		await resource.list();
-		expect(mockFetch).toHaveBeenCalledWith("/companies/123/bank_transactions", {
+		expect(mockFetch).toHaveBeenCalledWith("companies/123/bank_transactions", {
 			query: { hide_refused: false },
 			headers: {
 				Accept: "application/vnd.tiime.bank_transactions.v2+json",
@@ -71,7 +71,7 @@ describe("BankTransactionsResource", () => {
 		mockFetch.mockResolvedValue({ transactions: [], metadata: {} });
 		await resource.list({ from: "2025-01-01", to: "2025-12-31" });
 		expect(mockFetch).toHaveBeenCalledWith(
-			"/companies/123/bank_transactions",
+			"companies/123/bank_transactions",
 			expect.objectContaining({
 				query: expect.objectContaining({
 					hide_refused: false,
@@ -86,7 +86,7 @@ describe("BankTransactionsResource", () => {
 		mockFetch.mockResolvedValue({ transactions: [], metadata: {} });
 		await resource.list({ search: "amazon" });
 		expect(mockFetch).toHaveBeenCalledWith(
-			"/companies/123/bank_transactions",
+			"companies/123/bank_transactions",
 			expect.objectContaining({
 				query: expect.objectContaining({
 					hide_refused: false,
@@ -100,7 +100,7 @@ describe("BankTransactionsResource", () => {
 		mockFetch.mockResolvedValue([]);
 		await resource.unimputed();
 		expect(mockFetch).toHaveBeenCalledWith(
-			"/companies/123/bank_transactions/unimputed",
+			"companies/123/bank_transactions/unimputed",
 		);
 	});
 
@@ -123,7 +123,7 @@ describe("BankTransactionsResource", () => {
 		mockFetch.mockResolvedValue({ id: 555 });
 		await resource.get(555);
 		expect(mockFetch).toHaveBeenCalledWith(
-			"/companies/123/bank_transactions/555",
+			"companies/123/bank_transactions/555",
 		);
 	});
 
@@ -131,7 +131,7 @@ describe("BankTransactionsResource", () => {
 		mockFetch.mockResolvedValue([]);
 		await resource.labelSuggestions(555);
 		expect(mockFetch).toHaveBeenCalledWith(
-			"/companies/123/bank_transactions/555/label_suggestions",
+			"companies/123/bank_transactions/555/label_suggestions",
 			{
 				headers: {
 					Accept:
@@ -145,7 +145,7 @@ describe("BankTransactionsResource", () => {
 		mockFetch.mockResolvedValue([]);
 		await resource.matchDocuments(555, [10, 20]);
 		expect(mockFetch).toHaveBeenCalledWith(
-			"/companies/123/bank_transactions/555/document_matchings",
+			"companies/123/bank_transactions/555/document_matchings",
 			{
 				method: "PUT",
 				body: { documents: [{ id: 10 }, { id: 20 }] },
@@ -157,7 +157,7 @@ describe("BankTransactionsResource", () => {
 		mockFetch.mockResolvedValue({ matchings: [] });
 		await resource.getMatchings(555);
 		expect(mockFetch).toHaveBeenCalledWith(
-			"/companies/123/bank_transactions/555/matchings",
+			"companies/123/bank_transactions/555/matchings",
 		);
 	});
 
@@ -182,7 +182,7 @@ describe("BankTransactionsResource", () => {
 		mockFetch.mockResolvedValue({ id: 555 });
 		await resource.impute(555, imputations);
 		expect(mockFetch).toHaveBeenCalledWith(
-			"/companies/123/bank_transactions/555",
+			"companies/123/bank_transactions/555",
 			{
 				method: "PATCH",
 				body: { imputations },

@@ -18,7 +18,7 @@ describe("QuotationsResource", () => {
 			mockFetch.mockResolvedValueOnce([]);
 			await resource.list();
 			expect(mockFetch).toHaveBeenCalledWith(
-				`/companies/${COMPANY_ID}/quotations`,
+				`companies/${COMPANY_ID}/quotations`,
 				{
 					query: { expand: "invoices" },
 					headers: { Range: "items=0-25" },
@@ -30,7 +30,7 @@ describe("QuotationsResource", () => {
 			mockFetch.mockResolvedValueOnce([]);
 			await resource.list("clients");
 			expect(mockFetch).toHaveBeenCalledWith(
-				`/companies/${COMPANY_ID}/quotations`,
+				`companies/${COMPANY_ID}/quotations`,
 				{
 					query: { expand: "clients" },
 					headers: { Range: "items=0-25" },
@@ -44,7 +44,7 @@ describe("QuotationsResource", () => {
 			mockFetch.mockResolvedValueOnce({});
 			await resource.get(42);
 			expect(mockFetch).toHaveBeenCalledWith(
-				`/companies/${COMPANY_ID}/quotations/42`,
+				`companies/${COMPANY_ID}/quotations/42`,
 			);
 		});
 	});
@@ -128,7 +128,7 @@ describe("QuotationsResource", () => {
 			await resource.create(params);
 
 			expect(mockFetch).toHaveBeenCalledWith(
-				`/companies/${COMPANY_ID}/quotations`,
+				`companies/${COMPANY_ID}/quotations`,
 				expect.objectContaining({ method: "POST" }),
 			);
 		});
@@ -158,7 +158,7 @@ describe("QuotationsResource", () => {
 			await resource.create({ date: "2024-01-01", lines: [] });
 
 			expect(mockFetch).toHaveBeenCalledWith(
-				`/companies/${COMPANY_ID}/quotations`,
+				`companies/${COMPANY_ID}/quotations`,
 				expect.objectContaining({ method: "POST" }),
 			);
 		});
@@ -169,7 +169,7 @@ describe("QuotationsResource", () => {
 			mockFetch.mockResolvedValueOnce(new ArrayBuffer(0));
 			await resource.downloadPdf(42);
 			expect(mockFetch).toHaveBeenCalledWith(
-				`/companies/${COMPANY_ID}/quotations/42/pdf`,
+				`companies/${COMPANY_ID}/quotations/42/pdf`,
 				{ headers: { Accept: "application/pdf" } },
 			);
 		});
@@ -182,7 +182,7 @@ describe("QuotationsResource", () => {
 				recipients: [{ email: "a@b.com" }],
 			});
 			expect(mockFetch).toHaveBeenCalledWith(
-				`/companies/${COMPANY_ID}/quotations/42/send`,
+				`companies/${COMPANY_ID}/quotations/42/send`,
 				{
 					method: "POST",
 					body: { recipients: [{ email: "a@b.com" }] },
