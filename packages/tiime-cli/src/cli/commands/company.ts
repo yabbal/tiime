@@ -58,6 +58,31 @@ export const companyCommand = defineCommand({
 			},
 		}),
 
+		vat: defineCommand({
+			meta: {
+				name: "vat",
+				description: "Numéro de TVA intracommunautaire",
+			},
+			args: { ...formatArg },
+			async run({ args }) {
+				try {
+					const client = createClient(getCompanyId());
+					const company = await client.company.get();
+					output(
+						{
+							name: company.name,
+							vat_number: company.intracom_vat_number,
+							vat_system: company.vat_system?.label,
+							tax_regime: company.tax_regime,
+						},
+						{ format: args.format as OutputFormat },
+					);
+				} catch (e) {
+					outputError(e);
+				}
+			},
+		}),
+
 		me: defineCommand({
 			meta: {
 				name: "me",
