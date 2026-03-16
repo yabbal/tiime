@@ -8,9 +8,9 @@
     "start": "next start"
   },
   "dependencies": {
-    "fumadocs-core": "^16.6.13",
-    "fumadocs-mdx": "^14.2.9",
-    "fumadocs-ui": "^16.6.13",
+    "fumadocs-core": "^16.6.17",
+    "fumadocs-mdx": "^14.2.10",
+    "fumadocs-ui": "^16.6.17",
     "lucide-react": "^0.577.0",
     "tiime-cli": "workspace:*",
     "next": "^16.1.6",
