@@ -13,7 +13,7 @@
     "fumadocs-ui": "^16.6.17",
     "lucide-react": "^0.577.0",
     "tiime-cli": "workspace:*",
-    "next": "^16.1.6",
+    "next": "^16.1.7",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },
